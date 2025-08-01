@@ -1,0 +1,37 @@
+
+
+
+
+/*
+ * Este arquivo CSS é o ponto de entrada principal para os estilos globais do seu aplicativo.
+ * Ele importa as diretivas base do Tailwind CSS e define estilos fundamentais para o HTML e o corpo da página.
+ *
+ * Visualmente, ele estabelece a base para a aparência do seu site, como:
+ * - A redefinição de margens e paddings padrão do navegador para `html` e `body`.
+ * - A cor de fundo padrão do aplicativo (`#f1f5f9`).
+ * - A cor de texto padrão (`#1a1a1a`).
+ * - Impede a rolagem do corpo da página (`overflow: hidden`), o que é comum em SPAs (Single Page Applications)
+ *   onde a rolagem é controlada por componentes internos.
+ *
+ *
+ *
+ *
+ */
+
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background-color: #F2F2F7;
+  color: #1a1a1a;
+}
+

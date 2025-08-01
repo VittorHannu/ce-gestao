@@ -1,0 +1,16 @@
+ALTER TABLE public.relatos
+DROP COLUMN IF EXISTS original_descricao,
+DROP COLUMN IF EXISTS original_local_ocorrencia,
+DROP COLUMN IF EXISTS original_data_ocorrencia,
+DROP COLUMN IF EXISTS original_hora_aproximada_ocorrencia,
+DROP COLUMN IF EXISTS original_danos_ocorridos,
+DROP COLUMN IF EXISTS original_nao_houve_danos,
+DROP COLUMN IF EXISTS original_causa_real_dano,
+DROP COLUMN IF EXISTS original_nao_sabe_causa_dano,
+DROP COLUMN IF EXISTS original_riscos_identificados,
+DROP COLUMN IF EXISTS original_causa_riscos_identificados,
+DROP COLUMN IF EXISTS original_nao_sabe_causa_riscos,
+DROP COLUMN IF EXISTS original_nao_informar_hora_aproximada,
+DROP COLUMN IF EXISTS original_tipo_incidente,
+DROP COLUMN IF EXISTS original_gravidade,
+DROP COLUMN IF EXISTS original_is_anonymous;
