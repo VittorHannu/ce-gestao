@@ -18,10 +18,10 @@ import { useNavigate } from 'react-router-dom';
 import { Clock, CheckCircle, XCircle, FileText } from 'lucide-react';
 
 const RelatosStatsCards = ({ stats }) => {
+  const navigate = useNavigate();
   if (!stats) {
     return null; // Ou um componente de placeholder/loading se preferir
   }
-  const navigate = useNavigate();
 
   const statsConfig = [
     {
