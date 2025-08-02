@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { supabase } from '@/01-common/lib/supabase';
 
-import { Button } from '@/core/components/ui/button';
 import { Input } from '@/core/components/ui/input';
 import { Label } from '@/core/components/ui/label';
 import MainLayout from '@/01-common/components/MainLayout';
+import FormActionButtons from '@/01-common/components/FormActionButtons';
 
 const UpdateEmailPage = () => {
   const { showToast } = useOutletContext();
+  const navigate = useNavigate();
 
   const [newEmail, setNewEmail] = useState('');
   const [confirmNewEmail, setConfirmNewEmail] = useState('');
@@ -25,6 +26,7 @@ const UpdateEmailPage = () => {
       setNewEmail('');
       setConfirmNewEmail('');
       setEmailChangeMessage('');
+      navigate(-1); // Volta para a página anterior
     },
     onError: (error) => {
       showToast(`Erro ao alterar e-mail: ${error.message}`, 'error');
@@ -71,11 +73,13 @@ const UpdateEmailPage = () => {
           {emailChangeMessage && (
             <p className="text-sm text-red-500">{emailChangeMessage}</p>
           )}
-          <div className="flex justify-end">
-            <Button onClick={handleChangeEmail} disabled={isChangingEmail}>
-              {isChangingEmail ? 'Alterando...' : 'Alterar Email'}
-            </Button>
-          </div>
+          <FormActionButtons
+            onCancel={() => navigate(-1)}
+            onConfirm={handleChangeEmail}
+            isConfirming={isChangingEmail}
+            confirmText="Alterar Email"
+            confirmingText="Alterando..."
+          />
         </div>
       </div>
     </MainLayout>

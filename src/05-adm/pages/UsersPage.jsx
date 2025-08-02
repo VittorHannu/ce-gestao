@@ -5,6 +5,7 @@ import SearchInput from '@/01-common/components/SearchInput';
 import { useUsers } from '@/05-adm/hooks/useUsers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Button } from '@/core/components/ui/button';
 
 
 function UsersPage() {
@@ -31,13 +32,13 @@ function UsersPage() {
             placeholder="Pesquisar..."
           />
         </div>
-        <button
+        <Button
           onClick={() => navigate('/users-management/create')}
-          className="bg-green-500 hover:bg-green-600 text-white font-bold p-2 rounded-full w-10 h-10 flex items-center justify-center shadow-md"
           title="Criar novo usuário"
         >
-          <FontAwesomeIcon icon={faPlus} size="lg" />
-        </button>
+          <FontAwesomeIcon icon={faPlus} />
+          <span>Novo Usuário</span>
+        </Button>
       </div>
       
       {loading ? (

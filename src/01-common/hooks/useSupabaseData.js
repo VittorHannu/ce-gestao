@@ -26,7 +26,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/01-common/lib/supabase';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-export const useSupabaseData = (tableName, fetchDataFunction, initialFilters = {}) => {
+export const useSupabaseData = (tableName, fetchDataFunction, initialFilters = {}, options = {}) => {
+  const { keepPreviousData = true } = options;
   const queryClient = useQueryClient();
   const [filters, setFilters] = useState(initialFilters);
 
@@ -37,15 +38,15 @@ export const useSupabaseData = (tableName, fetchDataFunction, initialFilters = {
     refetch,
     isFetching
   } = useQuery({
-    queryKey: [tableName, filters], // A chave da query inclui o nome da tabela e os filtros
+    queryKey: [tableName, filters],
     queryFn: async () => {
       const { data: fetchedData, error: fetchError } = await fetchDataFunction(filters);
       if (fetchError) throw fetchError;
       return fetchedData || [];
     },
-    staleTime: 5 * 60 * 1000, // Dados considerados "frescos" por 5 minutos
-    cacheTime: 10 * 60 * 1000, // Dados permanecem no cache por 10 minutos
-    keepPreviousData: true // Mantém os dados anteriores enquanto busca novos
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
+    keepPreviousData: keepPreviousData
   });
 
   useEffect(() => {

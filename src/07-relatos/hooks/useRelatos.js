@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { getRelatos, getRelatosStats, getRelatoById, saveRelato, deleteRelato } from '@/07-relatos/services/relatosService';
+import { getRelatos, getRelatoById, saveRelato, deleteRelato } from '@/07-relatos/services/relatosService';
 import { useSupabaseData } from '@/01-common/hooks/useSupabaseData';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 
@@ -13,16 +13,7 @@ export const useRelatos = (initialFilters = {}) => {
     filters,
     handleFiltersChange: setFilters,
     isFetching
-  } = useSupabaseData('relatos_with_creator', getRelatos, initialFilters);
-
-  const {
-    data: stats,
-    isLoading: statsLoading,
-    error: statsError,
-    isFetching: statsIsFetching
-  } = useSupabaseData('relatos_stats', getRelatosStats);
-
-  const combinedError = error || statsError;
+  } = useSupabaseData('relatos_with_creator', getRelatos, initialFilters, { keepPreviousData: false });
 
   const addRelato = useCallback(async (relatoData, userId, isAdmin) => {
     try {
@@ -42,7 +33,7 @@ export const useRelatos = (initialFilters = {}) => {
       if (saveError) throw saveError;
       queryClient.invalidateQueries({ queryKey: ['relatos_with_creator'] });
       queryClient.invalidateQueries({ queryKey: ['relatos_stats'] });
-      queryClient.invalidateQueries({ queryKey: ['relatos_with_creator', { id: relatoId }] }); // Invalida o cache do relato específico
+      queryClient.invalidateQueries({ queryKey: ['relatos_with_creator', { id: relatoId }] });
       return { data, error: null };
     } catch (err) {
       return { data: null, error: err };
@@ -57,7 +48,7 @@ export const useRelatos = (initialFilters = {}) => {
       queryClient.invalidateQueries({ queryKey: ['relatos_stats'] });
       return { success, error: null };
     } catch (err) {
-      console.error('Erro ao remover relato:', err); // Adicionado para depuração
+      console.error('Erro ao remover relato:', err);
       return { success: false, error: err };
     }
   }, [queryClient]);
@@ -69,23 +60,20 @@ export const useRelatos = (initialFilters = {}) => {
       return data;
     } catch (err) {
       console.error('Erro ao buscar relato único:', err);
-      throw err; // Re-throw to be caught by useQuery's error handling
+      throw err;
     }
   }, []);
 
   return {
     relatos,
-    stats,
     loading,
-    statsLoading,
-    error: combinedError,
+    error,
     filters,
     setFilters,
     addRelato,
     updateRelato,
     removeRelato,
     isFetching,
-    statsIsFetching,
     useRelatoDetails: (relatoId) => useQuery({
       queryKey: ['relatos_with_creator', { id: relatoId }],
       queryFn: () => getSingleRelatoData(relatoId),

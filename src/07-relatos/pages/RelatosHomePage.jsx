@@ -5,20 +5,19 @@ import { Button } from '@/core/components/ui/button';
 import { Plus } from 'lucide-react';
 
 import RelatosStatsCards from '@/07-relatos/components/RelatosStatsCards';
-import { useRelatos } from '@/07-relatos/hooks/useRelatos';
+import { useRelatosStats } from '@/07-relatos/hooks/useRelatosStats';
 import LoadingSpinner from '@/01-common/components/LoadingSpinner';
 
 const RelatosHomePage = () => {
-  
   const navigate = useNavigate();
 
-  const { stats, loading, statsLoading, error } = useRelatos();
+  const { stats, statsLoading, statsError } = useRelatosStats();
 
   const handleCreateRelato = () => {
     navigate('/relatos/novo');
   };
 
-  if (loading || statsLoading) {
+  if (statsLoading) {
     return (
       <MainLayout title="Carregando...">
         <LoadingSpinner message="Carregando estatísticas..." />
@@ -26,11 +25,11 @@ const RelatosHomePage = () => {
     );
   }
 
-  if (error) {
+  if (statsError) {
     return (
       <MainLayout title="Erro">
         <div className="text-center py-10">
-          <p className="text-lg text-red-500">Erro ao carregar as estatísticas: {error.message}</p>
+          <p className="text-lg text-red-500">Erro ao carregar as estatísticas: {statsError.message}</p>
         </div>
       </MainLayout>
     );

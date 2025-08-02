@@ -5,6 +5,7 @@ import { useRelatos } from '@/07-relatos/hooks/useRelatos';
 
 import RelatoCard from '@/07-relatos/components/RelatoCard';
 import SearchInput from '@/01-common/components/SearchInput';
+import BackButton from '@/01-common/components/BackButton';
 
 const RelatosStatusPage = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const RelatosStatusPage = () => {
   const calculatedStatus = statusMap[status] || null;
   const pageTitle = calculatedStatus ? `Relatos ${calculatedStatus}` : 'Relatos por Status';
 
-  const { relatos, loading, error, filters, setFilters, isFetching } = useRelatos({ calculated_status: calculatedStatus });
+  const { relatos, loading, error, filters, setFilters, isFetching } = useRelatos({ initialFilters: { calculated_status: calculatedStatus } });
 
   const handleRelatoClick = (relato) => {
     navigate(`/relatos/${relato.id}`);
@@ -44,6 +45,7 @@ const RelatosStatusPage = () => {
   return (
     <MainLayout title={pageTitle}>
       <div className="mb-6 flex items-center space-x-2">
+        <BackButton />
         <div className="flex-grow">
           <SearchInput
             value={filters.busca || ''}

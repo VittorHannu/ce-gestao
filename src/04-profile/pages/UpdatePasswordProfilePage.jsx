@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { supabase } from '@/01-common/lib/supabase';
 
-import { Button } from '@/core/components/ui/button';
 import { Input } from '@/core/components/ui/input';
 import { Label } from '@/core/components/ui/label';
 import MainLayout from '@/01-common/components/MainLayout';
+import FormActionButtons from '@/01-common/components/FormActionButtons';
 
 const UpdatePasswordProfilePage = () => {
   const { showToast } = useOutletContext();
+  const navigate = useNavigate();
 
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -25,6 +26,7 @@ const UpdatePasswordProfilePage = () => {
       setNewPassword('');
       setConfirmNewPassword('');
       setPasswordChangeMessage('');
+      navigate(-1); // Volta para a página anterior
     },
     onError: (error) => {
       showToast(`Erro ao alterar senha: ${error.message}`, 'error');
@@ -74,11 +76,13 @@ const UpdatePasswordProfilePage = () => {
           {passwordChangeMessage && (
             <p className="text-sm text-red-500">{passwordChangeMessage}</p>
           )}
-          <div className="flex justify-end">
-            <Button onClick={handleChangePassword} disabled={isChangingPassword}>
-              {isChangingPassword ? 'Alterando...' : 'Alterar Senha'}
-            </Button>
-          </div>
+          <FormActionButtons
+            onCancel={() => navigate(-1)}
+            onConfirm={handleChangePassword}
+            isConfirming={isChangingPassword}
+            confirmText="Alterar Senha"
+            confirmingText="Alterando..."
+          />
         </div>
       </div>
     </MainLayout>

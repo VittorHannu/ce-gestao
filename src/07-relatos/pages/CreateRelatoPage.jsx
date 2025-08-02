@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Save } from 'lucide-react';
 
 import { relatoSchema } from '@/07-relatos/schemas/relatoSchema';
 import { saveRelato } from '@/07-relatos/services/relatosService';
-import { Button } from '@/core/components/ui/button';
 import MainLayout from '@/01-common/components/MainLayout';
 import RelatoForm from '@/07-relatos/components/RelatoForm';
+import FormActionButtons from '@/01-common/components/FormActionButtons';
 
 const CreateRelatoPage = () => {
   const navigate = useNavigate();
@@ -67,21 +66,14 @@ const CreateRelatoPage = () => {
             gravidadeOptions={[]}
           />
           <div className="flex items-center justify-end space-x-3 p-6">
-            <Button
-              variant="outline"
-              onClick={() => navigate('/relatos')}
-              disabled={loading}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              onClick={methods.handleSubmit(onSubmit)}
-              disabled={loading}
-            >
-              <Save className="w-4 h-4 mr-2" />
-              {loading ? 'Enviando...' : 'Enviar Relato'}
-            </Button>
+            <FormActionButtons
+              onCancel={() => navigate('/relatos')}
+              onConfirm={methods.handleSubmit(onSubmit)}
+              isConfirming={loading}
+              confirmText="Enviar Relato"
+              confirmingText="Enviando..."
+              confirmButtonType="submit"
+            />
           </div>
         </form>
       </FormProvider>

@@ -68,36 +68,36 @@ export default defineConfig({
               cacheName: 'images',
               expiration: {
                 maxEntries: 60,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
-              },
-            },
-          },
-        ],
+                maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
+              }
+            }
+          }
+        ]
       },
       manifest: {
-        name: "SGI",
-        short_name: "Copa SGI",
-        start_url: ".",
-        display: "standalone",
-        background_color: "#ffffff",
-        theme_color: "#ffffff",
-        description: "Sistema de Gestão Integrada",
-        orientation: "portrait",
+        name: 'SGI',
+        short_name: 'Copa SGI',
+        start_url: '.',
+        display: 'standalone',
+        background_color: '#ffffff',
+        theme_color: '#ffffff',
+        description: 'Sistema de Gestão Integrada',
+        orientation: 'portrait',
         icons: [
           {
-            src: "/favicon.ico",
-            sizes: "64x64 32x32 24x24 16x16",
-            type: "image/x-icon"
+            src: '/favicon.ico',
+            sizes: '64x64 32x32 24x24 16x16',
+            type: 'image/x-icon'
           },
           {
-            src: "/icon-192.png",
-            sizes: "192x192",
-            type: "image/png"
+            src: '/icon-192.png',
+            sizes: '192x192',
+            type: 'image/png'
           },
           {
-            src: "/icon-512.png",
-            sizes: "512x512",
-            type: "image/png"
+            src: '/icon-512.png',
+            sizes: '512x512',
+            type: 'image/png'
           }
         ]
       }

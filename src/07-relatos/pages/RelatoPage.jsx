@@ -13,6 +13,7 @@ import MainLayout from '@/01-common/components/MainLayout';
 import RelatoForm from '@/07-relatos/components/RelatoForm';
 import LoadingSpinner from '@/01-common/components/LoadingSpinner';
 import { formatDateOnly } from '@/01-common/utils/dateUtils';
+import BackButton from '@/01-common/components/BackButton';
 
 const RelatoPage = () => {
   const { id } = useParams();
@@ -128,9 +129,11 @@ const RelatoPage = () => {
   }
 
   return (
-    <MainLayout
-      title={'Detalhes do Relato'}
-    >
+    <MainLayout>
+      <div className="flex items-center mb-4">
+        <BackButton />
+        <h2 className="text-xl font-semibold ml-2">{relato.codigo_relato}</h2>
+      </div>
       <Card className="p-6 mb-8"> {/* Novo Card principal */}
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-8"> {/* Removido pb-24 */}
