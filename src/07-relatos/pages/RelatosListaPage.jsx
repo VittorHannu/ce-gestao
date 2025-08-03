@@ -19,7 +19,7 @@ const RelatosListaPage = () => {
     const statusFilter = queryParams.get('status');
     switch (statusFilter) {
       case 'aprovado':
-        return 'Todos os Relatos Aprovados';
+        return 'Todos os Relatos';
       case 'concluido':
         return 'Relatos Concluídos';
       case 'em_andamento':

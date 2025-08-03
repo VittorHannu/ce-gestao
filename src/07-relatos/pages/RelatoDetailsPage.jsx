@@ -5,7 +5,9 @@ import { useToast } from '@/01-common/hooks/useToast';
 import LoadingSpinner from '@/01-common/components/LoadingSpinner';
 import { Button } from '@/core/components/ui/button';
 import RelatoForm from '../components/RelatoForm'; // Importa o formulário
+import RelatoDisplayDetails from '../components/RelatoDisplayDetails'; // Importa o componente de exibição de detalhes
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile'; // Para verificar permissão
+import BackButton from '@/01-common/components/BackButton'; // Importa o BackButton
 
 const RelatoDetailsPage = () => {
   const { id } = useParams();
@@ -115,7 +117,10 @@ const RelatoDetailsPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Detalhes do Relato</h1>
+      <div className="flex items-center mb-4">
+        <BackButton />
+        <h1 className="text-2xl font-bold ml-4">Detalhes do Relato</h1>
+      </div>
 
       {isEditing ? (
         <RelatoForm
@@ -126,25 +131,10 @@ const RelatoDetailsPage = () => {
           canManageRelatos={canManageRelatos} // Passa a permissão para o formulário
         />
       ) : (
-        <div className="space-y-4">
-          <p><strong>Código do Relato:</strong> {relato.relato_code || relato.id}</p>
-          <p><strong>Local da Ocorrência:</strong> {relato.local_ocorrencia}</p>
-          <p><strong>Data da Ocorrência:</strong> {new Date(relato.data_ocorrencia).toLocaleDateString()}</p>
-          {relato.hora_aproximada_ocorrencia && <p><strong>Hora Aproximada:</strong> {relato.hora_aproximada_ocorrencia}</p>}
-          <p><strong>Descrição:</strong> {relato.descricao}</p>
-          <p><strong>Riscos Identificados:</strong> {relato.riscos_identificados}</p>
-          {relato.danos_ocorridos && <p><strong>Danos Ocorridos:</strong> {relato.danos_ocorridos}</p>}
-          {relato.planejamento_cronologia_solucao && <p><strong>Planejamento/Cronologia da Solução:</strong> {relato.planejamento_cronologia_solucao}</p>}
-          {relato.data_conclusao_solucao && <p><strong>Data de Conclusão da Solução:</strong> {new Date(relato.data_conclusao_solucao).toLocaleDateString()}</p>}
-          <p><strong>Status:</strong> {relato.status}</p>
-          <p><strong>Criado em:</strong> {new Date(relato.created_at).toLocaleString()}</p>
-        </div>
+        <RelatoDisplayDetails relato={relato} />
       )}
 
       <div className="mt-6 flex space-x-2">
-        {!isEditing && (
-          <Button onClick={() => navigate(-1)}>Voltar</Button>
-        )}
         {canManageRelatos && !isEditing && (
           <Button onClick={() => setIsEditing(true)}>Editar</Button>
         )}

@@ -3,6 +3,8 @@ import { supabase } from '@/01-common/lib/supabase';
 import { useToast } from '@/01-common/hooks/useToast';
 import { Button } from '@/core/components/ui/button';
 import LoadingSpinner from '@/01-common/components/LoadingSpinner';
+import RelatoDisplayDetails from '../components/RelatoDisplayDetails'; // Importa o componente de exibição de detalhes
+import BackButton from '@/01-common/components/BackButton'; // Importa o BackButton
 
 const RelatosAprovacaoPage = () => {
   const [relatos, setRelatos] = useState([]);
@@ -51,17 +53,18 @@ const RelatosAprovacaoPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Aprovação de Relatos</h1>
+      <div className="flex items-center mb-4">
+        <BackButton />
+        <h1 className="text-2xl font-bold ml-4">Aprovação de Relatos</h1>
+      </div>
       
       {relatos.length === 0 ? (
         <p>Não há relatos pendentes de aprovação no momento.</p>
       ) : (
         <div className="space-y-4">
           {relatos.map((relato) => (
-            <div key={relato.id} className="border p-4 rounded-lg shadow-sm">
-              <h2 className="text-lg font-semibold">{relato.local_ocorrencia}</h2>
-              <p className="text-sm text-gray-500">Data: {new Date(relato.data_ocorrencia).toLocaleDateString()}</p>
-              <p className="mt-2">{relato.descricao}</p>
+            <div key={relato.id} className="border p-4 rounded-lg shadow-sm bg-white">
+              <RelatoDisplayDetails relato={relato} /> {/* Usa o componente de detalhes */}
               <div className="mt-4 flex space-x-2 justify-end">
                 <Button variant="outline" size="sm" onClick={() => handleUpdateStatus(relato.id, 'REPROVADO')}>
                   Reprovar
