@@ -37,7 +37,7 @@ const RelatosListaPage = () => {
       const queryParams = new URLSearchParams(location.search);
       const statusFilter = queryParams.get('status');
 
-      let query = supabase.from('relatos').select('*').eq('status', 'APROVADO');
+      let query = supabase.from('relatos').select('*, relato_code').eq('status', 'APROVADO');
 
       if (statusFilter === 'concluido') {
         query = query.not('data_conclusao_solucao', 'is', null);

@@ -127,7 +127,7 @@ const RelatoDetailsPage = () => {
         />
       ) : (
         <div className="space-y-4">
-          <p><strong>ID:</strong> {relato.id}</p>
+          <p><strong>Código do Relato:</strong> {relato.relato_code || relato.id}</p>
           <p><strong>Local da Ocorrência:</strong> {relato.local_ocorrencia}</p>
           <p><strong>Data da Ocorrência:</strong> {new Date(relato.data_ocorrencia).toLocaleDateString()}</p>
           {relato.hora_aproximada_ocorrencia && <p><strong>Hora Aproximada:</strong> {relato.hora_aproximada_ocorrencia}</p>}
