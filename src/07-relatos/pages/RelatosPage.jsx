@@ -67,7 +67,7 @@ const RelatosPage = () => {
         ))}
       </div>
 
-      <div className="h-1.5 w-full bg-gray-600 rounded-full my-8"></div>
+      <div className="h-1.5 w-full bg-black rounded-full my-8"></div>
 
       <div className="flex flex-col items-center mt-6 space-y-4">
         {!isLoadingProfile && userProfile?.can_manage_relatos && (
