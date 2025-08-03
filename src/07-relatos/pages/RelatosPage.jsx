@@ -3,15 +3,22 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/core/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/core/components/ui/card';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
+import { useRelatoCounts } from '../hooks/useRelatoCounts'; // Importa o novo hook
+import LoadingSpinner from '@/01-common/components/LoadingSpinner'; // Importa o LoadingSpinner
 
 const RelatosPage = () => {
-  const { data: userProfile, isLoading } = useUserProfile();
+  const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
+  const { data: relatoCounts, isLoading: isLoadingCounts } = useRelatoCounts();
+
+  if (isLoadingProfile || isLoadingCounts) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-end items-center mb-6">
         <div className="flex space-x-2">
-          {!isLoading && userProfile?.can_manage_relatos && (
+          {!isLoadingProfile && userProfile?.can_manage_relatos && (
             <Link to="/relatos/aprovacao">
               <Button variant="secondary">Aprovar Relatos</Button>
             </Link>
@@ -30,7 +37,7 @@ const RelatosPage = () => {
               <CardTitle>Todos os Relatos Aprovados</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-4xl font-bold">0</p> {/* Placeholder */}
+              <p className="text-4xl font-bold">{relatoCounts?.totalAprovados || 0}</p>
               <p className="text-sm text-gray-500">Relatos aprovados no total</p>
             </CardContent>
           </Card>
@@ -43,7 +50,7 @@ const RelatosPage = () => {
               <CardTitle>Relatos Concluídos</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-4xl font-bold">0</p> {/* Placeholder */}
+              <p className="text-4xl font-bold">{relatoCounts?.concluidos || 0}</p>
               <p className="text-sm text-gray-500">Relatos com tratativa finalizada</p>
             </CardContent>
           </Card>
@@ -56,7 +63,7 @@ const RelatosPage = () => {
               <CardTitle>Relatos Em Andamento</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-4xl font-bold">0</p> {/* Placeholder */}
+              <p className="text-4xl font-bold">{relatoCounts?.emAndamento || 0}</p>
               <p className="text-sm text-gray-500">Relatos com tratativa em curso</p>
             </CardContent>
           </Card>
@@ -69,7 +76,7 @@ const RelatosPage = () => {
               <CardTitle>Relatos Sem Tratativa</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-4xl font-bold">0</p> {/* Placeholder */}
+              <p className="text-4xl font-bold">{relatoCounts?.semTratativa || 0}</p>
               <p className="text-sm text-gray-500">Relatos aprovados aguardando ação</p>
             </CardContent>
           </Card>
