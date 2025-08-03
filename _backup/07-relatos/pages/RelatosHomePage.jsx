@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import MainLayout from '@/01-common/components/MainLayout';
 import { Button } from '@/core/components/ui/button';
-import { Plus, CheckSquare } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 import RelatosStatsCards from '@/07-relatos/components/RelatosStatsCards';
 import { useRelatosStats } from '@/07-relatos/hooks/useRelatosStats';
@@ -16,10 +16,6 @@ const RelatosHomePage = () => {
 
   const handleCreateRelato = () => {
     navigate('/relatos/novo');
-  };
-
-  const handleApproveRelatos = () => {
-    navigate('/relatos/aprovacao');
   };
 
   if (statsLoading) {

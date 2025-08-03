@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/01-common/lib/supabase';
 import { useToast } from '@/01-common/hooks/useToast';
@@ -23,7 +23,7 @@ const RelatoDetailsPage = () => {
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const canManageRelatos = userProfile?.can_manage_relatos;
 
-  const fetchRelato = async () => {
+  const fetchRelato = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from('relatos')
@@ -41,11 +41,11 @@ const RelatoDetailsPage = () => {
       setRelato(data);
     }
     setLoading(false);
-  };
+  }, [id, showToast]);
 
   useEffect(() => {
     fetchRelato();
-  }, [id, showToast]);
+  }, [id, showToast, fetchRelato]);
 
   const handleUpdateRelato = async (formData) => {
     setIsSaving(true);

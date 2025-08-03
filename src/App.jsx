@@ -46,13 +46,7 @@ import PublicLayout from '@/01-common/components/PublicLayout';
 
 import '@/00-global/styles/App.css';
 
-function LayoutWithHeader({ user, onLogout, showToast }) {
-  return (
-    <MainLayout>
-      <Outlet context={{ user, onLogout, showToast }} />
-    </MainLayout>
-  );
-}
+
 
 function LayoutWithoutHeader({ user, onLogout, showToast }) {
   return (
