@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { User, Camera, Shield, LogOut } from 'lucide-react';
+import { User, Camera, Shield, LogOut, Mail, Key } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/01-common/lib/supabase';
 
@@ -111,18 +111,23 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Seção de Alteração de Email */}
-            <div className="flex flex-col space-y-4 mb-6">
-              <Link to="/perfil/update-email" className="w-full">
-                <Button className="w-full">Alterar Email</Button>
-              </Link>
-            </div>
-
-            {/* Seção de Alteração de Senha */}
-            <div className="flex flex-col space-y-4 mb-6">
-              <Link to="/perfil/update-password" className="w-full">
-                <Button className="w-full">Alterar Senha</Button>
-              </Link>
+            {/* Seção de Configurações da Conta */}
+            <div className="p-4 border rounded-lg bg-white shadow-md mb-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Configurações da Conta</h3>
+              <div className="flex flex-col space-y-4">
+                <Link to="/perfil/update-email" className="w-full">
+                  <Button className="w-full">
+                    <Mail className="w-4 h-4 mr-2" />
+                    Alterar Email
+                  </Button>
+                </Link>
+                <Link to="/perfil/update-password" className="w-full">
+                  <Button className="w-full">
+                    <Key className="w-4 h-4 mr-2" />
+                    Alterar Senha
+                  </Button>
+                </Link>
+              </div>
             </div>
 
             {/* Botão de Sair */}
