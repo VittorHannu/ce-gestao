@@ -27,10 +27,7 @@ const RelatoCard = ({ relato }) => {
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
-          <p className="text-base text-gray-700 line-clamp-3 mt-1">{relato.descricao}</p>
-          {relato.planejamento_cronologia_solucao && (
-            <p className="text-sm text-gray-600 mt-1">Planejamento: {relato.planejamento_cronologia_solucao}</p>
-          )}
+          <p className="text-base text-gray-700 line-clamp-3 mb-4">{relato.descricao}</p>
           {relato.data_conclusao_solucao && (
             <p className="text-sm text-gray-600 mt-1">Concluído em: {new Date(relato.data_conclusao_solucao).toLocaleDateString()}</p>
           )}
