@@ -145,9 +145,9 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
       </div>
 
       {/* Seção: Tratativa e Conclusão */}
-      <div className="p-4 border rounded-lg">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Tratativa e Conclusão (Opcional)</h3>
-        {canManageRelatos ? (
+      {canManageRelatos && (
+        <div className="p-4 border rounded-lg">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Tratativa e Conclusão (Opcional)</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <Label htmlFor="planejamento_cronologia_solucao">Planejamento / Cronologia da Solução</Label>
@@ -169,13 +169,8 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
               />
             </div>
           </div>
-        ) : (
-          <div className="space-y-2">
-            <p><strong>Planejamento / Cronologia da Solução:</strong> {initialData?.planejamento_cronologia_solucao || 'Não informado'}</p>
-            <p><strong>Data de Conclusão da Solução:</strong> {initialData?.data_conclusao_solucao ? new Date(initialData.data_conclusao_solucao).toLocaleDateString() : 'Não informado'}</p>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="flex justify-end">
         <Button type="submit" disabled={isLoading}>
