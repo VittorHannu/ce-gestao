@@ -3,6 +3,7 @@ import { useLocation, Link } from 'react-router-dom';
 import { supabase } from '@/01-common/lib/supabase';
 import { useToast } from '@/01-common/hooks/useToast';
 import LoadingSpinner from '@/01-common/components/LoadingSpinner';
+import RelatoCard from '../components/RelatoCard'; // Importa o RelatoCard
 
 const RelatosListaPage = () => {
   const [relatos, setRelatos] = useState([]);
@@ -70,21 +71,9 @@ const RelatosListaPage = () => {
       {relatos.length === 0 ? (
         <p>Nenhum relato encontrado para esta categoria.</p>
       ) : (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {relatos.map((relato) => (
-            <Link to={`/relatos/detalhes/${relato.id}`} key={relato.id} className="block">
-              <div className="border p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
-                <h2 className="text-lg font-semibold">{relato.local_ocorrencia}</h2>
-                <p className="text-sm text-gray-500">Data: {new Date(relato.data_ocorrencia).toLocaleDateString()}</p>
-                <p className="mt-2">{relato.descricao}</p>
-                {relato.planejamento_cronologia_solucao && (
-                  <p className="text-sm text-gray-600 mt-2">Planejamento: {relato.planejamento_cronologia_solucao}</p>
-                )}
-                {relato.data_conclusao_solucao && (
-                  <p className="text-sm text-gray-600">Concluído em: {new Date(relato.data_conclusao_solucao).toLocaleDateString()}</p>
-                )}
-              </div>
-            </Link>
+            <RelatoCard key={relato.id} relato={relato} />
           ))}
         </div>
       )}
