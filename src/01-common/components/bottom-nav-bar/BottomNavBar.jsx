@@ -1,12 +1,13 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faUser, faShield } from '@fortawesome/free-solid-svg-icons';
 import { NavLink } from 'react-router-dom';
 import './BottomNavBar.css';
 
 const BottomNavBar = () => {
   const navItems = [
     { to: '/', icon: <FontAwesomeIcon icon={faHome} size="lg" />, label: 'Início' },
+    { to: '/relatos', icon: <FontAwesomeIcon icon={faShield} size="lg" />, label: 'Relatos' },
     { to: '/perfil', icon: <FontAwesomeIcon icon={faUser} size="lg" />, label: 'Perfil' }
   ];
 
