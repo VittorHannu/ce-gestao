@@ -33,6 +33,7 @@ const ForcePasswordChangePage = React.lazy(() => import('@/03-auth/pages/ForcePa
 const UpdatePasswordProfilePage = React.lazy(() => import('@/04-profile/pages/UpdatePasswordProfilePage'));
 const UpdateEmailPage = React.lazy(() => import('@/04-profile/pages/UpdateEmailPage'));
 const RelatosPage = React.lazy(() => import('@/07-relatos/pages/RelatosPage'));
+const CreateRelatoPage = React.lazy(() => import('@/07-relatos/pages/CreateRelatoPage'));
 
 import MainLayout from '@/01-common/components/MainLayout';
 
@@ -177,6 +178,7 @@ function AppWrapper({ showToast }) {
         <Route path="/perfil/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordProfilePage /></Suspense>} />
         <Route path="/perfil/update-email" element={<Suspense fallback={<LoadingSpinner />}><UpdateEmailPage /></Suspense>} />
         <Route path="/relatos" element={<Suspense fallback={<LoadingSpinner />}><RelatosPage /></Suspense>} />
+        <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage /></Suspense>} />
       </Route>
 
       {/* Fallback para qualquer outra rota quando logado, redireciona para a home */}
