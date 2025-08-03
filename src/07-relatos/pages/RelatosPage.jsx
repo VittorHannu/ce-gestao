@@ -52,6 +52,7 @@ const RelatosPage = () => {
 
   return (
     <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold text-center mb-6">Segurança Laboral</h1>
       <div className="grid grid-cols-2 gap-4">
         {cardData.map((card, index) => (
           <RelatoStatsCard
@@ -87,9 +88,7 @@ const RelatosPage = () => {
         </Link>
       </div>
 
-      <div className="h-0.5 w-full bg-gray-300 rounded-full my-10"></div>
-
-      <Link to="/relatos/estatisticas" className="w-full block">
+      <Link to="/relatos/estatisticas" className="w-full block mt-8">
         <div className="bg-yellow-500 p-6 rounded-lg shadow-md text-center flex flex-col items-center justify-center">
           <BarChart className="h-12 w-12 text-white mb-4" />
           <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
