@@ -39,11 +39,20 @@ const fetchRelatoCounts = async () => {
 
   if (errorSemTratativa) throw errorSemTratativa;
 
+  // Contagem de Relatos Pendentes de Aprovação
+  const { count: pendenteAprovacao, error: errorPendenteAprovacao } = await supabase
+    .from('relatos')
+    .select('id', { count: 'exact' })
+    .eq('status', 'PENDENTE');
+
+  if (errorPendenteAprovacao) throw errorPendenteAprovacao;
+
   return {
     totalAprovados,
     concluidos,
     emAndamento,
-    semTratativa
+    semTratativa,
+    pendenteAprovacao
   };
 };
 

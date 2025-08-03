@@ -52,19 +52,6 @@ const RelatosPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex justify-end items-center mb-6">
-        <div className="flex space-x-2">
-          {!isLoadingProfile && userProfile?.can_manage_relatos && (
-            <Link to="/relatos/aprovacao">
-              <Button variant="secondary">Aprovar Relatos</Button>
-            </Link>
-          )}
-          <Link to="/relatos/novo">
-            <Button>Criar Novo Relato</Button>
-          </Link>
-        </div>
-      </div>
-
       <div className="grid grid-cols-2 gap-4">
         {cardData.map((card, index) => (
           <RelatoStatsCard
@@ -78,6 +65,26 @@ const RelatosPage = () => {
             totalRelatos={relatoCounts?.totalAprovados || 0} // Passa o total para o cálculo da porcentagem
           />
         ))}
+      </div>
+
+      <div className="h-1.5 w-full bg-gray-600 rounded-full my-8"></div>
+
+      <div className="flex flex-col items-center mt-6 space-y-4">
+        {!isLoadingProfile && userProfile?.can_manage_relatos && (
+          <Link to="/relatos/aprovacao" className="w-full">
+            <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2">
+              <span>Aprovar Relatos</span>
+              {relatoCounts?.pendenteAprovacao > 0 && (
+                <span className="ml-2 px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-full">
+                  {relatoCounts.pendenteAprovacao}
+                </span>
+              )}
+            </Button>
+          </Link>
+        )}
+        <Link to="/relatos/novo" className="w-full">
+          <Button size="lg" className="w-full">Criar Novo Relato</Button>
+        </Link>
       </div>
     </div>
   );
