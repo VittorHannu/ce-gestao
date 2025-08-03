@@ -22,7 +22,7 @@ const RelatosPage = () => {
       icon: FileText,
       path: '/relatos/lista?status=aprovado',
       textColorClass: 'text-blue-600',
-      bgColorClass: 'bg-blue-600',
+      bgColorClass: 'bg-blue-600'
     },
     {
       label: 'Concluídos',
@@ -30,7 +30,7 @@ const RelatosPage = () => {
       icon: CheckCircle,
       path: '/relatos/lista?status=concluido',
       textColorClass: 'text-green-600',
-      bgColorClass: 'bg-green-600',
+      bgColorClass: 'bg-green-600'
     },
     {
       label: 'Em Andamento',
@@ -38,7 +38,7 @@ const RelatosPage = () => {
       icon: Clock,
       path: '/relatos/lista?status=em_andamento',
       textColorClass: 'text-orange-600',
-      bgColorClass: 'bg-orange-600',
+      bgColorClass: 'bg-orange-600'
     },
     {
       label: 'Sem Tratativa',
@@ -46,8 +46,8 @@ const RelatosPage = () => {
       icon: XCircle,
       path: '/relatos/lista?status=sem_tratativa',
       textColorClass: 'text-red-600',
-      bgColorClass: 'bg-red-600',
-    },
+      bgColorClass: 'bg-red-600'
+    }
   ];
 
   return (

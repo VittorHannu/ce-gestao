@@ -60,7 +60,7 @@ const RelatoDetailsPage = () => {
           riscos_identificados: formData.riscos_identificados,
           danos_ocorridos: formData.danos_ocorridos || null,
           planejamento_cronologia_solucao: formData.planejamento_cronologia_solucao || null,
-          data_conclusao_solucao: formData.data_conclusao_solucao || null,
+          data_conclusao_solucao: formData.data_conclusao_solucao || null
         })
         .eq('id', id);
 

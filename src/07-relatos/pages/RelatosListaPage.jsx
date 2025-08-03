@@ -18,16 +18,16 @@ const RelatosListaPage = () => {
     const queryParams = new URLSearchParams(location.search);
     const statusFilter = queryParams.get('status');
     switch (statusFilter) {
-      case 'aprovado':
-        return 'Todos os Relatos';
-      case 'concluido':
-        return 'Relatos Concluídos';
-      case 'em_andamento':
-        return 'Relatos Em Andamento';
-      case 'sem_tratativa':
-        return 'Relatos Sem Tratativa';
-      default:
-        return 'Lista de Relatos';
+    case 'aprovado':
+      return 'Todos os Relatos';
+    case 'concluido':
+      return 'Relatos Concluídos';
+    case 'em_andamento':
+      return 'Relatos Em Andamento';
+    case 'sem_tratativa':
+      return 'Relatos Sem Tratativa';
+    default:
+      return 'Lista de Relatos';
     }
   };
 

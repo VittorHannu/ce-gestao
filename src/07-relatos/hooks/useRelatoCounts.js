@@ -43,7 +43,7 @@ const fetchRelatoCounts = async () => {
     totalAprovados,
     concluidos,
     emAndamento,
-    semTratativa,
+    semTratativa
   };
 };
 
