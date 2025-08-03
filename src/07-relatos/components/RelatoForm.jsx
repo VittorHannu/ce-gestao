@@ -14,6 +14,8 @@ const RelatoForm = ({ onSubmit, isLoading }) => {
   const [riscosIdentificados, setRiscosIdentificados] = useState('');
   const [houveDanos, setHouveDanos] = useState(false);
   const [danosOcorridos, setDanosOcorridos] = useState('');
+  const [planejamentoCronologiaSolucao, setPlanejamentoCronologiaSolucao] = useState('');
+  const [dataConclusaoSolucao, setDataConclusaoSolucao] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,6 +27,8 @@ const RelatoForm = ({ onSubmit, isLoading }) => {
       descricao: descricao,
       riscos_identificados: riscosIdentificados,
       danos_ocorridos: houveDanos ? danosOcorridos : null,
+      planejamento_cronologia_solucao: planejamentoCronologiaSolucao || null,
+      data_conclusao_solucao: dataConclusaoSolucao || null,
     };
     onSubmit(formData);
   };
@@ -121,6 +125,32 @@ const RelatoForm = ({ onSubmit, isLoading }) => {
                 onChange={(e) => setDanosOcorridos(e.target.value)}
               />
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* Seção: Tratativa e Conclusão */}
+      <div className="p-4 border rounded-lg">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Tratativa e Conclusão (Opcional)</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="md:col-span-2">
+            <Label htmlFor="planejamento_cronologia_solucao">Planejamento / Cronologia da Solução</Label>
+            <Textarea
+              id="planejamento_cronologia_solucao"
+              rows={3}
+              value={planejamentoCronologiaSolucao}
+              onChange={(e) => setPlanejamentoCronologiaSolucao(e.target.value)}
+              placeholder="Descreva o planejamento ou cronologia da solução..."
+            />
+          </div>
+          <div>
+            <Label htmlFor="data_conclusao_solucao">Data de Conclusão da Solução</Label>
+            <Input
+              id="data_conclusao_solucao"
+              type="date"
+              value={dataConclusaoSolucao}
+              onChange={(e) => setDataConclusaoSolucao(e.target.value)}
+            />
           </div>
         </div>
       </div>

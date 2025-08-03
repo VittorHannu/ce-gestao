@@ -1,0 +1,81 @@
+import React, { useState, useEffect } from 'react';
+import { supabase } from '@/01-common/lib/supabase';
+import { useToast } from '@/01-common/hooks/useToast';
+import { Button } from '@/core/components/ui/button';
+import LoadingSpinner from '@/01-common/components/LoadingSpinner';
+
+const RelatosAprovacaoPage = () => {
+  const [relatos, setRelatos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { showToast } = useToast();
+
+  useEffect(() => {
+    const fetchPendentes = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('relatos')
+        .select('*')
+        .eq('status', 'PENDENTE')
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error('Erro ao buscar relatos pendentes:', error);
+        showToast('Erro ao buscar relatos para aprovação.', 'error');
+      } else {
+        setRelatos(data);
+      }
+      setLoading(false);
+    };
+
+    fetchPendentes();
+  }, [showToast]);
+
+  const handleUpdateStatus = async (id, newStatus) => {
+    const { error } = await supabase
+      .from('relatos')
+      .update({ status: newStatus })
+      .eq('id', id);
+
+    if (error) {
+      showToast(`Erro ao atualizar o status: ${error.message}`, 'error');
+    } else {
+      showToast(`Relato ${newStatus.toLowerCase()} com sucesso!`, 'success');
+      // Remove o relato da lista na UI para não precisar recarregar a página
+      setRelatos(relatos.filter((r) => r.id !== id));
+    }
+  };
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Aprovação de Relatos</h1>
+      
+      {relatos.length === 0 ? (
+        <p>Não há relatos pendentes de aprovação no momento.</p>
+      ) : (
+        <div className="space-y-4">
+          {relatos.map((relato) => (
+            <div key={relato.id} className="border p-4 rounded-lg shadow-sm">
+              <h2 className="text-lg font-semibold">{relato.local_ocorrencia}</h2>
+              <p className="text-sm text-gray-500">Data: {new Date(relato.data_ocorrencia).toLocaleDateString()}</p>
+              <p className="mt-2">{relato.descricao}</p>
+              <div className="mt-4 flex space-x-2 justify-end">
+                <Button variant="outline" size="sm" onClick={() => handleUpdateStatus(relato.id, 'REPROVADO')}>
+                  Reprovar
+                </Button>
+                <Button size="sm" onClick={() => handleUpdateStatus(relato.id, 'APROVADO')}>
+                  Aprovar
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default RelatosAprovacaoPage;

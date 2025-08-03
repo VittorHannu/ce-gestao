@@ -34,6 +34,8 @@ const UpdatePasswordProfilePage = React.lazy(() => import('@/04-profile/pages/Up
 const UpdateEmailPage = React.lazy(() => import('@/04-profile/pages/UpdateEmailPage'));
 const RelatosPage = React.lazy(() => import('@/07-relatos/pages/RelatosPage'));
 const CreateRelatoPage = React.lazy(() => import('@/07-relatos/pages/CreateRelatoPage'));
+const RelatosAprovacaoPage = React.lazy(() => import('@/07-relatos/pages/RelatosAprovacaoPage'));
+const RelatosListaPage = React.lazy(() => import('@/07-relatos/pages/RelatosListaPage'));
 
 import MainLayout from '@/01-common/components/MainLayout';
 
@@ -71,7 +73,7 @@ function AppWrapper({ showToast }) {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, is_active, needs_password_reset')
+        .select('id, email, full_name, is_active, needs_password_reset, can_manage_relatos')
         .eq('id', userId)
         .single();
 
@@ -179,6 +181,8 @@ function AppWrapper({ showToast }) {
         <Route path="/perfil/update-email" element={<Suspense fallback={<LoadingSpinner />}><UpdateEmailPage /></Suspense>} />
         <Route path="/relatos" element={<Suspense fallback={<LoadingSpinner />}><RelatosPage /></Suspense>} />
         <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage /></Suspense>} />
+        <Route path="/relatos/aprovacao" element={<ProtectedRoute user={user} requiredPermission="can_manage_relatos"><Suspense fallback={<LoadingSpinner />}><RelatosAprovacaoPage /></Suspense></ProtectedRoute>} />
+        <Route path="/relatos/lista" element={<Suspense fallback={<LoadingSpinner />}><RelatosListaPage /></Suspense>} />
       </Route>
 
       {/* Fallback para qualquer outra rota quando logado, redireciona para a home */}
