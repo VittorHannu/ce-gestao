@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import MainLayout from '@/01-common/components/MainLayout';
 import { useRelatos } from '@/07-relatos/hooks/useRelatos';
 
@@ -9,7 +9,8 @@ import BackButton from '@/01-common/components/BackButton';
 
 const RelatosTodosPage = () => {
   const navigate = useNavigate();
-  const { relatos, loading, error, filters, setFilters, isFetching } = useRelatos();
+  const { user } = useOutletContext();
+  const { relatos, loading, error, filters, setFilters, isFetching } = useRelatos({}, user);
 
   const handleRelatoClick = (relato) => {
     navigate(`/relatos/${relato.id}`);

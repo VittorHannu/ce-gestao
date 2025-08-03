@@ -9,7 +9,7 @@ import { Label } from '@/core/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/core/components/ui/select';
 
 
-const RelatoForm = ({ isEditing, isAdmin, relato, user, tipoIncidenteOptions, gravidadeOptions }) => {
+const RelatoForm = ({ isEditing, relato, user, tipoIncidenteOptions, gravidadeOptions }) => {
   const { register, setValue, watch, formState: { errors } } = useFormContext();
 
   const naoHouveDanos = watch('nao_houve_danos');
@@ -255,7 +255,7 @@ const RelatoForm = ({ isEditing, isAdmin, relato, user, tipoIncidenteOptions, gr
             {/* Tipo de Incidente */}
             <div>
               <Label htmlFor="tipo_incidente" className="mb-2 text-gray-700">Tipo de Incidente *</Label>
-              {(isEditing && isAdmin) ? (
+              {isEditing ? (
                 <Select
                   value={watch('tipo_incidente') || ''}
                   onValueChange={(value) => setValue('tipo_incidente', value)}
@@ -280,7 +280,7 @@ const RelatoForm = ({ isEditing, isAdmin, relato, user, tipoIncidenteOptions, gr
               <Label htmlFor="gravidade" className="mb-2 text-gray-700">
                 Gravidade *
               </Label>
-              {(isEditing && isAdmin) ? (
+              {isEditing ? (
                 <Select
                   value={watch('gravidade') || ''}
                   onValueChange={(value) => setValue('gravidade', value)}
@@ -314,7 +314,7 @@ const RelatoForm = ({ isEditing, isAdmin, relato, user, tipoIncidenteOptions, gr
                 <User className="inline w-4 h-4 mr-1" />
                 Responsáveis (separados por vírgula)
               </Label>
-              {(isEditing && isAdmin) ? (
+              {isEditing ? (
                 <Input
                   id="responsaveis"
                   type="text"
@@ -334,7 +334,7 @@ const RelatoForm = ({ isEditing, isAdmin, relato, user, tipoIncidenteOptions, gr
             {/* Planejamento / Cronologia da Solução */}
             <div className="md:col-span-2">
               <Label htmlFor="planejamento_cronologia_solucao" className="mb-2 text-gray-700">Planejamento / Cronologia da Solução</Label>
-              {(isEditing && isAdmin) ? (
+              {isEditing ? (
                 <Textarea
                   id="planejamento_cronologia_solucao"
                   rows={3}
@@ -352,7 +352,7 @@ const RelatoForm = ({ isEditing, isAdmin, relato, user, tipoIncidenteOptions, gr
               <Label htmlFor="data_conclusao_solucao" className="mb-2 text-gray-700">
                 Data de Conclusão da Solução
               </Label>
-              {(isEditing && isAdmin) ? (
+              {isEditing ? (
                 <div className="flex flex-col">
                   <div className="flex items-center space-x-2 mb-2">
                     <Checkbox

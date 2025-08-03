@@ -26,7 +26,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/01-common/lib/supabase';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-export const useSupabaseData = (tableName, fetchDataFunction, initialFilters = {}, options = {}) => {
+export const useSupabaseData = (tableName, fetchDataFunction, initialFilters = {}, fetchArgs = {}, options = {}) => {
   const { keepPreviousData = true } = options;
   const queryClient = useQueryClient();
   const [filters, setFilters] = useState(initialFilters);
@@ -38,9 +38,9 @@ export const useSupabaseData = (tableName, fetchDataFunction, initialFilters = {
     refetch,
     isFetching
   } = useQuery({
-    queryKey: [tableName, filters],
+    queryKey: [tableName, filters, fetchArgs],
     queryFn: async () => {
-      const { data: fetchedData, error: fetchError } = await fetchDataFunction(filters);
+      const { data: fetchedData, error: fetchError } = await fetchDataFunction(filters, fetchArgs);
       if (fetchError) throw fetchError;
       return fetchedData || [];
     },

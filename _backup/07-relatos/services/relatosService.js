@@ -8,6 +8,10 @@ export const getRelatos = async (filters) => {
       .select('*')
       .order('created_at', { ascending: false });
 
+    // A lógica de RLS agora controla o que o usuário pode ver.
+    // O frontend apenas aplica os filtros de UI.
+
+    if (filters.status_aprovacao) query = query.eq('status_aprovacao', filters.status_aprovacao);
     if (filters.calculated_status) query = query.eq('calculated_status', filters.calculated_status);
     if (filters.gravidade) query = query.eq('gravidade', filters.gravidade);
     if (filters.tipo_incidente) query = query.eq('tipo_incidente', filters.tipo_incidente);
@@ -42,19 +46,22 @@ export const getRelatoById = async (id) => {
 
 export const getRelatosStats = async () => {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('relatos_stats')
       .select('*')
       .single();
 
+    const { data, error } = await query;
+
     if (error) throw error;
 
-    // Ensure data is an object with default values if null
     const statsData = data || {
       total_relatos: 0,
       relatos_pendentes: 0,
-      relatos_em_andamento: 0,
+      relatos_aprovados: 0,
+      relatos_reprovados: 0,
       relatos_concluidos: 0,
+      relatos_em_andamento: 0,
       relatos_sem_tratativa: 0
     };
 
@@ -64,7 +71,7 @@ export const getRelatosStats = async () => {
   }
 };
 
-export const saveRelato = async (relatoData, relatoId, userId, isAdmin) => {
+export const saveRelato = async (relatoData, relatoId, userId) => {
   try {
     const baseDataToSave = {
       ...relatoData,
@@ -82,15 +89,6 @@ export const saveRelato = async (relatoData, relatoId, userId, isAdmin) => {
       is_anonymous: !!relatoData.is_anonymous
     };
 
-    // Fields that should only be set by admin or on initial creation
-    if (!isAdmin) {
-      baseDataToSave.tipo_incidente = null;
-      baseDataToSave.gravidade = null;
-      baseDataToSave.responsaveis = null; // Admin-only field
-      baseDataToSave.planejamento_cronologia_solucao = null;
-      baseDataToSave.data_conclusao_solucao = null;
-    }
-
     let result;
     let oldRelatoData = null;
 
@@ -106,9 +104,12 @@ export const saveRelato = async (relatoData, relatoId, userId, isAdmin) => {
 
       // Update existing relato
       const dataToUpdate = { ...baseDataToSave };
-      // Remove fields that should not be updated
+      // Remove fields that should not be updated or are from the view
       delete dataToUpdate.codigo_relato;
       delete dataToUpdate.criado_por;
+      delete dataToUpdate.calculated_status; // Remove view-only column
+      delete dataToUpdate.creator_full_name; // Remove view-only column
+      delete dataToUpdate.creator_email; // Remove view-only column
 
       result = await supabase
         .from('relatos')
@@ -130,7 +131,8 @@ export const saveRelato = async (relatoData, relatoId, userId, isAdmin) => {
       const dataToInsert = {
         ...baseDataToSave,
         criado_por: userId,
-        codigo_relato: generatedCodigoRelato
+        codigo_relato: generatedCodigoRelato,
+        status_aprovacao: 'pendente'
       };
 
       result = await supabase

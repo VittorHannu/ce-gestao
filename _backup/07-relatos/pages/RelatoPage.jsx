@@ -23,10 +23,10 @@ const RelatoPage = () => {
   const [gravidadeOptions, setGravidadeOptions] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
 
-  const canEditAllRelatos = user?.can_edit_relatos; // User has global permission to edit any relato
-
   const { updateRelato, removeRelato, useRelatoDetails } = useRelatos();
   const { data: relato, isLoading: pageLoading, error: relatoError } = useRelatoDetails(id);
+
+  const isCreator = user?.id === relato?.criado_por;
 
   const methods = useForm({
     resolver: zodResolver(relatoSchema),
@@ -75,32 +75,26 @@ const RelatoPage = () => {
   }, [relato, methods]);
 
   const onSubmit = async (data) => {
-    // setLoading(true); // Managed by React Query now
     try {
-      const { data: _savedRelato, error } = await updateRelato(data, relato.id, user.id, canEditAllRelatos);
+      const { data: _savedRelato, error } = await updateRelato(data, relato.id);
       if (error) throw error;
       showToast('Relato salvo com sucesso!', 'success');
       setIsEditing(false); // Volta para o modo de visualização
     } catch (error) {
       showToast('Erro ao salvar relato: ' + error.message, 'error');
-    } finally {
-      // setLoading(false); // Managed by React Query now
     }
   };
 
   const handleDelete = async () => {
     if (!window.confirm('Tem certeza que deseja excluir este relato?')) return;
     
-    // setLoading(true); // Managed by React Query now
     try {
-      const { error } = await removeRelato(relato.id, user.id);
+      const { error } = await removeRelato(relato.id);
       if (error) throw error;
       showToast('Relato excluído com sucesso!', 'success');
       navigate('/relatos');
     } catch (error) {
       showToast('Erro ao excluir relato: ' + error.message, 'error');
-    } finally {
-      // setLoading(false); // Managed by React Query now
     }
   };
 
@@ -139,7 +133,7 @@ const RelatoPage = () => {
           <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-8"> {/* Removido pb-24 */}
             <RelatoForm
               isEditing={isEditing}
-              isAdmin={canEditAllRelatos}
+              isAdmin={isCreator} // Apenas o criador pode editar
               user={user}
               relato={relato}
               tipoIncidenteOptions={tipoIncidenteOptions}
@@ -159,14 +153,13 @@ const RelatoPage = () => {
             )}
 
             {/* Botões de Ação */}
-            <div className="flex items-center justify-end space-x-3 pt-6"> {/* Removido p-6, border-t, bg-white, adicionado pt-6 */}
-              {!isEditing && relato && (
+            <div className="flex items-center justify-end space-x-3 pt-6"> 
+              {!isEditing && isCreator && (
                 <>
                   <Button
                     variant="destructive"
-                    type="button" // Adicionado para evitar o submit do formulário
+                    type="button"
                     onClick={handleDelete}
-                    // disabled={loading} // Managed by React Query now
                   >
                     Excluir
                   </Button>
@@ -177,22 +170,19 @@ const RelatoPage = () => {
                   </Button>
                 </>
               )}
-              {isEditing && (
+              {isEditing && isCreator && (
                 <>
                   <Button
                     variant="outline"
-                    onClick={() => setIsEditing(false)} // Apenas muda o modo para visualização
-                    // disabled={loading} // Managed by React Query now
+                    onClick={() => setIsEditing(false)}
                   >
                     Cancelar
                   </Button>
                   <Button
                     type="submit"
                     onClick={methods.handleSubmit(onSubmit)}
-                    // disabled={loading} // Managed by React Query now
                   >
                     <Save className="w-4 h-4 mr-2" />
-                    {/* {loading ? 'Enviando...' : 'Salvar'} */}
                     Salvar
                   </Button>
                 </>

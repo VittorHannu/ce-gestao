@@ -39,7 +39,7 @@ const CreateRelatoPage = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const { error } = await saveRelato(data, null, user.id, false); // id is null for new, isAdmin is false
+      const { error } = await saveRelato(data, null, user.id);
       if (error) throw error;
       showToast('Relato criado com sucesso!', 'success');
       navigate('/relatos');
@@ -59,7 +59,6 @@ const CreateRelatoPage = () => {
         <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-8 pb-24">
           <RelatoForm
             isEditing={true}
-            isAdmin={false}
             user={user}
             relato={null}
             tipoIncidenteOptions={[]}

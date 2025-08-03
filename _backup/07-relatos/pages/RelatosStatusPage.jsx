@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useOutletContext } from 'react-router-dom';
 import MainLayout from '@/01-common/components/MainLayout';
 import { useRelatos } from '@/07-relatos/hooks/useRelatos';
 
@@ -10,6 +10,7 @@ import BackButton from '@/01-common/components/BackButton';
 const RelatosStatusPage = () => {
   const navigate = useNavigate();
   const { status } = useParams(); // Get status from URL parameter
+  const { user } = useOutletContext();
 
   // Map URL status to calculated_status expected by useRelatos
   const statusMap = {
@@ -22,7 +23,7 @@ const RelatosStatusPage = () => {
   const calculatedStatus = statusMap[status] || null;
   const pageTitle = calculatedStatus ? `Relatos ${calculatedStatus}` : 'Relatos por Status';
 
-  const { relatos, loading, error, filters, setFilters, isFetching } = useRelatos({ initialFilters: { calculated_status: calculatedStatus } });
+  const { relatos, loading, error, filters, setFilters, isFetching } = useRelatos({ initialFilters: { calculated_status: calculatedStatus } }, user);
 
   const handleRelatoClick = (relato) => {
     navigate(`/relatos/${relato.id}`);

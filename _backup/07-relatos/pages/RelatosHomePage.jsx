@@ -1,8 +1,8 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import MainLayout from '@/01-common/components/MainLayout';
 import { Button } from '@/core/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, CheckSquare } from 'lucide-react';
 
 import RelatosStatsCards from '@/07-relatos/components/RelatosStatsCards';
 import { useRelatosStats } from '@/07-relatos/hooks/useRelatosStats';
@@ -10,11 +10,16 @@ import LoadingSpinner from '@/01-common/components/LoadingSpinner';
 
 const RelatosHomePage = () => {
   const navigate = useNavigate();
+  const { user } = useOutletContext();
 
-  const { stats, statsLoading, statsError } = useRelatosStats();
+  const { stats, statsLoading, statsError } = useRelatosStats(user);
 
   const handleCreateRelato = () => {
     navigate('/relatos/novo');
+  };
+
+  const handleApproveRelatos = () => {
+    navigate('/relatos/aprovacao');
   };
 
   if (statsLoading) {
@@ -40,7 +45,7 @@ const RelatosHomePage = () => {
       <div className="mb-12">
         <RelatosStatsCards stats={stats} />
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center gap-4">
         <Button onClick={handleCreateRelato} size="lg">
           <Plus className="mr-2 h-5 w-5" />
           Criar Novo Relato

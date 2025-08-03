@@ -27,17 +27,9 @@ import LoadingSpinner from '@/01-common/components/LoadingSpinner';
 
 const LoginPage = React.lazy(() => import('@/03-auth/pages/LoginPage'));
 const HomePage = React.lazy(() => import('@/06-home/pages/HomePage'));
-const RelatosHomePage = React.lazy(() => import('@/07-relatos/pages/RelatosHomePage'));
-const RelatosTodosPage = React.lazy(() => import('@/07-relatos/pages/RelatosTodosPage'));
-const RelatoPage = React.lazy(() => import('@/07-relatos/pages/RelatoPage'));
-const CreateRelatoPage = React.lazy(() => import('@/07-relatos/pages/CreateRelatoPage'));
-const RelatosStatusPage = React.lazy(() => import('@/07-relatos/pages/RelatosStatusPage'));
 const ProfilePage = React.lazy(() => import('@/04-profile/pages/ProfilePage'));
 const UpdatePasswordPage = React.lazy(() => import('@/03-auth/pages/UpdatePasswordPage'));
 const ForcePasswordChangePage = React.lazy(() => import('@/03-auth/pages/ForcePasswordChangePage'));
-const UserDetailsPage = React.lazy(() => import('@/05-adm/pages/UserDetailsPage'));
-const CreateUserPage = React.lazy(() => import('@/05-adm/pages/CreateUserPage'));
-const UsersPage = React.lazy(() => import('@/05-adm/pages/UsersPage'));
 const UpdatePasswordProfilePage = React.lazy(() => import('@/04-profile/pages/UpdatePasswordProfilePage'));
 const UpdateEmailPage = React.lazy(() => import('@/04-profile/pages/UpdateEmailPage'));
 
@@ -77,7 +69,7 @@ function AppWrapper({ showToast }) {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, is_active, needs_password_reset, can_view_users, can_create_users, can_update_users, can_delete_users, can_view_relatos, can_create_relatos, can_edit_relatos, can_delete_relatos')
+        .select('id, email, full_name, is_active, needs_password_reset')
         .eq('id', userId)
         .single();
 
@@ -177,25 +169,12 @@ function AppWrapper({ showToast }) {
   // Se há sessão, renderiza as rotas protegidas
   return (
     <Routes>
-      {/* Rotas COM cabeçalho */}
-      <Route element={<LayoutWithHeader user={user} onLogout={handleLogout} showToast={showToast} />}>
-        <Route path="/relatos/novo" element={<ProtectedRoute user={user} requiredPermission="can_create_relatos"><Suspense fallback={<LoadingSpinner />}><CreateRelatoPage /></Suspense></ProtectedRoute>} />
-        <Route path="/relatos/todos" element={<ProtectedRoute user={user} requiredPermission="can_view_relatos"><Suspense fallback={<LoadingSpinner />}><RelatosTodosPage /></Suspense></ProtectedRoute>} />
-        <Route path="/relatos/status/:status" element={<ProtectedRoute user={user} requiredPermission="can_view_relatos"><Suspense fallback={<LoadingSpinner />}><RelatosStatusPage /></Suspense></ProtectedRoute>} />
-        <Route path="/relatos/:id" element={<ProtectedRoute user={user} requiredPermission="can_view_relatos"><Suspense fallback={<LoadingSpinner />}><RelatoPage /></Suspense></ProtectedRoute>} />
-      </Route>
-
       {/* Rotas SEM cabeçalho */}
       <Route element={<LayoutWithoutHeader user={user} onLogout={handleLogout} showToast={showToast} />}>
         <Route path="/" element={<Suspense fallback={<LoadingSpinner />}><HomePage /></Suspense>} />
-        <Route path="/relatos" element={<ProtectedRoute user={user} requiredPermission="can_view_relatos"><Suspense fallback={<LoadingSpinner />}><RelatosHomePage /></Suspense></ProtectedRoute>} />
         <Route path="/perfil" element={<Suspense fallback={<LoadingSpinner />}><ProfilePage /></Suspense>} />
         <Route path="/perfil/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordProfilePage /></Suspense>} />
         <Route path="/perfil/update-email" element={<Suspense fallback={<LoadingSpinner />}><UpdateEmailPage /></Suspense>} />
-        
-        <Route path="/users-management" element={<ProtectedRoute user={user} requiredPermission="can_view_users"><Suspense fallback={<LoadingSpinner />}><UsersPage /></Suspense></ProtectedRoute>} />
-        <Route path="/users-management/create" element={<ProtectedRoute user={user} requiredPermission="can_create_users"><Suspense fallback={<LoadingSpinner />}><CreateUserPage /></Suspense></ProtectedRoute>} />
-        <Route path="/users-management/:userId" element={<ProtectedRoute user={user} requiredPermission="can_view_users"><Suspense fallback={<LoadingSpinner />}><UserDetailsPage /></Suspense></ProtectedRoute>} />
       </Route>
 
       {/* Fallback para qualquer outra rota quando logado, redireciona para a home */}

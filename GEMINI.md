@@ -80,21 +80,3 @@ O agente de IA é responsável por garantir a qualidade, a organização e a fun
 
 ### Próximas Tarefas (Contexto Salvo para Continuidade)
 
-Para continuar a reconstrução da seção de relatos, as seguintes tarefas ainda precisam ser realizadas:
-
-1.  **Implementar a página "Relatos por Status" (`src/07-relatos/pages/RelatosPorStatusPage.jsx`)**:
-    *   Criar o arquivo da página.
-    *   Adicionar a rota correspondente em `src/App.jsx`.
-    *   Utilizar o `useRelatos` para filtrar os relatos por status.
-    *   Utilizar o `RelatoCard` para exibir cada relato.
-    *   **Ajustar a navegação dos cards de estatísticas (`RelatosStatsCards.jsx`)** para que os links levem corretamente para esta página, passando o status adequado.
-
-2.  **Reintroduzir a lógica de permissões nos botões "Editar" e "Excluir" na `RelatoPage.jsx`**:
-    *   Atualmente, os botões estão sempre visíveis (após a correção de posicionamento). Precisamos reativar as condições `canEdit` e `canDelete` para controlar a visibilidade com base nas permissões do usuário (`can_edit_relatos`).
-
-3.  **Aprimorar a exibição do histórico de auditoria na `RelatoPage.jsx`**:
-    *   Buscar dados da tabela `public.relatos_audit_log`.
-    *   Exibir essas informações de forma clara na interface do usuário.
-
-4.  **Refatorar botões de ação em `RelatoPage.jsx` para um componente reutilizável**:
-    *   Extrair os botões "Cancelar" e "Salvar" (e possivelmente "Excluir" e "Editar") para um componente separado (`FormActionButtons.jsx` ou similar) para melhorar a modularidade e reutilização.

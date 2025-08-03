@@ -13,11 +13,11 @@ export const useRelatos = (initialFilters = {}) => {
     filters,
     handleFiltersChange: setFilters,
     isFetching
-  } = useSupabaseData('relatos_with_creator', getRelatos, initialFilters, { keepPreviousData: false });
+  } = useSupabaseData('relatos_with_creator', getRelatos, initialFilters, null, { keepPreviousData: false });
 
-  const addRelato = useCallback(async (relatoData, userId, isAdmin) => {
+  const addRelato = useCallback(async (relatoData, userId) => {
     try {
-      const { data, error: saveError } = await saveRelato(relatoData, null, userId, isAdmin);
+      const { data, error: saveError } = await saveRelato(relatoData, null, userId);
       if (saveError) throw saveError;
       queryClient.invalidateQueries({ queryKey: ['relatos_with_creator'] });
       queryClient.invalidateQueries({ queryKey: ['relatos_stats'] });
@@ -27,9 +27,9 @@ export const useRelatos = (initialFilters = {}) => {
     }
   }, [queryClient]);
 
-  const updateRelato = useCallback(async (relatoData, relatoId, userId, isAdmin) => {
+  const updateRelato = useCallback(async (relatoData, relatoId, userId) => {
     try {
-      const { data, error: saveError } = await saveRelato(relatoData, relatoId, userId, isAdmin);
+      const { data, error: saveError } = await saveRelato(relatoData, relatoId, userId);
       if (saveError) throw saveError;
       queryClient.invalidateQueries({ queryKey: ['relatos_with_creator'] });
       queryClient.invalidateQueries({ queryKey: ['relatos_stats'] });
