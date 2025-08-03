@@ -1,8 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/core/components/ui/card';
+import { CheckCircle, Clock, AlertCircle } from 'lucide-react'; // Importa os ícones
 
 const RelatoCard = ({ relato }) => {
+  const getTreatmentStatusDisplay = () => {
+    if (relato.data_conclusao_solucao) {
+      return { text: 'Concluído', icon: CheckCircle, color: 'text-green-600' };
+    } else if (relato.planejamento_cronologia_solucao) {
+      return { text: 'Em Andamento', icon: Clock, color: 'text-orange-600' };
+    } else {
+      return { text: 'Sem Tratativa', icon: AlertCircle, color: 'text-red-600' };
+    }
+  };
+
+  const { text: statusText, icon: StatusIcon, color: statusColor } = getTreatmentStatusDisplay();
+
   return (
     <Link to={`/relatos/detalhes/${relato.id}`} className="block">
       <Card className="hover:shadow-lg transition-shadow duration-200">
@@ -27,15 +40,10 @@ const RelatoCard = ({ relato }) => {
           {relato.data_conclusao_solucao && (
             <p className="text-sm text-gray-600">Concluído em: {new Date(relato.data_conclusao_solucao).toLocaleDateString()}</p>
           )}
-          <p className="text-sm text-gray-600 mt-2">
-            Status da Tratativa: {
-              relato.data_conclusao_solucao
-                ? 'Concluído'
-                : relato.planejamento_cronologia_solucao
-                ? 'Em Andamento'
-                : 'Sem Tratativa'
-            }
-          </p>
+          <div className="flex items-center mt-2">
+            <StatusIcon className={`h-4 w-4 mr-2 ${statusColor}`} />
+            <p className={`text-sm font-medium ${statusColor}`}>{statusText}</p>
+          </div>
         </CardContent>
       </Card>
     </Link>
