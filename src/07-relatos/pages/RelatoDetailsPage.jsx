@@ -16,6 +16,7 @@ const RelatoDetailsPage = () => {
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false); // Novo estado para modo de edição
   const [isSaving, setIsSaving] = useState(false); // Estado para o salvamento
+  const [isDeleting, setIsDeleting] = useState(false); // Novo estado para o carregamento da exclusão
 
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const canManageRelatos = userProfile?.can_manage_relatos;
@@ -76,6 +77,30 @@ const RelatoDetailsPage = () => {
     }
   };
 
+  const handleDeleteRelato = async () => {
+    if (window.confirm('Tem certeza que deseja excluir este relato? Esta ação não pode ser desfeita.')) {
+      setIsDeleting(true);
+      try {
+        const { error } = await supabase
+          .from('relatos')
+          .delete()
+          .eq('id', id);
+
+        if (error) {
+          throw error;
+        }
+
+        showToast('Relato excluído com sucesso!', 'success');
+        navigate('/relatos'); // Redireciona para a página de listagem
+      } catch (error) {
+        console.error('Erro ao excluir relato:', error);
+        showToast(`Erro ao excluir o relato: ${error.message}`, 'error');
+      } finally {
+        setIsDeleting(false);
+      }
+    }
+  };
+
   if (loading || isLoadingProfile) {
     return <LoadingSpinner />;
   }
@@ -122,6 +147,11 @@ const RelatoDetailsPage = () => {
         )}
         {canManageRelatos && !isEditing && (
           <Button onClick={() => setIsEditing(true)}>Editar</Button>
+        )}
+        {canManageRelatos && !isEditing && (
+          <Button variant="destructive" onClick={handleDeleteRelato} disabled={isDeleting}>
+            {isDeleting ? 'Excluindo...' : 'Excluir'}
+          </Button>
         )}
         {isEditing && (
           <Button variant="outline" onClick={() => setIsEditing(false)} disabled={isSaving}>
