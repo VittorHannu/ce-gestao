@@ -4,7 +4,7 @@ import { Button } from '@/core/components/ui/button';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { useRelatoCounts } from '../hooks/useRelatoCounts';
 import LoadingSpinner from '@/01-common/components/LoadingSpinner';
-import { FileText, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { FileText, CheckCircle, Clock, XCircle, BarChart } from 'lucide-react';
 import RelatoStatsCard from '../components/RelatoStatsCard'; // Importa o novo componente de card
 
 const RelatosPage = () => {
@@ -67,7 +67,7 @@ const RelatosPage = () => {
         ))}
       </div>
 
-      <div className="h-1.5 w-full bg-black rounded-full my-8"></div>
+      <div className="h-0.5 w-full bg-gray-300 rounded-full my-10"></div>
 
       <div className="flex flex-col items-center mt-6 space-y-4">
         {!isLoadingProfile && userProfile?.can_manage_relatos && (
@@ -85,6 +85,13 @@ const RelatosPage = () => {
         <Link to="/relatos/novo" className="w-full">
           <Button size="lg" className="w-full">Criar Novo Relato</Button>
         </Link>
+      </div>
+
+      <div className="h-0.5 w-full bg-gray-300 rounded-full my-10"></div>
+
+      <div className="bg-yellow-500 p-6 rounded-lg shadow-md text-center flex flex-col items-center justify-center">
+        <BarChart className="h-12 w-12 text-white mb-4" />
+        <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
       </div>
     </div>
   );
