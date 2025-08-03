@@ -70,6 +70,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
               value={localOcorrencia}
               onChange={(e) => setLocalOcorrencia(e.target.value)}
               required
+              className="bg-gray-100"
             />
           </div>
 
@@ -82,6 +83,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
                 value={dataOcorrencia}
                 onChange={(e) => setDataOcorrencia(e.target.value)}
                 required
+                className="bg-gray-100"
               />
               <Button
                 type="button"
@@ -122,6 +124,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
               required
+              className="bg-gray-100"
             />
           </div>
         </div>
@@ -139,6 +142,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
               value={riscosIdentificados}
               onChange={(e) => setRiscosIdentificados(e.target.value)}
               required
+              className="bg-gray-100"
             />
           </div>
 
@@ -166,7 +170,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
 
       {/* Seção: Tratativa e Conclusão */}
       {canManageRelatos && (
-        <div className="p-4 border rounded-lg">
+        <div className="p-4 border rounded-lg bg-white">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Tratativa e Conclusão (Opcional)</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
@@ -177,6 +181,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
                 value={planejamentoCronologiaSolucao}
                 onChange={(e) => setPlanejamentoCronologiaSolucao(e.target.value)}
                 placeholder="Descreva o planejamento ou cronologia da solução..."
+                className="bg-gray-100"
               />
             </div>
             <div>
@@ -187,6 +192,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
                   type="date"
                   value={dataConclusaoSolucao}
                   onChange={(e) => setDataConclusaoSolucao(e.target.value)}
+                  className="bg-gray-100"
                 />
                 <Button
                   type="button"
