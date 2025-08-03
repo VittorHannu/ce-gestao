@@ -98,6 +98,7 @@ const RelatoDetailsPage = () => {
           isLoading={isSaving}
           initialData={relato} // Passa os dados iniciais para o formulário
           submitButtonText="Salvar Alterações"
+          canManageRelatos={canManageRelatos} // Passa a permissão para o formulário
         />
       ) : (
         <div className="space-y-4">

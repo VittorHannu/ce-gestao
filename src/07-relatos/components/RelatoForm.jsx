@@ -5,7 +5,7 @@ import { Checkbox } from '@/core/components/ui/checkbox';
 import { Label } from '@/core/components/ui/label';
 import { Button } from '@/core/components/ui/button';
 
-const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Enviar Relato' }) => {
+const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Enviar Relato', canManageRelatos = false }) => {
   const [isAnonymous, setIsAnonymous] = useState(initialData?.is_anonymous || false);
   const [localOcorrencia, setLocalOcorrencia] = useState(initialData?.local_ocorrencia || '');
   const [dataOcorrencia, setDataOcorrencia] = useState(initialData?.data_ocorrencia || '');
@@ -147,27 +147,34 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
       {/* Seção: Tratativa e Conclusão */}
       <div className="p-4 border rounded-lg">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Tratativa e Conclusão (Opcional)</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="md:col-span-2">
-            <Label htmlFor="planejamento_cronologia_solucao">Planejamento / Cronologia da Solução</Label>
-            <Textarea
-              id="planejamento_cronologia_solucao"
-              rows={3}
-              value={planejamentoCronologiaSolucao}
-              onChange={(e) => setPlanejamentoCronologiaSolucao(e.target.value)}
-              placeholder="Descreva o planejamento ou cronologia da solução..."
-            />
+        {canManageRelatos ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <Label htmlFor="planejamento_cronologia_solucao">Planejamento / Cronologia da Solução</Label>
+              <Textarea
+                id="planejamento_cronologia_solucao"
+                rows={3}
+                value={planejamentoCronologiaSolucao}
+                onChange={(e) => setPlanejamentoCronologiaSolucao(e.target.value)}
+                placeholder="Descreva o planejamento ou cronologia da solução..."
+              />
+            </div>
+            <div>
+              <Label htmlFor="data_conclusao_solucao">Data de Conclusão da Solução</Label>
+              <Input
+                id="data_conclusao_solucao"
+                type="date"
+                value={dataConclusaoSolucao}
+                onChange={(e) => setDataConclusaoSolucao(e.target.value)}
+              />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="data_conclusao_solucao">Data de Conclusão da Solução</Label>
-            <Input
-              id="data_conclusao_solucao"
-              type="date"
-              value={dataConclusaoSolucao}
-              onChange={(e) => setDataConclusaoSolucao(e.target.value)}
-            />
+        ) : (
+          <div className="space-y-2">
+            <p><strong>Planejamento / Cronologia da Solução:</strong> {initialData?.planejamento_cronologia_solucao || 'Não informado'}</p>
+            <p><strong>Data de Conclusão da Solução:</strong> {initialData?.data_conclusao_solucao ? new Date(initialData.data_conclusao_solucao).toLocaleDateString() : 'Não informado'}</p>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="flex justify-end">
