@@ -20,7 +20,7 @@ const RelatoCard = ({ relato }) => {
     <Link to={`/relatos/detalhes/${relato.id}`} className="block">
       <Card className="hover:shadow-lg transition-shadow duration-200 p-3">
         <CardHeader className="p-0">
-          <CardTitle className="text-lg font-semibold mb-1">{relato.local_ocorrencia} ({relato.relato_code})</CardTitle>
+          <CardTitle className="text-lg font-semibold mb-1">{relato.relato_code}</CardTitle>
           <CardDescription className="text-sm text-gray-500">
             Data: {new Date(relato.data_ocorrencia).toLocaleDateString()}
             {relato.hora_aproximada_ocorrencia && ` - ${relato.hora_aproximada_ocorrencia}`}
