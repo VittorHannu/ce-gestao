@@ -54,7 +54,7 @@ const CreateRelatoPage = () => {
       <p className="mb-6 text-gray-600">
         Preencha o formulário abaixo com o máximo de detalhes possível. Sua contribuição é fundamental para a segurança de todos.
       </p>
-      <RelatoForm onSubmit={handleCreateRelato} isLoading={isLoading} />
+      <RelatoForm onSubmit={handleCreateRelato} isLoading={isLoading} submitButtonText="Enviar Relato" />
     </div>
   );
 };

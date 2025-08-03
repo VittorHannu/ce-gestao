@@ -1,21 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from '@/core/components/ui/input';
 import { Textarea } from '@/core/components/ui/textarea';
 import { Checkbox } from '@/core/components/ui/checkbox';
 import { Label } from '@/core/components/ui/label';
 import { Button } from '@/core/components/ui/button';
 
-const RelatoForm = ({ onSubmit, isLoading }) => {
-  const [isAnonymous, setIsAnonymous] = useState(false);
-  const [localOcorrencia, setLocalOcorrencia] = useState('');
-  const [dataOcorrencia, setDataOcorrencia] = useState('');
-  const [horaAproximada, setHoraAproximada] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [riscosIdentificados, setRiscosIdentificados] = useState('');
-  const [houveDanos, setHouveDanos] = useState(false);
-  const [danosOcorridos, setDanosOcorridos] = useState('');
-  const [planejamentoCronologiaSolucao, setPlanejamentoCronologiaSolucao] = useState('');
-  const [dataConclusaoSolucao, setDataConclusaoSolucao] = useState('');
+const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Enviar Relato' }) => {
+  const [isAnonymous, setIsAnonymous] = useState(initialData?.is_anonymous || false);
+  const [localOcorrencia, setLocalOcorrencia] = useState(initialData?.local_ocorrencia || '');
+  const [dataOcorrencia, setDataOcorrencia] = useState(initialData?.data_ocorrencia || '');
+  const [horaAproximada, setHoraAproximada] = useState(initialData?.hora_aproximada_ocorrencia || '');
+  const [descricao, setDescricao] = useState(initialData?.descricao || '');
+  const [riscosIdentificados, setRiscosIdentificados] = useState(initialData?.riscos_identificados || '');
+  const [houveDanos, setHouveDanos] = useState(!!initialData?.danos_ocorridos); // Converte para boolean
+  const [danosOcorridos, setDanosOcorridos] = useState(initialData?.danos_ocorridos || '');
+  const [planejamentoCronologiaSolucao, setPlanejamentoCronologiaSolucao] = useState(initialData?.planejamento_cronologia_solucao || '');
+  const [dataConclusaoSolucao, setDataConclusaoSolucao] = useState(initialData?.data_conclusao_solucao || '');
+
+  useEffect(() => {
+    if (initialData) {
+      setIsAnonymous(initialData.is_anonymous || false);
+      setLocalOcorrencia(initialData.local_ocorrencia || '');
+      setDataOcorrencia(initialData.data_ocorrencia || '');
+      setHoraAproximada(initialData.hora_aproximada_ocorrencia || '');
+      setDescricao(initialData.descricao || '');
+      setRiscosIdentificados(initialData.riscos_identificados || '');
+      setHouveDanos(!!initialData.danos_ocorridos);
+      setDanosOcorridos(initialData.danos_ocorridos || '');
+      setPlanejamentoCronologiaSolucao(initialData.planejamento_cronologia_solucao || '');
+      setDataConclusaoSolucao(initialData.data_conclusao_solucao || '');
+    }
+  }, [initialData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -157,7 +172,7 @@ const RelatoForm = ({ onSubmit, isLoading }) => {
 
       <div className="flex justify-end">
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Enviando...' : 'Enviar Relato'}
+          {isLoading ? 'Salvando...' : submitButtonText}
         </Button>
       </div>
     </form>

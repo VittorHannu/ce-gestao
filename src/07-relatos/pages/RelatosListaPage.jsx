@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { supabase } from '@/01-common/lib/supabase';
 import { useToast } from '@/01-common/hooks/useToast';
 import LoadingSpinner from '@/01-common/components/LoadingSpinner';
@@ -72,17 +72,19 @@ const RelatosListaPage = () => {
       ) : (
         <div className="space-y-4">
           {relatos.map((relato) => (
-            <div key={relato.id} className="border p-4 rounded-lg shadow-sm">
-              <h2 className="text-lg font-semibold">{relato.local_ocorrencia}</h2>
-              <p className="text-sm text-gray-500">Data: {new Date(relato.data_ocorrencia).toLocaleDateString()}</p>
-              <p className="mt-2">{relato.descricao}</p>
-              {relato.planejamento_cronologia_solucao && (
-                <p className="text-sm text-gray-600 mt-2">Planejamento: {relato.planejamento_cronologia_solucao}</p>
-              )}
-              {relato.data_conclusao_solucao && (
-                <p className="text-sm text-gray-600">Concluído em: {new Date(relato.data_conclusao_solucao).toLocaleDateString()}</p>
-              )}
-            </div>
+            <Link to={`/relatos/detalhes/${relato.id}`} key={relato.id} className="block">
+              <div className="border p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                <h2 className="text-lg font-semibold">{relato.local_ocorrencia}</h2>
+                <p className="text-sm text-gray-500">Data: {new Date(relato.data_ocorrencia).toLocaleDateString()}</p>
+                <p className="mt-2">{relato.descricao}</p>
+                {relato.planejamento_cronologia_solucao && (
+                  <p className="text-sm text-gray-600 mt-2">Planejamento: {relato.planejamento_cronologia_solucao}</p>
+                )}
+                {relato.data_conclusao_solucao && (
+                  <p className="text-sm text-gray-600">Concluído em: {new Date(relato.data_conclusao_solucao).toLocaleDateString()}</p>
+                )}
+              </div>
+            </Link>
           ))}
         </div>
       )}
