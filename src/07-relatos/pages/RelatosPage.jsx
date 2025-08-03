@@ -89,10 +89,12 @@ const RelatosPage = () => {
 
       <div className="h-0.5 w-full bg-gray-300 rounded-full my-10"></div>
 
-      <div className="bg-yellow-500 p-6 rounded-lg shadow-md text-center flex flex-col items-center justify-center">
-        <BarChart className="h-12 w-12 text-white mb-4" />
-        <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
-      </div>
+      <Link to="/relatos/estatisticas" className="w-full block">
+        <div className="bg-yellow-500 p-6 rounded-lg shadow-md text-center flex flex-col items-center justify-center">
+          <BarChart className="h-12 w-12 text-white mb-4" />
+          <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
+        </div>
+      </Link>
     </div>
   );
 };
