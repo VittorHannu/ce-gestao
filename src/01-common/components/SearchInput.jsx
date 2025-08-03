@@ -12,7 +12,7 @@ const SearchInput = ({ value, onChange, placeholder }) => {
   // Debounce para chamar o onChange externo
   useEffect(() => {
     const debouncedOnChange = debounce(() => {
-      onChange({ target: { value: searchTerm } });
+      onChange(searchTerm); // Passa apenas a string do termo de pesquisa
     }, 300); // Atraso de 300ms
 
     debouncedOnChange();
@@ -29,7 +29,7 @@ const SearchInput = ({ value, onChange, placeholder }) => {
 
   const handleClear = () => {
     setSearchTerm('');
-    onChange({ target: { value: '' } }); // Chama onChange imediatamente para limpar o filtro
+    onChange(''); // Chama onChange imediatamente para limpar o filtro, passando a string vazia
   };
 
   return (
