@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import RelatoForm from '../components/RelatoForm';
 import { useToast } from '@/01-common/hooks/useToast';
 import { supabase } from '@/01-common/lib/supabase';
+import BackButton from '@/01-common/components/BackButton';
 
 const CreateRelatoPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,11 +12,11 @@ const CreateRelatoPage = () => {
 
   const handleCreateRelato = async (formData) => {
     setIsLoading(true);
-    console.log("Iniciando envio do relato...");
+    console.log('Iniciando envio do relato...');
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      console.log("Usuário obtido:", user);
+      console.log('Usuário obtido:', user);
 
       // Validação crucial: se não for anônimo, precisa de um usuário.
       if (!formData.is_anonymous && !user) {
@@ -28,10 +29,10 @@ const CreateRelatoPage = () => {
         ...formData,
         user_id: formData.is_anonymous ? null : user.id,
         // Converte a hora para null se estiver vazia, para evitar erro no banco de dados
-        hora_aproximada_ocorrencia: formData.hora_aproximada_ocorrencia || null,
+        hora_aproximada_ocorrencia: formData.hora_aproximada_ocorrencia || null
       };
 
-      console.log("Dados que serão inseridos:", relatoData);
+      console.log('Dados que serão inseridos:', relatoData);
       const { error } = await supabase.from('relatos').insert([relatoData]);
 
       if (error) {
@@ -50,7 +51,10 @@ const CreateRelatoPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Criar Novo Relato de Segurança</h1>
+      <div className="flex items-center gap-4 mb-4">
+        <BackButton />
+        <h1 className="text-2xl font-bold">Criar Novo Relato</h1>
+      </div>
       <p className="mb-6 text-gray-600">
         Preencha o formulário abaixo com o máximo de detalhes possível. Sua contribuição é fundamental para a segurança de todos.
       </p>

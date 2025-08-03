@@ -43,7 +43,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
       riscos_identificados: riscosIdentificados,
       danos_ocorridos: houveDanos ? danosOcorridos : null,
       planejamento_cronologia_solucao: planejamentoCronologiaSolucao || null,
-      data_conclusao_solucao: dataConclusaoSolucao || null,
+      data_conclusao_solucao: dataConclusaoSolucao || null
     };
     onSubmit(formData);
   };
@@ -51,7 +51,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Seção: Informações Básicas */}
-      <div className="p-4 border rounded-lg">
+      <div className="p-4 border rounded-lg bg-white">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Informações Básicas</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2 flex items-center space-x-2">
@@ -60,7 +60,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
               checked={isAnonymous}
               onCheckedChange={setIsAnonymous}
             />
-            <Label htmlFor="is_anonymous">Ocultar meu nome (relato anônimo)</Label>
+            <Label htmlFor="is_anonymous">Não mostrar meu nome (relato anônimo)</Label>
           </div>
 
           <div>
@@ -75,23 +75,43 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
 
           <div>
             <Label htmlFor="data_ocorrencia">Data da Ocorrência *</Label>
-            <Input
-              id="data_ocorrencia"
-              type="date"
-              value={dataOcorrencia}
-              onChange={(e) => setDataOcorrencia(e.target.value)}
-              required
-            />
+            <div className="flex items-center space-x-2">
+              <Input
+                id="data_ocorrencia"
+                type="date"
+                value={dataOcorrencia}
+                onChange={(e) => setDataOcorrencia(e.target.value)}
+                required
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setDataOcorrencia('')}
+                className="px-3 py-2 text-sm"
+              >
+                Limpar
+              </Button>
+            </div>
           </div>
 
           <div>
             <Label htmlFor="hora_aproximada">Hora Aproximada</Label>
-            <Input
-              id="hora_aproximada"
-              type="time"
-              value={horaAproximada}
-              onChange={(e) => setHoraAproximada(e.target.value)}
-            />
+            <div className="flex items-center space-x-2">
+              <Input
+                id="hora_aproximada"
+                type="time"
+                value={horaAproximada}
+                onChange={(e) => setHoraAproximada(e.target.value)}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setHoraAproximada('')}
+                className="px-3 py-2 text-sm"
+              >
+                Limpar
+              </Button>
+            </div>
           </div>
 
           <div className="md:col-span-2">
@@ -108,7 +128,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
       </div>
 
       {/* Seção: Detalhes da Ocorrência */}
-      <div className="p-4 border rounded-lg">
+      <div className="p-4 border rounded-lg bg-white">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Detalhes da Ocorrência</h3>
         <div className="space-y-6">
           <div>
@@ -161,12 +181,22 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
             </div>
             <div>
               <Label htmlFor="data_conclusao_solucao">Data de Conclusão da Solução</Label>
-              <Input
-                id="data_conclusao_solucao"
-                type="date"
-                value={dataConclusaoSolucao}
-                onChange={(e) => setDataConclusaoSolucao(e.target.value)}
-              />
+              <div className="flex items-center space-x-2">
+                <Input
+                  id="data_conclusao_solucao"
+                  type="date"
+                  value={dataConclusaoSolucao}
+                  onChange={(e) => setDataConclusaoSolucao(e.target.value)}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setDataConclusaoSolucao('')}
+                  className="px-3 py-2 text-sm"
+                >
+                  Limpar
+                </Button>
+              </div>
             </div>
           </div>
         </div>
