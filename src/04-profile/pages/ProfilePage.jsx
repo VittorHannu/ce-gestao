@@ -83,13 +83,13 @@ const ProfilePage = () => {
         {userProfile && (
           <>
             {/* Seção de Informações Básicas do Usuário */}
-            <div className="flex flex-col items-center space-y-4 mb-6">
+            <div className="flex flex-col items-center space-y-4 mb-6 p-4 border rounded-lg bg-gray-800 shadow-md">
               <div className="relative">
                 <div className="w-24 h-24 bg-gray-200 rounded-full overflow-hidden flex items-center justify-center">
                   {userProfile.avatar_url ? (
                     <img src={userProfile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
-                    <User className="w-12 h-12 text-gray-500" />
+                    <User className="w-12 h-12 text-gray-300" />
                   )}
                 </div>
                 <button
@@ -102,27 +102,26 @@ const ProfilePage = () => {
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
               </div>
               <div className="text-center">
-                <h2 className="text-2xl font-bold text-gray-900 flex items-center justify-center">
+                <h2 className="text-2xl font-bold text-white flex items-center justify-center">
                   {userProfile.full_name || 'Nome não informado'}
-                  {userProfile.is_super_admin && <Shield className="w-5 h-5 text-blue-600 ml-2" />}
+                  {userProfile.is_super_admin && <Shield className="w-5 h-5 text-blue-300 ml-2" />}
                 </h2>
-                <p className="text-gray-600">{userProfile.email}</p>
-                <p className="text-gray-500 text-sm">Membro desde: {formatDate(userProfile.created_at)}</p>
+                <p className="text-gray-300">{userProfile.email}</p>
+                <p className="text-gray-300 text-sm">Membro desde: {formatDate(userProfile.created_at)}</p>
               </div>
             </div>
 
             {/* Seção de Configurações da Conta */}
-            <div className="p-4 border rounded-lg bg-white shadow-md mb-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Configurações da Conta</h3>
+            <div className="p-4 border rounded-lg bg-gray-800 shadow-md mb-6">
               <div className="flex flex-col space-y-4">
                 <Link to="/perfil/update-email" className="w-full">
-                  <Button className="w-full">
+                  <Button className="w-full" variant="onDark">
                     <Mail className="w-4 h-4 mr-2" />
                     Alterar Email
                   </Button>
                 </Link>
                 <Link to="/perfil/update-password" className="w-full">
-                  <Button className="w-full">
+                  <Button className="w-full" variant="onDark">
                     <Key className="w-4 h-4 mr-2" />
                     Alterar Senha
                   </Button>

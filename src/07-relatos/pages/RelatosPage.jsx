@@ -68,12 +68,10 @@ const RelatosPage = () => {
         ))}
       </div>
 
-      <div className="h-0.5 w-full bg-gray-300 rounded-full my-10"></div>
-
-      <div className="flex flex-col items-center mt-6 space-y-4">
+      <div className="flex flex-col items-center mt-12 space-y-4">
         {!isLoadingProfile && userProfile?.can_manage_relatos && (
           <Link to="/relatos/aprovacao" className="w-full">
-            <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2">
+            <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2 shadow-none">
               <span>Aprovar Relatos</span>
               {relatoCounts?.pendenteAprovacao > 0 && (
                 <span className="ml-2 px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-full">
@@ -84,12 +82,12 @@ const RelatosPage = () => {
           </Link>
         )}
         <Link to="/relatos/novo" className="w-full">
-          <Button size="lg" className="w-full">Criar Novo Relato</Button>
+          <Button size="lg" className="w-full shadow-none">Criar Novo Relato</Button>
         </Link>
       </div>
 
-      <Link to="/relatos/estatisticas" className="w-full block mt-8">
-        <div className="bg-yellow-500 p-6 rounded-lg shadow-md text-center flex flex-col items-center justify-center">
+      <Link to="/relatos/estatisticas" className="w-full block mt-12">
+        <div className="bg-yellow-500 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center">
           <BarChart className="h-12 w-12 text-white mb-4" />
           <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
         </div>
