@@ -32,6 +32,7 @@ const UpdatePasswordPage = React.lazy(() => import('@/03-auth/pages/UpdatePasswo
 const ForcePasswordChangePage = React.lazy(() => import('@/03-auth/pages/ForcePasswordChangePage'));
 const UpdatePasswordProfilePage = React.lazy(() => import('@/04-profile/pages/UpdatePasswordProfilePage'));
 const UpdateEmailPage = React.lazy(() => import('@/04-profile/pages/UpdateEmailPage'));
+const ConfirmEmailChangePage = React.lazy(() => import('@/03-auth/pages/ConfirmEmailChangePage'));
 const RelatosPage = React.lazy(() => import('@/07-relatos/pages/RelatosPage'));
 const CreateRelatoPage = React.lazy(() => import('@/07-relatos/pages/CreateRelatoPage'));
 const RelatosAprovacaoPage = React.lazy(() => import('@/07-relatos/pages/RelatosAprovacaoPage'));
@@ -164,6 +165,7 @@ function AppWrapper({ showToast }) {
         <Route element={<PublicLayout />}>
           <Route path="/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordPage showToast={showToast} /></Suspense>} />
           <Route path="/auth" element={<Suspense fallback={<LoadingSpinner />}><LoginPage showToast={showToast} /></Suspense>} />
+          <Route path="/auth/confirm" element={<Suspense fallback={<LoadingSpinner />}><ConfirmEmailChangePage showToast={showToast} /></Suspense>} />
           {/* Qualquer outra rota sem sessão vai para /auth */}
           <Route path="*" element={<Navigate to="/auth" />} />
         </Route>
