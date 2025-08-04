@@ -20,7 +20,7 @@ import { handleServiceError } from '@/01-common/lib/errorUtils';
 export const getAllUsers = async () => {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, email, full_name, is_active, needs_password_reset, can_manage_relatos, can_view_users, can_create_users, can_delete_users')
+    .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users')
     .order('full_name', { ascending: true });
 
   if (error) throw error;

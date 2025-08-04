@@ -40,7 +40,7 @@ const UserDetailsPage = () => {
         setLoading(true);
         const { data, error } = await supabase
           .from('profiles')
-          .select('id, email, full_name, is_active, needs_password_reset, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks')
+          .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks')
           .eq('id', userId)
           .single();
 
@@ -48,7 +48,7 @@ const UserDetailsPage = () => {
         setUser(data);
         setEditedPermissions({
           is_active: data.is_active,
-          needs_password_reset: data.needs_password_reset,
+          
           can_manage_relatos: data.can_manage_relatos,
           can_view_users: data.can_view_users,
           can_create_users: data.can_create_users,
@@ -171,9 +171,7 @@ const UserDetailsPage = () => {
                         can_create_users: 'Criar Usuários',
                         can_delete_users: 'Deletar Usuários',
                         can_manage_relatos: 'Gerenciar Relatos',
-                        is_active: 'Ativo',
-                        needs_password_reset: 'Redefinir Senha no Próximo Login'
-                      };
+                        is_active: 'Ativo'
                       return displayNames[key] || key.replace('can_', '').replace('_', ' ');
                     })()}
                   </label>
@@ -202,9 +200,7 @@ const UserDetailsPage = () => {
                         can_delete_users: 'Deletar Usuários',
                         can_manage_relatos: 'Gerenciar Relatos',
                         can_view_feedbacks: 'Visualizar Feedbacks',
-                        is_active: 'Ativo',
-                        needs_password_reset: 'Redefinir Senha no Próximo Login'
-                      };
+                        is_active: 'Ativo'
                       return displayNames[key] || key.replace('can_', '').replace('_', ' ');
                     })()}
                   </label>

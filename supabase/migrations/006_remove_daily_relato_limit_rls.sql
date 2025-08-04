@@ -1,1 +1,0 @@
-DROP POLICY IF EXISTS "Allow users to insert up to 8 relatos per day" ON public.relatos;

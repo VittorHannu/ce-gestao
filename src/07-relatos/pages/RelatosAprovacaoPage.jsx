@@ -34,6 +34,14 @@ const RelatosAprovacaoPage = () => {
   }, [showToast]);
 
   const handleUpdateStatus = async (id, newStatus) => {
+    const relatoToUpdate = relatos.find(r => r.id === id);
+    if (!relatoToUpdate) {
+      showToast('Relato não encontrado na lista.', 'error');
+      return;
+    }
+
+    const oldStatus = relatoToUpdate.status;
+
     const { error } = await supabase
       .from('relatos')
       .update({ status: newStatus })
@@ -42,6 +50,25 @@ const RelatosAprovacaoPage = () => {
     if (error) {
       showToast(`Erro ao atualizar o status: ${error.message}`, 'error');
     } else {
+      // Log da ação de mudança de status
+      const { data: { user } } = await supabase.auth.getUser();
+      const currentUserId = user ? user.id : null;
+
+      const { error: logError } = await supabase.from('relato_logs').insert({
+        relato_id: id,
+        user_id: currentUserId,
+        action_type: 'STATUS_CHANGE',
+        details: {
+          old_status: oldStatus,
+          new_status: newStatus
+        }
+      });
+
+      if (logError) {
+        console.error('Erro ao registrar log de status:', logError);
+        // Não impede a operação principal, mas registra o erro
+      }
+
       showToast(`Relato ${newStatus.toLowerCase()} com sucesso!`, 'success');
       // Remove o relato da lista na UI para não precisar recarregar a página
       setRelatos(relatos.filter((r) => r.id !== id));

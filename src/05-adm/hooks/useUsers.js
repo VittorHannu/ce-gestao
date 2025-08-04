@@ -6,7 +6,7 @@ import { supabase } from '@/01-common/lib/supabase';
 const fetchUsers = async (searchTerm, filterNeedsPasswordReset) => {
   let query = supabase
     .from('profiles')
-    .select('id, email, full_name, is_active, needs_password_reset, can_manage_relatos, can_view_users, can_create_users, can_delete_users')
+    .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users')
     .order('full_name', { ascending: true });
 
   if (searchTerm) {
@@ -14,7 +14,7 @@ const fetchUsers = async (searchTerm, filterNeedsPasswordReset) => {
   }
 
   if (filterNeedsPasswordReset) {
-    query = query.eq('needs_password_reset', true);
+    
   }
 
   const { data, error } = await query;
@@ -23,7 +23,7 @@ const fetchUsers = async (searchTerm, filterNeedsPasswordReset) => {
   return data;
 };
 
-export const useUsers = (searchTerm = '', filterNeedsPasswordReset = false) => {
+export const useUsers = (searchTerm) => {
   return useQuery({
     queryKey: ['users', searchTerm, filterNeedsPasswordReset],
     queryFn: () => fetchUsers(searchTerm, filterNeedsPasswordReset),

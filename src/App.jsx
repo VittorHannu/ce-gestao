@@ -29,7 +29,7 @@ const LoginPage = React.lazy(() => import('@/03-auth/pages/LoginPage'));
 const HomePage = React.lazy(() => import('@/06-home/pages/HomePage'));
 const ProfilePage = React.lazy(() => import('@/04-profile/pages/ProfilePage'));
 const UpdatePasswordPage = React.lazy(() => import('@/03-auth/pages/UpdatePasswordPage'));
-const ForcePasswordChangePage = React.lazy(() => import('@/03-auth/pages/ForcePasswordChangePage'));
+
 const UpdatePasswordProfilePage = React.lazy(() => import('@/04-profile/pages/UpdatePasswordProfilePage'));
 const UpdateEmailPage = React.lazy(() => import('@/04-profile/pages/UpdateEmailPage'));
 const ConfirmEmailChangePage = React.lazy(() => import('@/03-auth/pages/ConfirmEmailChangePage'));
@@ -76,7 +76,7 @@ function AppWrapper({ showToast }) {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, is_active, needs_password_reset, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks')
+        .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks')
         .eq('id', userId)
         .single();
 
@@ -84,7 +84,6 @@ function AppWrapper({ showToast }) {
       setUser(data);
       console.log('DEBUG: Perfil do usuário buscado:', data);
       console.log('DEBUG: can_view_users no App.jsx:', data?.can_view_users);
-      console.log('DEBUG: needs_password_reset do usuário:', data?.needs_password_reset);
     } catch (error) {
       console.error('Erro ao buscar perfil:', error);
       showToast('Erro ao carregar dados do perfil.', 'error');
@@ -110,7 +109,7 @@ function AppWrapper({ showToast }) {
 
       // Lógica de redirecionamento do localStorage
       const lastPath = localStorage.getItem('lastPath');
-      if (lastPath && lastPath !== location.pathname && lastPath !== '/auth' && lastPath !== '/update-password' && lastPath !== '/force-password-change') {
+      if (lastPath && lastPath !== location.pathname && lastPath !== '/auth' && lastPath !== '/update-password') {
         navigate(lastPath);
       }
       setIsReadyForRender(true); // Marca que a aplicação está pronta para renderizar as rotas
@@ -149,16 +148,7 @@ function AppWrapper({ showToast }) {
     );
   }
 
-  // Se o usuário precisa trocar a senha, redireciona para a página de troca forçada
-  if (session && user && user.needs_password_reset) {
-    return (
-      <Routes>
-        <Route element={<PublicLayout />}>
-          <Route path="*" element={<Suspense fallback={<LoadingSpinner />}><ForcePasswordChangePage showToast={showToast} /></Suspense>} />
-        </Route>
-      </Routes>
-    );
-  }
+  
 
   // Se não há sessão, renderiza as rotas públicas (Auth, UpdatePasswordPage)
   if (!session) {

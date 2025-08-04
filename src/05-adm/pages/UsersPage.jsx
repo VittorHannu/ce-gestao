@@ -12,10 +12,10 @@ import { Label } from '@/core/components/ui/label';
 
 function UsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterNeedsPasswordReset, setFilterNeedsPasswordReset] = useState(false);
+  
   const navigate = useNavigate();
 
-  const { data: users, isLoading: loading, isError, error } = useUsers(searchTerm, filterNeedsPasswordReset);
+  const { data: users, isLoading: loading, isError, error } = useUsers(searchTerm);
 
   const handleSearchChange = (value) => {
     setSearchTerm(value);
@@ -44,14 +44,7 @@ function UsersPage() {
           <span>Novo Usuário</span>
         </Button>
       </div>
-      <div className="mb-4 flex items-center space-x-2">
-        <Checkbox
-          id="needsPasswordResetFilter"
-          checked={filterNeedsPasswordReset}
-          onCheckedChange={setFilterNeedsPasswordReset}
-        />
-        <Label htmlFor="needsPasswordResetFilter">Apenas usuários que precisam redefinir a senha</Label>
-      </div>
+      
       
       {loading ? (
         <p>Carregando usuários...</p>
@@ -70,9 +63,8 @@ function UsersPage() {
               <p className="font-semibold">{user.full_name}</p>
               <p className="text-sm text-gray-600">{user.email}</p>
               <p className="text-xs text-gray-500">Status: {user.is_active ? 'Ativo' : 'Inativo'}</p>
-              {user.needs_password_reset && (
-                <p className="text-xs text-red-500">Redefinir Senha</p>
-              )}
+              
+                }
               
             </li>
           ))}

@@ -26,6 +26,7 @@ const RelatoDetailsPage = () => {
 
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const canManageRelatos = userProfile?.can_manage_relatos;
+  const canDeleteRelatos = userProfile?.can_delete_relatos;
 
   const handleReapproveRelato = async () => {
     if (window.confirm('Tem certeza que deseja reaprovar este relato?')) {
@@ -283,6 +284,10 @@ const RelatoDetailsPage = () => {
   };
 
   const handleDeleteRelato = async () => {
+    if (!canDeleteRelatos) {
+      showToast('Você não tem permissão para excluir relatos.', 'error');
+      return;
+    }
     if (window.confirm('Tem certeza que deseja excluir este relato? Esta ação não pode ser desfeita.')) {
       setIsDeleting(true);
       try {
@@ -353,7 +358,7 @@ const RelatoDetailsPage = () => {
             <Button onClick={() => setIsEditing(true)}>Editar</Button>
           )
         )}
-        {canManageRelatos && !isEditing && (
+        {canDeleteRelatos && !isEditing && (
           <Button variant="destructive" onClick={handleDeleteRelato} disabled={isDeleting}>
             {isDeleting ? 'Excluindo...' : 'Excluir'}
           </Button>
