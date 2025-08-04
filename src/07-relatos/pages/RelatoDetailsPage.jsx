@@ -351,15 +351,33 @@ const RelatoDetailsPage = () => {
 const formatLogDetails = (log) => {
   switch (log.action_type) {
   case 'CREATE':
+    // Exibe o relato completo para o log de criação
     return (
-      <span className="ml-1">criou o relato.</span>
+      <div className="ml-1 mt-2 p-2 bg-gray-100 rounded-md text-xs">
+        <p className="font-semibold">Relato criado com os seguintes dados:</p>
+        <ul className="list-disc list-inside ml-2">
+          {Object.entries(log.details).map(([key, value]) => {
+            // Ignorar 'responsaveis' aqui, pois será logado separadamente se houver
+            if (key === 'responsaveis') return null;
+            return (
+              <li key={key}>
+                <span className="font-medium">{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</span> {String(value)}
+              </li>
+            );
+          })}
+          {log.details.responsaveis && log.details.responsaveis.length > 0 && (
+            <li>
+              <span className="font-medium">Responsáveis:</span> {log.details.responsaveis.join(', ')}
+            </li>
+          )}
+        </ul>
+      </div>
     );
   case 'UPDATE':
-    if (log.details?.field && log.details?.old_value !== undefined && log.details?.new_value !== undefined) {
+    if (log.details?.field && log.details?.new_value !== undefined) {
       return (
         <span className="ml-1">
-            alterou o campo &apos;<span className="font-mono text-blue-600">{log.details.field}</span>&apos; de 
-            &apos;<span className="font-mono text-red-600">{String(log.details.old_value)}</span>&apos; para 
+            alterou o campo &apos;<span className="font-mono text-blue-600">{log.details.field}</span>&apos; para 
             &apos;<span className="font-mono text-green-600">{String(log.details.new_value)}</span>&apos;.
         </span>
       );
