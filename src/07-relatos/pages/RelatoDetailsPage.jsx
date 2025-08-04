@@ -16,6 +16,7 @@ const RelatoDetailsPage = () => {
   const [relato, setRelato] = useState(null);
   const [allUsers, setAllUsers] = useState([]); // Novo estado para todos os usuários
   const [currentResponsibles, setCurrentResponsibles] = useState([]); // Novo estado para responsáveis do relato
+  const [displayResponsibles, setDisplayResponsibles] = useState([]); // Novo estado para responsáveis para exibição
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false); // Novo estado para modo de edição
@@ -28,8 +29,8 @@ const RelatoDetailsPage = () => {
   const fetchRelato = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from('relatos')
-      .select('*, relato_responsaveis(user_id, profiles(full_name, email))') // Busca relato e responsáveis
+      .from('relatos_with_responsibles_view')
+      .select('*')
       .eq('id', id)
       .single();
 
@@ -42,7 +43,9 @@ const RelatoDetailsPage = () => {
     } else {
       setRelato(data);
       // Mapeia os responsáveis para um formato mais fácil de usar
-      setCurrentResponsibles(data.relato_responsaveis.map(r => r.user_id));
+      setCurrentResponsibles(data.responsibles_details ? data.responsibles_details.map(r => r.id) : []); // IDs para o formulário
+      setDisplayResponsibles(data.responsibles_details || []); // Objetos de perfil para exibição
+      console.log('Display Responsibles (from fetchRelato):', data.responsibles_details);
     }
     setLoading(false);
   }, [id, showToast]);
@@ -179,7 +182,7 @@ const RelatoDetailsPage = () => {
           initialResponsibles={currentResponsibles} // Passa os responsáveis atuais
         />
       ) : (
-        <RelatoDisplayDetails relato={relato} />
+        <RelatoDisplayDetails relato={relato} responsibles={displayResponsibles} />
       )}
 
       <div className="mt-6 flex space-x-2">

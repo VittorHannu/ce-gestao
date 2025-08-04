@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/01-common/lib/supabase';
 
-const RelatoDisplayDetails = ({ relato }) => {
+const RelatoDisplayDetails = ({ relato, responsibles = [] }) => {
   const [relatorName, setRelatorName] = useState('Carregando...');
 
   useEffect(() => {
@@ -34,6 +34,13 @@ const RelatoDisplayDetails = ({ relato }) => {
     fetchRelatorName();
   }, [relato.is_anonymous, relato.user_id]);
 
+  const formatFullName = (fullName) => {
+    if (!fullName) return 'Não informado';
+    const names = fullName.split(' ');
+    if (names.length <= 3) return fullName;
+    return `${names[0]} ${names[1]} ${names[2]}...`;
+  };
+
   if (!relato) {
     return <p>Nenhum relato para exibir.</p>;
   }
@@ -50,6 +57,9 @@ const RelatoDisplayDetails = ({ relato }) => {
       {relato.danos_ocorridos && <p><strong>Danos Ocorridos:</strong> {relato.danos_ocorridos}</p>}
       {relato.planejamento_cronologia_solucao && <p><strong>Planejamento/Cronologia da Solução:</strong> {relato.planejamento_cronologia_solucao}</p>}
       {relato.data_conclusao_solucao && <p><strong>Data de Conclusão da Solução:</strong> {new Date(relato.data_conclusao_solucao).toLocaleDateString()}</p>}
+      {responsibles.length > 0 && (
+        <p><strong>Responsáveis:</strong> {responsibles.map(r => formatFullName(r.full_name)).join(', ')}</p>
+      )}
       <p><strong>Status:</strong> {relato.status}</p>
       <p><strong>Criado em:</strong> {new Date(relato.created_at).toLocaleString()}</p>
     </div>
