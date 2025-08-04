@@ -114,12 +114,12 @@ const ProfilePage = () => {
             {/* Seção de Configurações da Conta */}
             <div className="p-4 border rounded-lg bg-gray-800 shadow-md mb-6">
               <div className="flex flex-col space-y-4">
-                <Link to="/perfil/update-email" className="w-full">
+                {/* <Link to="/perfil/update-email" className="w-full">
                   <Button className="w-full" variant="onDark">
                     <Mail className="w-4 h-4 mr-2" />
                     Alterar Email
                   </Button>
-                </Link>
+                </Link> */}
                 <Link to="/perfil/update-password" className="w-full">
                   <Button className="w-full" variant="onDark">
                     <Key className="w-4 h-4 mr-2" />
