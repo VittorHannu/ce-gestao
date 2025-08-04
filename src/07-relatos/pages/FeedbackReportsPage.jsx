@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useOutletContext } from 'react-router-dom';
+import BackButton from '@/01-common/components/BackButton';
 
 const FeedbackReportsPage = () => {
   const queryClient = useQueryClient();
@@ -67,6 +68,7 @@ const FeedbackReportsPage = () => {
 
   return (
     <MainLayout title="Relatórios de Feedback">
+      <BackButton />
       <DataLoader loading={isLoading} error={error} loadingMessage="Carregando relatórios...">
         <div className="space-y-4 p-4">
           {reports && reports.length > 0 ? (
