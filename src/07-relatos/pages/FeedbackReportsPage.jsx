@@ -1,14 +1,18 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/01-common/lib/supabase';
 import MainLayout from '@/01-common/components/MainLayout';
 import DataLoader from '@/01-common/components/data-loader/DataLoader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/core/components/ui/card';
 import { Badge } from '@/core/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/core/components/ui/select';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { useOutletContext } from 'react-router-dom';
 
 const FeedbackReportsPage = () => {
+  const queryClient = useQueryClient();
+  const { showToast } = useOutletContext();
   const { data: reports, isLoading, error } = useQuery({
     queryKey: ['feedbackReports'],
     queryFn: async () => {
@@ -20,6 +24,27 @@ const FeedbackReportsPage = () => {
       return data;
     }
   });
+
+  const { mutate: updateReportStatus, isLoading: isUpdatingStatus } = useMutation({
+    mutationFn: async ({ id, status }) => {
+      const { error } = await supabase
+        .from('feedback_reports')
+        .update({ status })
+        .eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['feedbackReports']);
+      showToast('Status do relatório atualizado com sucesso!', 'success');
+    },
+    onError: (error) => {
+      showToast(`Erro ao atualizar status: ${error.message}`, 'error');
+    }
+  });
+
+  const handleStatusChange = (id, newStatus) => {
+    updateReportStatus({ id, status: newStatus });
+  };
 
   const getBadgeVariant = (status) => {
     switch (status) {
@@ -51,7 +76,20 @@ const FeedbackReportsPage = () => {
                   <CardTitle className="text-lg font-medium">
                     {getReportTypeLabel(report.report_type)}: {report.subject || 'Sem Assunto'}
                   </CardTitle>
-                  <Badge variant={getBadgeVariant(report.status)}>{report.status}</Badge>
+                  <div className="flex items-center space-x-2">
+                    <Select onValueChange={(newStatus) => handleStatusChange(report.id, newStatus)} value={report.status} disabled={isUpdatingStatus}>
+                      <SelectTrigger className="w-[140px]">
+                        <SelectValue placeholder={report.status} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="PENDENTE">PENDENTE</SelectItem>
+                        <SelectItem value="EM_ANALISE">EM ANÁLISE</SelectItem>
+                        <SelectItem value="RESOLVIDO">RESOLVIDO</SelectItem>
+                        <SelectItem value="FECHADO">FECHADO</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Badge variant={getBadgeVariant(report.status)}>{report.status}</Badge>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600 mb-2">{report.description}</p>

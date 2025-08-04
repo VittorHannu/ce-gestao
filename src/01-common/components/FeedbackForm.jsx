@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/core/components/ui/dialog';
 
 const FeedbackForm = ({ isOpen, onClose }) => {
-  const { showToast } = useOutletContext();
+  const { showToast, user } = useOutletContext();
   const [reportType, setReportType] = useState('');
   const [subject, setSubject] = useState('');
   const [description, setDescription] = useState('');
@@ -39,7 +39,7 @@ const FeedbackForm = ({ isOpen, onClose }) => {
       showToast('Por favor, preencha o tipo e a descrição.', 'error');
       return;
     }
-    submitFeedback({ report_type: reportType, subject, description, user_id: supabase.auth.user()?.id });
+    submitFeedback({ report_type: reportType, subject, description, user_id: user?.id });
   };
 
   return (

@@ -28,7 +28,7 @@ const Toast = ({ message, type, onClose }) => {
   if (!isVisible) return null;
 
   return (
-    <div className={`fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white flex items-center space-x-3 ${bgColor} z-50`}>
+    <div className={`fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white flex items-center space-x-3 ${bgColor} z-[9999]`}>
       <Icon className="w-6 h-6" />
       <p className="flex-1">{message}</p>
       <button onClick={() => {
