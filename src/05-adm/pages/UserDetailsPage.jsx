@@ -25,13 +25,30 @@ const UserDetailsPage = () => {
   const [editedPermissions, setEditedPermissions] = useState({});
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const _permissionKeys = [
-    'can_view_users',
-    'can_create_users',
-    'can_delete_users',
-    'can_manage_relatos',
-    'can_view_feedbacks',
-    'is_active'
+  const permissionGroups = [
+    {
+      title: 'Status da Conta',
+      permissions: [
+        { key: 'is_active', label: 'Ativo' }
+      ]
+    },
+    {
+      title: 'Permissões de Usuários',
+      permissions: [
+        { key: 'can_manage_users', label: 'Gerenciar Usuários' },
+        { key: 'can_view_users', label: 'Visualizar Usuários' },
+        { key: 'can_create_users', label: 'Criar Usuários' },
+        { key: 'can_delete_users', label: 'Deletar Usuários' }
+      ]
+    },
+    {
+      title: 'Permissões de Relatos',
+      permissions: [
+        { key: 'can_manage_relatos', label: 'Gerenciar Relatos' },
+        { key: 'can_view_feedbacks', label: 'Visualizar Feedbacks' },
+        { key: 'can_delete_relatos', label: 'Deletar Relatos' }
+      ]
+    }
   ];
 
   useEffect(() => {
@@ -40,7 +57,7 @@ const UserDetailsPage = () => {
         setLoading(true);
         const { data, error } = await supabase
           .from('profiles')
-          .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks')
+          .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks, can_delete_relatos, can_manage_users')
           .eq('id', userId)
           .single();
 
@@ -48,12 +65,13 @@ const UserDetailsPage = () => {
         setUser(data);
         setEditedPermissions({
           is_active: data.is_active,
-          
           can_manage_relatos: data.can_manage_relatos,
           can_view_users: data.can_view_users,
           can_create_users: data.can_create_users,
           can_delete_users: data.can_delete_users,
-          can_view_feedbacks: data.can_view_feedbacks
+          can_view_feedbacks: data.can_view_feedbacks,
+          can_delete_relatos: data.can_delete_relatos,
+          can_manage_users: data.can_manage_users
         });
       } catch (err) {
         setError(err);
@@ -145,88 +163,26 @@ const UserDetailsPage = () => {
 
   return (
     <MainLayout>
-      <div className="bg-white rounded-lg shadow-sm border border-slate-400 p-4 flex flex-col">
+      <div className="bg-white rounded-lg shadow-md p-4 flex flex-col">
         <div className="flex-grow">
           <h4 className="font-bold text-lg mb-2">{user.full_name || 'N/A'}</h4>
           <p className="text-sm text-gray-600 mb-4">{user.email}</p>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            {/* Coluna de Permissões de Usuários */}
-            <div>
-              <h5 className="font-semibold mb-2">Permissões de Usuários</h5>
-              {[ 
-                'can_view_users',
-                'can_create_users',
-                'can_delete_users'
-              ].map(key => (
-                <div key={key} className="flex items-center mb-2">
-                  <Checkbox
-                    checked={editedPermissions[key]}
-                    onCheckedChange={(checked) => handlePermissionChange(key, checked)}
-                    id={`${user.id}-${key}`}
-                  />
-                  <label htmlFor={`${user.id}-${key}`} className="ml-2 capitalize">
-                    {(() => {
-                      const displayNames = {
-                        can_view_users: 'Visualizar Usuários',
-                        can_create_users: 'Criar Usuários',
-                        can_delete_users: 'Deletar Usuários',
-                        can_manage_relatos: 'Gerenciar Relatos',
-                        is_active: 'Ativo'
-                      };
-                      return displayNames[key] || key.replace('can_', '').replace('_', ' ');
-                    })()}
-                  </label>
-                </div>
-              ))}
-            </div>
-
-            {/* Coluna de Permissões de Relatos */}
-            <div>
-              <h5 className="font-semibold mb-2">Permissões de Relatos</h5>
-              {[ 
-                'can_manage_relatos',
-                'can_view_feedbacks'
-              ].map(key => (
-                <div key={key} className="flex items-center mb-2">
-                  <Checkbox
-                    checked={editedPermissions[key]}
-                    onCheckedChange={(checked) => handlePermissionChange(key, checked)}
-                    id={`${user.id}-${key}`}
-                  />
-                  <label htmlFor={`${user.id}-${key}`} className="ml-2 capitalize">
-                    {(() => {
-                      const displayNames = {
-                        can_view_users: 'Visualizar Usuários',
-                        can_create_users: 'Criar Usuários',
-                        can_delete_users: 'Deletar Usuários',
-                        can_manage_relatos: 'Gerenciar Relatos',
-                        can_view_feedbacks: 'Visualizar Feedbacks',
-                        is_active: 'Ativo'
-                      };
-                      return displayNames[key] || key.replace('can_', '').replace('_', ' ');
-                    })()}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Nova Seção: Status da Conta */}
-          <div className="mt-4">
-            <h5 className="font-semibold mb-2">Status da Conta</h5>
-            {[ 
-              'is_active'
-            ].map(key => (
-              <div key={key} className="flex items-center mb-2">
-                <Checkbox
-                  checked={editedPermissions[key]}
-                  onCheckedChange={(checked) => handlePermissionChange(key, checked)}
-                  id={`${user.id}-${key}`}
-                />
-                <label htmlFor={`${user.id}-${key}`} className="ml-2 capitalize">
-                  {key === 'is_active' ? 'Ativo' :
-                    ''}
-                </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+            {permissionGroups.map((group, groupIndex) => (
+              <div key={groupIndex} className="p-3 rounded-md">
+                <h5 className="font-semibold mb-2 text-base">{group.title}</h5>
+                {group.permissions.map(({ key, label }) => (
+                  <div key={key} className="flex items-center mb-2">
+                    <Checkbox
+                      checked={editedPermissions[key]}
+                      onCheckedChange={(checked) => handlePermissionChange(key, checked)}
+                      id={`${user.id}-${key}`}
+                    />
+                    <label htmlFor={`${user.id}-${key}`} className="ml-2 capitalize">
+                      {label}
+                    </label>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
