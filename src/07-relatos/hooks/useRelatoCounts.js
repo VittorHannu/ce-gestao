@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/01-common/lib/supabase';
 
-const fetchRelatoCounts = async () => {
+const fetchRelatoCounts = async (user) => {
   // Contagem de Todos os Relatos Aprovados
   const { count: totalAprovados, error: errorTotal } = await supabase
     .from('relatos')
@@ -47,15 +48,48 @@ const fetchRelatoCounts = async () => {
 
   if (errorPendenteAprovacao) throw errorPendenteAprovacao;
 
+  // Contagem de Relatos Atribuídos ao Usuário Logado
+  let relatosAtribuidos = 0;
+  if (user) {
+    const { count, error } = await supabase
+      .from('relato_responsaveis')
+      .select('relato_id', { count: 'exact' })
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error('Erro ao buscar relatos atribuídos:', error);
+      // Não lançar erro aqui para não quebrar as outras contagens
+    } else {
+      relatosAtribuidos = count;
+    }
+  }
+
   return {
     totalAprovados,
     concluidos,
     emAndamento,
     semTratativa,
-    pendenteAprovacao
+    pendenteAprovacao,
+    relatosAtribuidos
   };
 };
 
 export const useRelatoCounts = () => {
-  return useQuery({ queryKey: ['relatoCounts'], queryFn: fetchRelatoCounts });
+  const [user, setUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      setLoadingUser(false);
+    };
+    getUser();
+  }, []);
+
+  return useQuery({
+    queryKey: ['relatoCounts', user?.id],
+    queryFn: () => fetchRelatoCounts(user),
+    enabled: !loadingUser && !!user // Só executa a query se o usuário estiver carregado e logado
+  });
 };

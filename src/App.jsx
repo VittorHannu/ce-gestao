@@ -38,6 +38,7 @@ const RelatosAprovacaoPage = React.lazy(() => import('@/07-relatos/pages/Relatos
 const RelatosListaPage = React.lazy(() => import('@/07-relatos/pages/RelatosListaPage'));
 const RelatoDetailsPage = React.lazy(() => import('@/07-relatos/pages/RelatoDetailsPage'));
 const RelatosStatsPage = React.lazy(() => import('@/07-relatos/pages/RelatosStatsPage'));
+const RelatosAtribuidosPage = React.lazy(() => import('@/07-relatos/pages/RelatosAtribuidosPage'));
 
 import MainLayout from '@/01-common/components/MainLayout';
 
@@ -181,6 +182,7 @@ function AppWrapper({ showToast }) {
         <Route path="/relatos/lista" element={<Suspense fallback={<LoadingSpinner />}><RelatosListaPage /></Suspense>} />
         <Route path="/relatos/detalhes/:id" element={<Suspense fallback={<LoadingSpinner />}><RelatoDetailsPage /></Suspense>} />
         <Route path="/relatos/estatisticas" element={<Suspense fallback={<LoadingSpinner />}><RelatosStatsPage /></Suspense>} />
+        <Route path="/relatos/atribuidos" element={<Suspense fallback={<LoadingSpinner />}><RelatosAtribuidosPage /></Suspense>} />
       </Route>
 
       {/* Fallback para qualquer outra rota quando logado, redireciona para a home */}

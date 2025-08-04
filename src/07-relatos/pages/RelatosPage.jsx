@@ -84,6 +84,16 @@ const RelatosPage = () => {
         <Link to="/relatos/novo" className="w-full">
           <Button size="lg" className="w-full shadow-none">Criar Novo Relato</Button>
         </Link>
+        <Link to="/relatos/atribuidos" className="w-full">
+          <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2 shadow-none">
+            <span>Relatos Atribuídos a Você</span>
+            {relatoCounts?.relatosAtribuidos > 0 && (
+              <span className="ml-2 px-2 py-1 text-xs font-bold text-white bg-blue-500 rounded-full">
+                {relatoCounts.relatosAtribuidos}
+              </span>
+            )}
+          </Button>
+        </Link>
       </div>
 
       <Link to="/relatos/estatisticas" className="w-full block mt-12">
