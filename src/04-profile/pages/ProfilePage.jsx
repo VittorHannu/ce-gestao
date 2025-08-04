@@ -84,7 +84,7 @@ const ProfilePage = () => {
         {userProfile && (
           <>
             {/* Seção de Informações Básicas do Usuário */}
-            <div className="flex flex-col items-center space-y-4 mb-6 p-4 border rounded-lg bg-gray-800 shadow-md">
+            <div className="flex flex-col items-center space-y-4 mb-6 px-4 py-12 border rounded-lg bg-gray-800 shadow-md">
               <div className="relative">
                 <div className="w-24 h-24 bg-gray-200 rounded-full overflow-hidden flex items-center justify-center">
                   {userProfile.avatar_url ? (
