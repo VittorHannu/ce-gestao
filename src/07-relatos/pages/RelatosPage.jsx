@@ -52,7 +52,7 @@ const RelatosPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold text-center mb-6">Segurança Laboral</h1>
+      <h1 className="text-2xl font-bold text-center mb-8">Segurança Laboral</h1>
       <div className="grid grid-cols-2 gap-4">
         {cardData.map((card, index) => (
           <RelatoStatsCard
