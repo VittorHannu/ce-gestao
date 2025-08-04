@@ -48,13 +48,14 @@ const fetchRelatoCounts = async (user) => {
 
   if (errorPendenteAprovacao) throw errorPendenteAprovacao;
 
-  // Contagem de Relatos Atribuídos ao Usuário Logado
+  // Contagem de Relatos Atribuídos ao Usuário Logado (excluindo concluídos)
   let relatosAtribuidos = 0;
   if (user) {
     const { count, error } = await supabase
       .from('relato_responsaveis')
-      .select('relato_id', { count: 'exact' })
-      .eq('user_id', user.id);
+      .select('relato_id!inner(id, data_conclusao_solucao)', { count: 'exact' })
+      .eq('user_id', user.id)
+      .is('relato_id.data_conclusao_solucao', null);
 
     if (error) {
       console.error('Erro ao buscar relatos atribuídos:', error);
