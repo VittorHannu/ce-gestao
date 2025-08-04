@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/01-common/lib/supabase';
 import MainLayout from '@/01-common/components/MainLayout';
@@ -14,13 +14,22 @@ import BackButton from '@/01-common/components/BackButton';
 const FeedbackReportsPage = () => {
   const queryClient = useQueryClient();
   const { showToast } = useOutletContext();
+  const [filterType, setFilterType] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+
   const { data: reports, isLoading, error } = useQuery({
-    queryKey: ['feedbackReports'],
+    queryKey: ['feedbackReports', filterType, filterStatus],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('feedback_reports')
-        .select('*, profiles(full_name, email)')
-        .order('created_at', { ascending: false });
+      let query = supabase.from('feedback_reports').select('*, profiles(full_name, email)');
+
+      if (filterType !== 'all') {
+        query = query.eq('report_type', filterType);
+      }
+      if (filterStatus !== 'all') {
+        query = query.eq('status', filterStatus);
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
       if (error) throw error;
       return data;
     }
@@ -72,6 +81,34 @@ const FeedbackReportsPage = () => {
         <BackButton />
         <h1 className="text-2xl font-bold">Relatórios de Feedback</h1>
       </div>
+
+      <div className="flex flex-wrap space-x-4 mb-4">
+        <Select onValueChange={setFilterType} value={filterType}>
+          <SelectTrigger className="w-[180px] bg-gray-700 text-white">
+            <SelectValue placeholder="Filtrar por Tipo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos os Tipos</SelectItem>
+            <SelectItem value="feedback">Feedback</SelectItem>
+            <SelectItem value="bug">Bug / Erro</SelectItem>
+            <SelectItem value="suggestion">Sugestão</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select onValueChange={setFilterStatus} value={filterStatus}>
+          <SelectTrigger className="w-[180px] bg-gray-700 text-white">
+            <SelectValue placeholder="Filtrar por Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos os Status</SelectItem>
+            <SelectItem value="PENDENTE">PENDENTE</SelectItem>
+            <SelectItem value="EM_ANALISE">EM ANÁLISE</SelectItem>
+            <SelectItem value="RESOLVIDO">RESOLVIDO</SelectItem>
+            <SelectItem value="FECHADO">FECHADO</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       <DataLoader loading={isLoading} error={error} loadingMessage="Carregando relatórios...">
         <div className="space-y-4 p-4">
           {reports && reports.length > 0 ? (
