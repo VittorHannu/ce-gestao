@@ -68,16 +68,30 @@ const FeedbackReportsPage = () => {
 
   return (
     <MainLayout title="Relatórios de Feedback">
-      <BackButton />
+      <div className="flex items-center gap-4 mb-4">
+        <BackButton />
+        <h1 className="text-2xl font-bold">Relatórios de Feedback</h1>
+      </div>
       <DataLoader loading={isLoading} error={error} loadingMessage="Carregando relatórios...">
         <div className="space-y-4 p-4">
           {reports && reports.length > 0 ? (
             reports.map((report) => (
               <Card key={report.id}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-lg font-medium">
-                    {getReportTypeLabel(report.report_type)}: {report.subject || 'Sem Assunto'}
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg font-medium mb-1">
+                    {getReportTypeLabel(report.report_type)}
                   </CardTitle>
+                  <p className="text-sm font-semibold text-gray-700 mb-2">
+                    Assunto: {report.subject || 'Sem Assunto'}
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 mb-2">{report.description}</p>
+                  <p className="text-xs text-gray-500 mb-4">
+                    Enviado por: {report.profiles?.full_name || report.profiles?.email || 'Usuário Desconhecido'} em {
+                      format(new Date(report.created_at), 'dd/MM/yyyy HH:mm', { locale: ptBR })
+                    }
+                  </p>
                   <div className="flex items-center space-x-2">
                     <Select onValueChange={(newStatus) => handleStatusChange(report.id, newStatus)} value={report.status} disabled={isUpdatingStatus}>
                       <SelectTrigger className="w-[140px]">
@@ -92,14 +106,6 @@ const FeedbackReportsPage = () => {
                     </Select>
                     <Badge variant={getBadgeVariant(report.status)}>{report.status}</Badge>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 mb-2">{report.description}</p>
-                  <p className="text-xs text-gray-500">
-                    Enviado por: {report.profiles?.full_name || report.profiles?.email || 'Usuário Desconhecido'} em {
-                      format(new Date(report.created_at), 'dd/MM/yyyy HH:mm', { locale: ptBR })
-                    }
-                  </p>
                 </CardContent>
               </Card>
             ))
