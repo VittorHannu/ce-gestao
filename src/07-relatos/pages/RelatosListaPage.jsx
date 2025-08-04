@@ -37,36 +37,25 @@ const RelatosListaPage = () => {
       const queryParams = new URLSearchParams(location.search);
       const statusFilter = queryParams.get('status');
 
-      let query = supabase.from('relatos').select('*, relato_code').eq('status', 'APROVADO');
+      console.log('Fetching relatos with:');
+      console.log('  statusFilter:', statusFilter);
+      console.log('  searchTerm:', searchTerm);
 
-      if (statusFilter === 'concluido') {
-        query = query.not('data_conclusao_solucao', 'is', null);
-      } else if (statusFilter === 'em_andamento') {
-        query = query.not('planejamento_cronologia_solucao', 'is', null);
-        query = query.is('data_conclusao_solucao', null);
-      } else if (statusFilter === 'sem_tratativa') {
-        query = query.is('planejamento_cronologia_solucao', null);
-        query = query.is('data_conclusao_solucao', null);
-      }
+      const { data, error } = await supabase.rpc('search_relatos_unaccented', {
+        p_search_term: searchTerm,
+        p_status_filter: statusFilter
+      });
 
-      // Adiciona filtro de pesquisa se houver um termo
-      if (searchTerm) {
-        query = query.or(
-          `local_ocorrencia.ilike.%${searchTerm}%`,
-          `descricao.ilike.%${searchTerm}%`,
-          `riscos_identificados.ilike.%${searchTerm}%`,
-          `danos_ocorridos.ilike.%${searchTerm}%`,
-          `planejamento_cronologia_solucao.ilike.%${searchTerm}%`
-        );
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false });
+      console.log('Supabase query result:');
+      console.log('  data:', data);
+      console.log('  error:', error);
 
       if (error) {
         console.error('Erro ao buscar relatos:', error);
         showToast('Erro ao carregar relatos.', 'error');
       } else {
         setRelatos(data);
+        console.log('Relatos state after setRelatos:', data);
       }
       setLoading(false);
     };
