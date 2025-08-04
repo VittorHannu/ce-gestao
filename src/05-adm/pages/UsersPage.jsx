@@ -49,7 +49,7 @@ function UsersPage() {
           checked={filterNeedsPasswordReset}
           onCheckedChange={setFilterNeedsPasswordReset}
         />
-        <Label htmlFor="needsPasswordResetFilter">Mostrar apenas usuários que precisam redefinir a senha</Label>
+        <Label htmlFor="needsPasswordResetFilter">Apenas usuários que precisam redefinir a senha</Label>
       </div>
       
       {loading ? (
