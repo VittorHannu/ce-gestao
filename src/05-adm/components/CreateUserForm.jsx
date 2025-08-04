@@ -26,6 +26,11 @@ const CreateUserForm = ({ onUserCreated, onCancel }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!fullName) {
+      showToast('Por favor, preencha o nome completo.', 'error');
+      setIsLoading(false); // Garante que o botão não fique travado
+      return;
+    }
     setIsLoading(true);
     try {
       const userData = { email, password, fullName, permissions };
