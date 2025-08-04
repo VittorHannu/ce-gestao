@@ -171,7 +171,7 @@ const UserDetailsPage = () => {
                         can_delete_users: 'Deletar Usuários',
                         can_manage_relatos: 'Gerenciar Relatos',
                         is_active: 'Ativo',
-                        needs_password_reset: 'Redefinir Senha no Próximo Login',
+                        needs_password_reset: 'Redefinir Senha no Próximo Login'
                       };
                       return displayNames[key] || key.replace('can_', '').replace('_', ' ');
                     })()}
@@ -200,7 +200,7 @@ const UserDetailsPage = () => {
                         can_delete_users: 'Deletar Usuários',
                         can_manage_relatos: 'Gerenciar Relatos',
                         is_active: 'Ativo',
-                        needs_password_reset: 'Redefinir Senha no Próximo Login',
+                        needs_password_reset: 'Redefinir Senha no Próximo Login'
                       };
                       return displayNames[key] || key.replace('can_', '').replace('_', ' ');
                     })()}

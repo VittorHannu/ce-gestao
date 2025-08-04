@@ -6,13 +6,16 @@ import { useUsers } from '@/05-adm/hooks/useUsers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/core/components/ui/button';
+import { Checkbox } from '@/core/components/ui/checkbox';
+import { Label } from '@/core/components/ui/label';
 
 
 function UsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterNeedsPasswordReset, setFilterNeedsPasswordReset] = useState(false);
   const navigate = useNavigate();
 
-  const { data: users, isLoading: loading, isError, error } = useUsers(searchTerm);
+  const { data: users, isLoading: loading, isError, error } = useUsers(searchTerm, filterNeedsPasswordReset);
 
   const handleSearchChange = (value) => {
     setSearchTerm(value);
@@ -40,6 +43,14 @@ function UsersPage() {
           <span>Novo Usuário</span>
         </Button>
       </div>
+      <div className="mb-4 flex items-center space-x-2">
+        <Checkbox
+          id="needsPasswordResetFilter"
+          checked={filterNeedsPasswordReset}
+          onCheckedChange={setFilterNeedsPasswordReset}
+        />
+        <Label htmlFor="needsPasswordResetFilter">Mostrar apenas usuários que precisam redefinir a senha</Label>
+      </div>
       
       {loading ? (
         <p>Carregando usuários...</p>
@@ -61,13 +72,7 @@ function UsersPage() {
               {user.needs_password_reset && (
                 <p className="text-xs text-red-500">Redefinir Senha</p>
               )}
-              <div className="text-xs text-gray-500 mt-1">
-                Permissões: 
-                {user.can_manage_relatos && 'Relatos, '}
-                {user.can_view_users && 'Ver Usuários, '}
-                {user.can_create_users && 'Criar Usuários, '}
-                {user.can_delete_users && 'Deletar Usuários'}
-              </div>
+              
             </li>
           ))}
         </ul>

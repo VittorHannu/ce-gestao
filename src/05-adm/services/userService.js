@@ -53,8 +53,8 @@ export const createUser = async (userData) => {
     const { data: response, error: invokeError } = await supabase.functions.invoke('create-user', {
       body: JSON.stringify(userData),
       headers: {
-        'Authorization': `Bearer ${session.access_token}`,
-      },
+        'Authorization': `Bearer ${session.access_token}`
+      }
     });
       
 
