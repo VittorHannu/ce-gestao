@@ -61,6 +61,13 @@ function UsersPage() {
               {user.needs_password_reset && (
                 <p className="text-xs text-red-500">Redefinir Senha</p>
               )}
+              <div className="text-xs text-gray-500 mt-1">
+                Permissões: 
+                {user.can_manage_relatos && 'Relatos, '}
+                {user.can_view_users && 'Ver Usuários, '}
+                {user.can_create_users && 'Criar Usuários, '}
+                {user.can_delete_users && 'Deletar Usuários'}
+              </div>
             </li>
           ))}
         </ul>

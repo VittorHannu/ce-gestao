@@ -164,13 +164,17 @@ const UserDetailsPage = () => {
                     id={`${user.id}-${key}`}
                   />
                   <label htmlFor={`${user.id}-${key}`} className="ml-2 capitalize">
-                    {key === 'can_view_users' ? 'Visualizar Usuários' :
-                      key === 'can_create_users' ? 'Criar Usuários' :
-                        key === 'can_delete_users' ? 'Deletar Usuários' :
-                          key === 'can_manage_relatos' ? 'Gerenciar Relatos' :
-                            key === 'is_active' ? 'Ativo' :
-                              key === 'needs_password_reset' ? 'Redefinir Senha no Próximo Login' :
-                                ''}
+                    {(() => {
+                      const displayNames = {
+                        can_view_users: 'Visualizar Usuários',
+                        can_create_users: 'Criar Usuários',
+                        can_delete_users: 'Deletar Usuários',
+                        can_manage_relatos: 'Gerenciar Relatos',
+                        is_active: 'Ativo',
+                        needs_password_reset: 'Redefinir Senha no Próximo Login',
+                      };
+                      return displayNames[key] || key.replace('can_', '').replace('_', ' ');
+                    })()}
                   </label>
                 </div>
               ))}
@@ -189,13 +193,17 @@ const UserDetailsPage = () => {
                     id={`${user.id}-${key}`}
                   />
                   <label htmlFor={`${user.id}-${key}`} className="ml-2 capitalize">
-                    {key === 'can_view_users' ? 'Visualizar Usuários' :
-                      key === 'can_create_users' ? 'Criar Usuários' :
-                        key === 'can_delete_users' ? 'Deletar Usuários' :
-                          key === 'can_manage_relatos' ? 'Gerenciar Relatos' :
-                            key === 'is_active' ? 'Ativo' :
-                              key === 'needs_password_reset' ? 'Redefinir Senha no Próximo Login' :
-                                ''}
+                    {(() => {
+                      const displayNames = {
+                        can_view_users: 'Visualizar Usuários',
+                        can_create_users: 'Criar Usuários',
+                        can_delete_users: 'Deletar Usuários',
+                        can_manage_relatos: 'Gerenciar Relatos',
+                        is_active: 'Ativo',
+                        needs_password_reset: 'Redefinir Senha no Próximo Login',
+                      };
+                      return displayNames[key] || key.replace('can_', '').replace('_', ' ');
+                    })()}
                   </label>
                 </div>
               ))}

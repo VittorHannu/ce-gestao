@@ -43,12 +43,38 @@ export const deleteUser = async (userId) => {
 
 export const createUser = async (userData) => {
   try {
-    const { data, error } = await supabase.functions.invoke('create-user', {
-      body: JSON.stringify(userData)
-    });
+    const { data: { session } } = await supabase.auth.getSession();
+    console.log('DEBUG: Session before invoking Edge Function:', session);
 
-    if (error) throw error;
-    return { data, error: null };
+    if (!session || !session.access_token) {
+      throw new Error('Usuário não autenticado. Não é possível criar usuário.');
+    }
+
+    const { data: response, error: invokeError } = await supabase.functions.invoke('create-user', {
+      body: JSON.stringify(userData),
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`,
+      },
+    });
+      
+
+    if (invokeError) {
+      throw new Error(`Erro ao invocar função Edge: ${invokeError.message}`);
+    }
+
+    // Verifica se a resposta da função Edge é nula ou indefinida
+    if (!response) {
+      throw new Error('Resposta vazia da função Edge. Verifique se a função foi implantada corretamente e está retornando uma resposta.');
+    }
+
+    // A resposta da função Edge já é o objeto parseado
+    const result = response;
+
+    if (result.error) {
+      throw new Error(result.error);
+    }
+
+    return { data: result, error: null };
   } catch (error) {
     return handleServiceError('createUser', error);
   }
