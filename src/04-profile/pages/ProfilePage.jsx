@@ -108,26 +108,24 @@ const ProfilePage = () => {
                 </h2>
                 <p className="text-gray-300">{userProfile.email}</p>
                 <p className="text-gray-300 text-sm">Membro desde: {formatDate(userProfile.created_at)}</p>
+                <div className="flex flex-col space-y-4 w-full mt-4">
+                  {/* <Link to="/perfil/update-email" className="w-full">
+                    <Button className="w-full" variant="onDark">
+                      <Mail className="w-4 h-4 mr-2" />
+                      Alterar Email
+                    </Button>
+                  </Link> */}
+                  <Link to="/perfil/update-password" className="w-full">
+                    <Button className="w-full" variant="onDark">
+                      <Key className="w-4 h-4 mr-2" />
+                      Alterar Senha
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
 
-            {/* Seção de Configurações da Conta */}
-            <div className="p-4 border rounded-lg bg-gray-800 shadow-md mb-6">
-              <div className="flex flex-col space-y-4">
-                {/* <Link to="/perfil/update-email" className="w-full">
-                  <Button className="w-full" variant="onDark">
-                    <Mail className="w-4 h-4 mr-2" />
-                    Alterar Email
-                  </Button>
-                </Link> */}
-                <Link to="/perfil/update-password" className="w-full">
-                  <Button className="w-full" variant="onDark">
-                    <Key className="w-4 h-4 mr-2" />
-                    Alterar Senha
-                  </Button>
-                </Link>
-              </div>
-            </div>
+            
 
             {/* Botão de Sair */}
             <div className="flex justify-center">
