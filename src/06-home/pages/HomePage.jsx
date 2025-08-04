@@ -15,10 +15,18 @@
 
 
 
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MainLayout from '@/01-common/components/MainLayout';
+import FeedbackForm from '@/01-common/components/FeedbackForm';
+import { Button } from '@/core/components/ui/button';
+import { MessageSquare, List } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
 
 const HomePage = () => {
+  const navigate = useNavigate();
+  const { user } = useOutletContext();
+  const [isFeedbackFormOpen, setIsFeedbackFormOpen] = useState(false);
 
   
 
@@ -32,6 +40,24 @@ const HomePage = () => {
       <div className="flex justify-center">
         {/* O card de Gerenciar Usuários foi movido para a barra de navegação */}
       </div>
+
+      <div className="flex flex-col items-center space-y-4 mt-8">
+        <Button onClick={() => setIsFeedbackFormOpen(true)} className="w-full max-w-xs">
+          <MessageSquare className="w-5 h-5 mr-2" />
+          Enviar Feedback / Relatar Erro
+        </Button>
+        {user?.can_view_feedbacks && (
+          <Button onClick={() => navigate('/feedback-reports')} className="w-full max-w-xs">
+            <List className="w-5 h-5 mr-2" />
+            Ver Relatórios de Feedback
+          </Button>
+        )}
+      </div>
+
+      <FeedbackForm
+        isOpen={isFeedbackFormOpen}
+        onClose={() => setIsFeedbackFormOpen(false)}
+      />
     </MainLayout>
   );
 };

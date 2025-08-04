@@ -18,10 +18,11 @@
 
 
 
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import BottomNavBar from './bottom-nav-bar/BottomNavBar';
+import FeedbackForm from './FeedbackForm'; // Importar o componente FeedbackForm
 
 
 const MainLayout = ({ children, _user }) => {

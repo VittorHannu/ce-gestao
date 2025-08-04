@@ -43,6 +43,7 @@ const RelatosAtribuidosPage = React.lazy(() => import('@/07-relatos/pages/Relato
 const UsersPage = React.lazy(() => import('@/05-adm/pages/UsersPage'));
 const CreateUserPage = React.lazy(() => import('@/05-adm/pages/CreateUserPage'));
 const UserDetailsPage = React.lazy(() => import('@/05-adm/pages/UserDetailsPage'));
+const FeedbackReportsPage = React.lazy(() => import('@/07-relatos/pages/FeedbackReportsPage'));
 
 import MainLayout from '@/01-common/components/MainLayout';
 
@@ -192,6 +193,7 @@ function AppWrapper({ showToast }) {
         <Route path="/users-management" element={<ProtectedRoute user={user} requiredPermission="can_view_users"><Suspense fallback={<LoadingSpinner />}><UsersPage /></Suspense></ProtectedRoute>} />
         <Route path="/users-management/create" element={<ProtectedRoute user={user} requiredPermission="can_create_users"><Suspense fallback={<LoadingSpinner />}><CreateUserPage /></Suspense></ProtectedRoute>} />
         <Route path="/users-management/:userId" element={<ProtectedRoute user={user} requiredPermission="can_view_users"><Suspense fallback={<LoadingSpinner />}><UserDetailsPage /></Suspense></ProtectedRoute>} />
+        <Route path="/feedback-reports" element={<ProtectedRoute user={user} requiredPermission="can_view_feedbacks"><Suspense fallback={<LoadingSpinner />}><FeedbackReportsPage /></Suspense></ProtectedRoute>} />
       </Route>
 
       {/* Fallback para qualquer outra rota quando logado, redireciona para a home */}
