@@ -4,8 +4,9 @@ import { Textarea } from '@/core/components/ui/textarea';
 import { Checkbox } from '@/core/components/ui/checkbox';
 import { Label } from '@/core/components/ui/label';
 import { Button } from '@/core/components/ui/button';
+import MultiUserSelect from '@/01-common/components/MultiUserSelect';
 
-const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Enviar Relato', canManageRelatos = false }) => {
+const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Enviar Relato', canManageRelatos = false, allUsers = [], initialResponsibles = [] }) => {
   const [isAnonymous, setIsAnonymous] = useState(initialData?.is_anonymous || false);
   const [localOcorrencia, setLocalOcorrencia] = useState(initialData?.local_ocorrencia || '');
   const [dataOcorrencia, setDataOcorrencia] = useState(initialData?.data_ocorrencia || '');
@@ -16,6 +17,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
   const [danosOcorridos, setDanosOcorridos] = useState(initialData?.danos_ocorridos || '');
   const [planejamentoCronologiaSolucao, setPlanejamentoCronologiaSolucao] = useState(initialData?.planejamento_cronologia_solucao || '');
   const [dataConclusaoSolucao, setDataConclusaoSolucao] = useState(initialData?.data_conclusao_solucao || '');
+  const [selectedResponsibles, setSelectedResponsibles] = useState([]); // Novo estado para responsáveis selecionados
 
   useEffect(() => {
     if (initialData) {
@@ -30,7 +32,13 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
       setPlanejamentoCronologiaSolucao(initialData.planejamento_cronologia_solucao || '');
       setDataConclusaoSolucao(initialData.data_conclusao_solucao || '');
     }
-  }, [initialData]);
+    // Inicializa os responsáveis selecionados
+    if (initialResponsibles && initialResponsibles.length > 0) {
+      setSelectedResponsibles(initialResponsibles);
+    } else {
+      setSelectedResponsibles([]);
+    }
+  }, [initialData, initialResponsibles]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -43,7 +51,8 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
       riscos_identificados: riscosIdentificados,
       danos_ocorridos: houveDanos ? danosOcorridos : null,
       planejamento_cronologia_solucao: planejamentoCronologiaSolucao || null,
-      data_conclusao_solucao: dataConclusaoSolucao || null
+      data_conclusao_solucao: dataConclusaoSolucao || null,
+      responsaveis: selectedResponsibles // Adiciona os responsáveis selecionados
     };
     onSubmit(formData);
   };
@@ -203,6 +212,15 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
                   Limpar
                 </Button>
               </div>
+            </div>
+            <div className="md:col-span-2">
+              <Label htmlFor="responsaveis">Responsáveis pela Tratativa</Label>
+              <MultiUserSelect
+                options={allUsers.map(user => ({ value: user.id, label: user.full_name || user.email }))}
+                selectedValues={selectedResponsibles}
+                onChange={setSelectedResponsibles}
+                placeholder="Selecione os responsáveis..."
+              />
             </div>
           </div>
         </div>

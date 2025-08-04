@@ -14,6 +14,8 @@ const RelatoDetailsPage = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [relato, setRelato] = useState(null);
+  const [allUsers, setAllUsers] = useState([]); // Novo estado para todos os usuários
+  const [currentResponsibles, setCurrentResponsibles] = useState([]); // Novo estado para responsáveis do relato
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false); // Novo estado para modo de edição
@@ -27,7 +29,7 @@ const RelatoDetailsPage = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from('relatos')
-      .select('*')
+      .select('*, relato_responsaveis(user_id, profiles(full_name, email))') // Busca relato e responsáveis
       .eq('id', id)
       .single();
 
@@ -39,33 +41,75 @@ const RelatoDetailsPage = () => {
       setError('Relato não encontrado.');
     } else {
       setRelato(data);
+      // Mapeia os responsáveis para um formato mais fácil de usar
+      setCurrentResponsibles(data.relato_responsaveis.map(r => r.user_id));
     }
     setLoading(false);
   }, [id, showToast]);
 
+  const fetchAllUsers = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, full_name, email')
+      .eq('is_active', true);
+
+    if (error) {
+      console.error('Erro ao buscar usuários:', error);
+      showToast('Erro ao carregar lista de usuários.', 'error');
+    } else {
+      setAllUsers(data);
+    }
+  }, [showToast]);
+
   useEffect(() => {
     fetchRelato();
-  }, [id, showToast, fetchRelato]);
+    fetchAllUsers(); // Busca todos os usuários ao carregar a página
+  }, [id, showToast, fetchRelato, fetchAllUsers]);
 
   const handleUpdateRelato = async (formData) => {
     setIsSaving(true);
+    const { responsaveis: responsibleIds, ...relatoData } = formData; // Extrai os responsáveis
+
     try {
-      const { error } = await supabase
+      // 1. Atualiza os dados do relato
+      const { error: updateRelatoError } = await supabase
         .from('relatos')
         .update({
-          local_ocorrencia: formData.local_ocorrencia,
-          data_ocorrencia: formData.data_ocorrencia,
-          hora_aproximada_ocorrencia: formData.hora_aproximada_ocorrencia || null,
-          descricao: formData.descricao,
-          riscos_identificados: formData.riscos_identificados,
-          danos_ocorridos: formData.danos_ocorridos || null,
-          planejamento_cronologia_solucao: formData.planejamento_cronologia_solucao || null,
-          data_conclusao_solucao: formData.data_conclusao_solucao || null
+          local_ocorrencia: relatoData.local_ocorrencia,
+          data_ocorrencia: relatoData.data_ocorrencia,
+          hora_aproximada_ocorrencia: relatoData.hora_aproximada_ocorrencia || null,
+          descricao: relatoData.descricao,
+          riscos_identificados: relatoData.riscos_identificados,
+          danos_ocorridos: relatoData.danos_ocorridos,
+          planejamento_cronologia_solucao: relatoData.planejamento_cronologia_solucao,
+          data_conclusao_solucao: relatoData.data_conclusao_solucao
         })
         .eq('id', id);
 
-      if (error) {
-        throw error;
+      if (updateRelatoError) throw updateRelatoError;
+
+      // 2. Sincroniza os responsáveis
+      // Deleta os responsáveis existentes
+      const { error: deleteResponsiblesError } = await supabase
+        .from('relato_responsaveis')
+        .delete()
+        .eq('relato_id', id);
+
+      if (deleteResponsiblesError) throw deleteResponsiblesError;
+
+      // Insere os novos responsáveis
+      if (responsibleIds && responsibleIds.length > 0) {
+        console.log('Responsible IDs to insert:', responsibleIds);
+        const responsiblesToInsert = responsibleIds.map(userId => ({
+          relato_id: id,
+          user_id: userId
+        }));
+        console.log('Responsibles to insert (mapped):', responsiblesToInsert);
+        const { error: insertResponsiblesError } = await supabase
+          .from('relato_responsaveis')
+          .insert(responsiblesToInsert);
+
+        if (insertResponsiblesError) throw insertResponsiblesError;
       }
 
       showToast('Relato atualizado com sucesso!', 'success');
@@ -103,6 +147,8 @@ const RelatoDetailsPage = () => {
     }
   };
 
+  const isResponsibleForRelato = currentResponsibles.includes(userProfile?.id);
+
   if (loading || isLoadingProfile) {
     return <LoadingSpinner />;
   }
@@ -129,13 +175,15 @@ const RelatoDetailsPage = () => {
           initialData={relato} // Passa os dados iniciais para o formulário
           submitButtonText="Salvar Alterações"
           canManageRelatos={canManageRelatos} // Passa a permissão para o formulário
+          allUsers={allUsers} // Passa todos os usuários
+          initialResponsibles={currentResponsibles} // Passa os responsáveis atuais
         />
       ) : (
         <RelatoDisplayDetails relato={relato} />
       )}
 
       <div className="mt-6 flex space-x-2">
-        {canManageRelatos && !isEditing && (
+        {(canManageRelatos || isResponsibleForRelato) && !isEditing && (
           <Button onClick={() => setIsEditing(true)}>Editar</Button>
         )}
         {canManageRelatos && !isEditing && (
