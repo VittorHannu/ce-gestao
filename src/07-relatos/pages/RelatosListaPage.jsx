@@ -77,7 +77,7 @@ const RelatosListaPage = () => {
         <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Pesquisar relatos..." />
       </div>
 
-      <div className="mb-4 flex flex-wrap space-x-2">
+      <div className="mb-4 flex flex-wrap space-x-2 gap-y-2">
         <Button
           variant={responsibleFilter === 'all' ? 'default' : 'outline'}
           onClick={() => setResponsibleFilter('all')}
