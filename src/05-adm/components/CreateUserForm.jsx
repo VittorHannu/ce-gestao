@@ -45,6 +45,7 @@ const CreateUserForm = ({ onUserCreated, onCancel }) => {
     { key: 'can_create_users', label: 'Criar Usuários' },
     { key: 'can_delete_users', label: 'Deletar Usuários' },
     { key: 'can_manage_relatos', label: 'Gerenciar Relatos' },
+    { key: 'can_view_feedbacks', label: 'Visualizar Feedbacks' },
     { key: 'is_active', label: 'Ativo' }
   ];
 

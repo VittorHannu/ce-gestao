@@ -30,8 +30,8 @@ const UserDetailsPage = () => {
     'can_create_users',
     'can_delete_users',
     'can_manage_relatos',
-    'is_active',
-    'needs_password_reset'
+    'can_view_feedbacks',
+    'is_active'
   ];
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const UserDetailsPage = () => {
         setLoading(true);
         const { data, error } = await supabase
           .from('profiles')
-          .select('id, email, full_name, is_active, needs_password_reset, can_manage_relatos, can_view_users, can_create_users, can_delete_users')
+          .select('id, email, full_name, is_active, needs_password_reset, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks')
           .eq('id', userId)
           .single();
 
@@ -52,7 +52,8 @@ const UserDetailsPage = () => {
           can_manage_relatos: data.can_manage_relatos,
           can_view_users: data.can_view_users,
           can_create_users: data.can_create_users,
-          can_delete_users: data.can_delete_users
+          can_delete_users: data.can_delete_users,
+          can_view_feedbacks: data.can_view_feedbacks
         });
       } catch (err) {
         setError(err);
@@ -184,7 +185,8 @@ const UserDetailsPage = () => {
             <div>
               <h5 className="font-semibold mb-2">Permissões de Relatos</h5>
               {[ 
-                'can_manage_relatos'
+                'can_manage_relatos',
+                'can_view_feedbacks'
               ].map(key => (
                 <div key={key} className="flex items-center mb-2">
                   <Checkbox
@@ -199,6 +201,7 @@ const UserDetailsPage = () => {
                         can_create_users: 'Criar Usuários',
                         can_delete_users: 'Deletar Usuários',
                         can_manage_relatos: 'Gerenciar Relatos',
+                        can_view_feedbacks: 'Visualizar Feedbacks',
                         is_active: 'Ativo',
                         needs_password_reset: 'Redefinir Senha no Próximo Login'
                       };
@@ -214,8 +217,7 @@ const UserDetailsPage = () => {
           <div className="mt-4">
             <h5 className="font-semibold mb-2">Status da Conta</h5>
             {[ 
-              'is_active',
-              'needs_password_reset'
+              'is_active'
             ].map(key => (
               <div key={key} className="flex items-center mb-2">
                 <Checkbox
@@ -225,7 +227,6 @@ const UserDetailsPage = () => {
                 />
                 <label htmlFor={`${user.id}-${key}`} className="ml-2 capitalize">
                   {key === 'is_active' ? 'Ativo' :
-                    key === 'needs_password_reset' ? 'Redefinir Senha no Próximo Login' :
                       ''}
                 </label>
               </div>
