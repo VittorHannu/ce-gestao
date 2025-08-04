@@ -53,7 +53,7 @@ const RelatosPage = () => {
 
   return (
     <MainLayout title="Segurança Laboral">
-      <h1 className="text-2xl font-bold mb-8">Segurança Laboral</h1>
+      <h1 className="text-2xl font-bold mb-8 text-center">Segurança Laboral</h1>
       <div className="grid grid-cols-2 gap-4">
         {cardData.map((card, index) => (
           <RelatoStatsCard

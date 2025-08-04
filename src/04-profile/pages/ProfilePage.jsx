@@ -79,6 +79,7 @@ const ProfilePage = () => {
 
   return (
     <MainLayout title="Perfil do Usuário">
+      <h1 className="text-2xl font-bold text-center mb-4">Perfil do Usuário</h1>
       <DataLoader loading={isProfileLoading} error={profileError} loadingMessage="Carregando perfil...">
         {userProfile && (
           <>
