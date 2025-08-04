@@ -31,9 +31,6 @@ const ProtectedRoute = ({ children, user, requiredPermission }) => {
 
   // 2. Verificar se o usuário precisa trocar a senha
   //    Redireciona para a página de troca de senha forçada, a menos que já esteja lá
-  if (false) {
-    return <Navigate to="/force-password-change" replace />;
-  }
 
   // 3. Verificar permissão específica, se houver
   console.log('ProtectedRoute: user object', user);
