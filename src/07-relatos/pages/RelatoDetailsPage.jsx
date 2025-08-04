@@ -357,8 +357,8 @@ const formatLogDetails = (log) => {
         <p className="font-semibold">Relato criado com os seguintes dados:</p>
         <ul className="list-disc list-inside ml-2">
           {Object.entries(log.details).map(([key, value]) => {
-            // Ignorar 'responsaveis' aqui, pois será logado separadamente se houver
-            if (key === 'responsaveis') return null;
+            // Ignorar campos específicos para o log de criação
+            if (['is_anonymous', 'data_conclusao_solucao', 'planejamento_cronologia_solucao', 'responsaveis'].includes(key)) return null;
             return (
               <li key={key}>
                 <span className="font-medium">{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</span> {String(value)}
