@@ -57,7 +57,7 @@ const MainLayout = ({ children, _user }) => {
           {children}
         </main>
       </div>
-      {showBottomNav && <BottomNavBar />} {/* Renderiza condicionalmente */}
+      {showBottomNav && <BottomNavBar user={_user} />} {/* Renderiza condicionalmente */}
     </div>
   );
 };

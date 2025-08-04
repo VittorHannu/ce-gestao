@@ -39,6 +39,9 @@ const RelatosListaPage = React.lazy(() => import('@/07-relatos/pages/RelatosList
 const RelatoDetailsPage = React.lazy(() => import('@/07-relatos/pages/RelatoDetailsPage'));
 const RelatosStatsPage = React.lazy(() => import('@/07-relatos/pages/RelatosStatsPage'));
 const RelatosAtribuidosPage = React.lazy(() => import('@/07-relatos/pages/RelatosAtribuidosPage'));
+const UsersPage = React.lazy(() => import('@/05-adm/pages/UsersPage'));
+const CreateUserPage = React.lazy(() => import('@/05-adm/pages/CreateUserPage'));
+const UserDetailsPage = React.lazy(() => import('@/05-adm/pages/UserDetailsPage'));
 
 import MainLayout from '@/01-common/components/MainLayout';
 
@@ -52,7 +55,7 @@ import '@/00-global/styles/App.css';
 
 function LayoutWithoutHeader({ user, onLogout, showToast }) {
   return (
-    <MainLayout>
+    <MainLayout _user={user}>
       <Outlet context={{ user, onLogout, showToast }} />
     </MainLayout>
   );
@@ -70,13 +73,14 @@ function AppWrapper({ showToast }) {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, is_active, needs_password_reset, can_manage_relatos')
+        .select('id, email, full_name, is_active, needs_password_reset, can_manage_relatos, can_view_users, can_create_users, can_delete_users')
         .eq('id', userId)
         .single();
 
       if (error) throw error;
       setUser(data);
       console.log('DEBUG: Perfil do usuário buscado:', data);
+      console.log('DEBUG: can_view_users no App.jsx:', data?.can_view_users);
       console.log('DEBUG: needs_password_reset do usuário:', data?.needs_password_reset);
     } catch (error) {
       console.error('Erro ao buscar perfil:', error);
@@ -183,6 +187,9 @@ function AppWrapper({ showToast }) {
         <Route path="/relatos/detalhes/:id" element={<Suspense fallback={<LoadingSpinner />}><RelatoDetailsPage /></Suspense>} />
         <Route path="/relatos/estatisticas" element={<Suspense fallback={<LoadingSpinner />}><RelatosStatsPage /></Suspense>} />
         <Route path="/relatos/atribuidos" element={<Suspense fallback={<LoadingSpinner />}><RelatosAtribuidosPage /></Suspense>} />
+        <Route path="/users-management" element={<ProtectedRoute user={user} requiredPermission="can_view_users"><Suspense fallback={<LoadingSpinner />}><UsersPage /></Suspense></ProtectedRoute>} />
+        <Route path="/users-management/create" element={<ProtectedRoute user={user} requiredPermission="can_create_users"><Suspense fallback={<LoadingSpinner />}><CreateUserPage /></Suspense></ProtectedRoute>} />
+        <Route path="/users-management/:userId" element={<ProtectedRoute user={user} requiredPermission="can_view_users"><Suspense fallback={<LoadingSpinner />}><UserDetailsPage /></Suspense></ProtectedRoute>} />
       </Route>
 
       {/* Fallback para qualquer outra rota quando logado, redireciona para a home */}

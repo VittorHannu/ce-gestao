@@ -1,15 +1,17 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faUser, faShield } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faUser, faShield, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { NavLink } from 'react-router-dom';
 import './BottomNavBar.css';
 
-const BottomNavBar = () => {
+const BottomNavBar = ({ user }) => {
+  console.log('DEBUG: User object in BottomNavBar:', user);
   const navItems = [
     { to: '/', icon: <FontAwesomeIcon icon={faHome} size="lg" />, label: 'Início' },
     { to: '/relatos', icon: <FontAwesomeIcon icon={faShield} size="lg" />, label: 'Relatos' },
+    user?.can_view_users && { to: '/users-management', icon: <FontAwesomeIcon icon={faUsers} size="lg" />, label: 'Usuários' },
     { to: '/perfil', icon: <FontAwesomeIcon icon={faUser} size="lg" />, label: 'Perfil' }
-  ];
+  ].filter(Boolean);
 
   return (
     <nav className="bottom-nav">
