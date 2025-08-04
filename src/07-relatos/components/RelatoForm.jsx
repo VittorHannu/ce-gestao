@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Input } from '@/core/components/ui/input';
 import { Textarea } from '@/core/components/ui/textarea';
 import { Checkbox } from '@/core/components/ui/checkbox';
@@ -6,7 +6,7 @@ import { Label } from '@/core/components/ui/label';
 import { Button } from '@/core/components/ui/button';
 import MultiUserSelect from '@/01-common/components/MultiUserSelect';
 
-const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Enviar Relato', canManageRelatos = false, allUsers = [], initialResponsibles = [] }) => {
+const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Enviar Relato', canManageRelatos = false, canEditTratativa = false, allUsers = [], initialResponsibles = [] }) => {
   const [isAnonymous, setIsAnonymous] = useState(initialData?.is_anonymous || false);
   const [localOcorrencia, setLocalOcorrencia] = useState(initialData?.local_ocorrencia || '');
   const [dataOcorrencia, setDataOcorrencia] = useState(initialData?.data_ocorrencia || '');
@@ -18,6 +18,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
   const [planejamentoCronologiaSolucao, setPlanejamentoCronologiaSolucao] = useState(initialData?.planejamento_cronologia_solucao || '');
   const [dataConclusaoSolucao, setDataConclusaoSolucao] = useState(initialData?.data_conclusao_solucao || '');
   const [selectedResponsibles, setSelectedResponsibles] = useState([]); // Novo estado para responsáveis selecionados
+  const initialResponsiblesRef = useRef(initialResponsibles);
 
   useEffect(() => {
     if (initialData) {
@@ -32,13 +33,16 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
       setPlanejamentoCronologiaSolucao(initialData.planejamento_cronologia_solucao || '');
       setDataConclusaoSolucao(initialData.data_conclusao_solucao || '');
     }
-    // Inicializa os responsáveis selecionados
-    if (initialResponsibles && initialResponsibles.length > 0) {
-      setSelectedResponsibles(initialResponsibles);
+  }, [initialData]);
+
+  useEffect(() => {
+    // Inicializa os responsáveis selecionados apenas uma vez
+    if (initialResponsiblesRef.current && initialResponsiblesRef.current.length > 0) {
+      setSelectedResponsibles(initialResponsiblesRef.current);
     } else {
       setSelectedResponsibles([]);
     }
-  }, [initialData, initialResponsibles]);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -178,7 +182,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
       </div>
 
       {/* Seção: Tratativa e Conclusão */}
-      {canManageRelatos && (
+      {canEditTratativa && (
         <div className="p-4 border rounded-lg bg-white">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Tratativa e Conclusão (Opcional)</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -213,15 +217,17 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
                 </Button>
               </div>
             </div>
-            <div className="md:col-span-2">
-              <Label htmlFor="responsaveis">Responsáveis pela Tratativa</Label>
-              <MultiUserSelect
-                options={allUsers.map(user => ({ value: user.id, label: user.full_name || user.email }))}
-                selectedValues={selectedResponsibles}
-                onChange={setSelectedResponsibles}
-                placeholder="Selecione os responsáveis..."
-              />
-            </div>
+            {canManageRelatos && (
+              <div className="md:col-span-2">
+                <Label htmlFor="responsaveis">Responsáveis pela Tratativa</Label>
+                <MultiUserSelect
+                  options={allUsers.map(user => ({ value: user.id, label: user.full_name || user.email }))}
+                  selectedValues={selectedResponsibles}
+                  onChange={setSelectedResponsibles}
+                  placeholder="Selecione os responsáveis..."
+                />
+              </div>
+            )}
           </div>
         </div>
       )}

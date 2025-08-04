@@ -91,28 +91,28 @@ const RelatoDetailsPage = () => {
 
       if (updateRelatoError) throw updateRelatoError;
 
-      // 2. Sincroniza os responsáveis
-      // Deleta os responsáveis existentes
-      const { error: deleteResponsiblesError } = await supabase
-        .from('relato_responsaveis')
-        .delete()
-        .eq('relato_id', id);
-
-      if (deleteResponsiblesError) throw deleteResponsiblesError;
-
-      // Insere os novos responsáveis
-      if (responsibleIds && responsibleIds.length > 0) {
-        console.log('Responsible IDs to insert:', responsibleIds);
-        const responsiblesToInsert = responsibleIds.map(userId => ({
-          relato_id: id,
-          user_id: userId
-        }));
-        console.log('Responsibles to insert (mapped):', responsiblesToInsert);
-        const { error: insertResponsiblesError } = await supabase
+      // 2. Sincroniza os responsáveis (APENAS se o usuário tiver permissão)
+      if (canManageRelatos) {
+        // Deleta os responsáveis existentes
+        const { error: deleteResponsiblesError } = await supabase
           .from('relato_responsaveis')
-          .insert(responsiblesToInsert);
+          .delete()
+          .eq('relato_id', id);
 
-        if (insertResponsiblesError) throw insertResponsiblesError;
+        if (deleteResponsiblesError) throw deleteResponsiblesError;
+
+        // Insere os novos responsáveis
+        if (responsibleIds && responsibleIds.length > 0) {
+          const responsiblesToInsert = responsibleIds.map(userId => ({
+            relato_id: id,
+            user_id: userId
+          }));
+          const { error: insertResponsiblesError } = await supabase
+            .from('relato_responsaveis')
+            .insert(responsiblesToInsert);
+
+          if (insertResponsiblesError) throw insertResponsiblesError;
+        }
       }
 
       showToast('Relato atualizado com sucesso!', 'success');
@@ -151,6 +151,7 @@ const RelatoDetailsPage = () => {
   };
 
   const isResponsibleForRelato = currentResponsibles.includes(userProfile?.id);
+  const canEditTratativa = canManageRelatos || isResponsibleForRelato;
 
   if (loading || isLoadingProfile) {
     return <LoadingSpinner />;
@@ -177,7 +178,8 @@ const RelatoDetailsPage = () => {
           isLoading={isSaving}
           initialData={relato} // Passa os dados iniciais para o formulário
           submitButtonText="Salvar Alterações"
-          canManageRelatos={canManageRelatos} // Passa a permissão para o formulário
+          canManageRelatos={canManageRelatos} // Controla a edição de responsáveis
+          canEditTratativa={canEditTratativa} // Controla a visibilidade da seção de tratativa
           allUsers={allUsers} // Passa todos os usuários
           initialResponsibles={currentResponsibles} // Passa os responsáveis atuais
         />

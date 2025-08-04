@@ -25,18 +25,37 @@ const CreateRelatoPage = () => {
         return; // Para a execução aqui.
       }
 
+      const { responsaveis, ...relatoDetails } = formData;
+
       const relatoData = {
-        ...formData,
+        ...relatoDetails,
         user_id: formData.is_anonymous ? null : user.id,
         // Converte a hora para null se estiver vazia, para evitar erro no banco de dados
         hora_aproximada_ocorrencia: formData.hora_aproximada_ocorrencia || null
       };
 
       console.log('Dados que serão inseridos:', relatoData);
-      const { error } = await supabase.from('relatos').insert([relatoData]);
+      const { data: newRelato, error } = await supabase
+        .from('relatos')
+        .insert([relatoData])
+        .select('id')
+        .single(); // .single() para retornar um único objeto em vez de um array
 
-      if (error) {
-        throw error;
+      if (error) throw error;
+
+      // Etapa 2: Se houver responsáveis, associá-los ao relato criado
+      if (responsaveis && responsaveis.length > 0) {
+        const newRelatoId = newRelato.id;
+        const responsaveisData = responsaveis.map(userId => ({
+          relato_id: newRelatoId,
+          user_id: userId
+        }));
+
+        const { error: responsaveisError } = await supabase
+          .from('relato_responsaveis')
+          .insert(responsaveisData);
+
+        if (responsaveisError) throw responsaveisError;
       }
 
       showToast('Relato enviado com sucesso!', 'success');
