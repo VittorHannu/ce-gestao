@@ -18,19 +18,17 @@ const RelatoStatsCard = ({ label, count, icon: Icon, path, textColorClass, bgCol
           </div>
         </div>
 
-        {totalRelatos > 0 && (
-          <div className="mt-3">
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div
-                className={`h-2 rounded-full ${bgColorClass}`}
-                style={{ width: `${displayPercentage}%` }}
-              ></div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              {displayPercentage}% do total
-            </p>
+        <div className="mt-3">
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div
+              className={`h-2 rounded-full ${bgColorClass}`}
+              style={{ width: `${displayPercentage}%` }}
+            ></div>
           </div>
-        )}
+          <p className="text-xs text-gray-500 mt-1">
+            {displayPercentage}% do total
+          </p>
+        </div>
       </div>
     </Link>
   );
