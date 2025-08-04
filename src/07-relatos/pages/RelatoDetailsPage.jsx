@@ -22,11 +22,47 @@ const RelatoDetailsPage = () => {
   const [isEditing, setIsEditing] = useState(false); // Novo estado para modo de edição
   const [isSaving, setIsSaving] = useState(false); // Estado para o salvamento
   const [isDeleting, setIsDeleting] = useState(false); // Novo estado para o carregamento da exclusão
+  const [isReproving, setIsReproving] = useState(false); // Novo estado para o carregamento da reprovação
   const [relatoLogs, setRelatoLogs] = useState([]); // Novo estado para os logs do relato
 
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const canManageRelatos = userProfile?.can_manage_relatos;
   const canDeleteRelatos = userProfile?.can_delete_relatos;
+
+  const handleReproveRelato = async () => {
+    if (window.confirm('Tem certeza que deseja reprovar este relato? Ele será movido para a lista de reprovados.')) {
+      setIsReproving(true);
+      try {
+        const { error } = await supabase
+          .from('relatos')
+          .update({ status: 'REPROVADO' })
+          .eq('id', id);
+
+        if (error) throw error;
+
+        // Log da ação de reprovação
+        const { data: { user } } = await supabase.auth.getUser();
+        const currentUserId = user ? user.id : null;
+        await supabase.from('relato_logs').insert({
+          relato_id: id,
+          user_id: currentUserId,
+          action_type: 'STATUS_CHANGE',
+          details: {
+            old_status: relato.status,
+            new_status: 'REPROVADO'
+          }
+        });
+
+        showToast('Relato reprovado com sucesso!', 'success');
+        navigate('/relatos/reprovados'); // Redireciona para a página de reprovados
+      } catch (error) {
+        console.error('Erro ao reprovar relato:', error);
+        showToast(`Erro ao reprovar o relato: ${error.message}`, 'error');
+      } finally {
+        setIsReproving(false);
+      }
+    }
+  };
 
   const handleReapproveRelato = async () => {
     if (window.confirm('Tem certeza que deseja reaprovar este relato?')) {
@@ -355,7 +391,14 @@ const RelatoDetailsPage = () => {
           </Button>
         ) : (
           (canManageRelatos || isResponsibleForRelato) && !isEditing && (
-            <Button onClick={() => setIsEditing(true)}>Editar</Button>
+            <>
+              <Button onClick={() => setIsEditing(true)}>Editar</Button>
+              {relato.status !== 'REPROVADO' && canManageRelatos && (
+                <Button variant="outline" onClick={handleReproveRelato} disabled={isReproving}>
+                  {isReproving ? 'Reprovando...' : 'Reprovar'}
+                </Button>
+              )}
+            </>
           )
         )}
         {canDeleteRelatos && !isEditing && (
@@ -379,11 +422,11 @@ const RelatoDetailsPage = () => {
           <ul className="space-y-3">
             {relatoLogs.map((log) => (
               <li key={log.id} className="p-3 bg-gray-50 rounded-md shadow-sm">
-                <p className="text-sm text-gray-800">
+                <div className="text-sm text-gray-800">
                   <span className="font-semibold">{new Date(log.created_at).toLocaleString()}</span> - 
                   <span className="font-medium">{log.profiles?.full_name || log.profiles?.email || 'Usuário Desconhecido'}</span>:
                   {formatLogDetails(log)}
-                </p>
+                </div>
               </li>
             ))}
           </ul>

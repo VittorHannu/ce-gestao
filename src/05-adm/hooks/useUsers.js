@@ -3,7 +3,7 @@ import { supabase } from '@/01-common/lib/supabase';
 
 
 
-const fetchUsers = async (searchTerm, filterNeedsPasswordReset) => {
+const fetchUsers = async (searchTerm) => {
   let query = supabase
     .from('profiles')
     .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users')
@@ -11,10 +11,6 @@ const fetchUsers = async (searchTerm, filterNeedsPasswordReset) => {
 
   if (searchTerm) {
     query = query.or(`full_name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%`);
-  }
-
-  if (filterNeedsPasswordReset) {
-    
   }
 
   const { data, error } = await query;
@@ -25,8 +21,8 @@ const fetchUsers = async (searchTerm, filterNeedsPasswordReset) => {
 
 export const useUsers = (searchTerm) => {
   return useQuery({
-    queryKey: ['users', searchTerm, filterNeedsPasswordReset],
-    queryFn: () => fetchUsers(searchTerm, filterNeedsPasswordReset),
+    queryKey: ['users', searchTerm],
+    queryFn: () => fetchUsers(searchTerm),
     staleTime: 1000 * 60 * 5, // Dados considerados "frescos" por 5 minutos
     keepPreviousData: true // Mantém os dados anteriores enquanto busca novos
   });

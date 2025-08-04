@@ -6,8 +6,6 @@ import { useUsers } from '@/05-adm/hooks/useUsers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/core/components/ui/button';
-import { Checkbox } from '@/core/components/ui/checkbox';
-import { Label } from '@/core/components/ui/label';
 
 
 function UsersPage() {
@@ -63,9 +61,6 @@ function UsersPage() {
               <p className="font-semibold">{user.full_name}</p>
               <p className="text-sm text-gray-600">{user.email}</p>
               <p className="text-xs text-gray-500">Status: {user.is_active ? 'Ativo' : 'Inativo'}</p>
-              
-                }
-              
             </li>
           ))}
         </ul>

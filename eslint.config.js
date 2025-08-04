@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import pluginReact from 'eslint-plugin-react';
 
 export default [
-  { ignores: ['dist'] },
+  { ignores: ['dist', 'node_modules', '.vite/deps'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {

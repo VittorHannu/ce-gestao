@@ -172,6 +172,7 @@ const UserDetailsPage = () => {
                         can_delete_users: 'Deletar Usuários',
                         can_manage_relatos: 'Gerenciar Relatos',
                         is_active: 'Ativo'
+                      };
                       return displayNames[key] || key.replace('can_', '').replace('_', ' ');
                     })()}
                   </label>
@@ -201,6 +202,7 @@ const UserDetailsPage = () => {
                         can_manage_relatos: 'Gerenciar Relatos',
                         can_view_feedbacks: 'Visualizar Feedbacks',
                         is_active: 'Ativo'
+                      };
                       return displayNames[key] || key.replace('can_', '').replace('_', ' ');
                     })()}
                   </label>
