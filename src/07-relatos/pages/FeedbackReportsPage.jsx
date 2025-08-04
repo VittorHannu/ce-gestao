@@ -58,20 +58,20 @@ const FeedbackReportsPage = () => {
 
   const getBadgeVariant = (status) => {
     switch (status) {
-      case 'PENDENTE': return 'default';
-      case 'EM_ANALISE': return 'secondary';
-      case 'RESOLVIDO': return 'success';
-      case 'FECHADO': return 'outline';
-      default: return 'default';
+    case 'PENDENTE': return 'default';
+    case 'EM_ANALISE': return 'secondary';
+    case 'RESOLVIDO': return 'success';
+    case 'FECHADO': return 'outline';
+    default: return 'default';
     }
   };
 
   const getReportTypeLabel = (type) => {
     switch (type) {
-      case 'feedback': return 'Feedback Geral';
-      case 'bug': return 'Bug / Erro';
-      case 'suggestion': return 'Sugestão de Melhoria';
-      default: return type;
+    case 'feedback': return 'Feedback Geral';
+    case 'bug': return 'Bug / Erro';
+    case 'suggestion': return 'Sugestão de Melhoria';
+    default: return type;
     }
   };
 

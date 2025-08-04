@@ -227,7 +227,7 @@ const UserDetailsPage = () => {
                 />
                 <label htmlFor={`${user.id}-${key}`} className="ml-2 capitalize">
                   {key === 'is_active' ? 'Ativo' :
-                      ''}
+                    ''}
                 </label>
               </div>
             ))}

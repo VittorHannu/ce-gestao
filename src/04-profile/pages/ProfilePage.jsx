@@ -110,12 +110,12 @@ const ProfilePage = () => {
                 <p className="text-gray-300">{userProfile.email}</p>
                 <p className="text-gray-300 text-sm">Membro desde: {formatDate(userProfile.created_at)}</p>
                 <div className="flex flex-col space-y-4 w-full mt-4">
-                  {/* <Link to="/perfil/update-email" className="w-full">
+                  <Link to="/perfil/update-email" className="w-full">
                     <Button className="w-full" variant="onDark">
                       <Mail className="w-4 h-4 mr-2" />
                       Alterar Email
                     </Button>
-                  </Link> */}
+                  </Link>
                   <Link to="/perfil/update-password" className="w-full">
                     <Button className="w-full" variant="onDark">
                       <Key className="w-4 h-4 mr-2" />

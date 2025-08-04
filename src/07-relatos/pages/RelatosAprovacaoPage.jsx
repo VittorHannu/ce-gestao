@@ -5,6 +5,7 @@ import { Button } from '@/core/components/ui/button';
 import LoadingSpinner from '@/01-common/components/LoadingSpinner';
 import RelatoDisplayDetails from '../components/RelatoDisplayDetails'; // Importa o componente de exibição de detalhes
 import BackButton from '@/01-common/components/BackButton'; // Importa o BackButton
+import { Link } from 'react-router-dom';
 
 const RelatosAprovacaoPage = () => {
   const [relatos, setRelatos] = useState([]);
@@ -56,6 +57,11 @@ const RelatosAprovacaoPage = () => {
       <div className="flex items-center mb-4">
         <BackButton />
         <h1 className="text-2xl font-bold ml-4">Aprovação de Relatos</h1>
+        <Link to="/relatos/reprovados" className="ml-4">
+          <Button variant="outline" size="sm">
+            Ver Reprovados
+          </Button>
+        </Link>
       </div>
       
       {relatos.length === 0 ? (

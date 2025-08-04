@@ -27,6 +27,41 @@ const RelatoDetailsPage = () => {
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const canManageRelatos = userProfile?.can_manage_relatos;
 
+  const handleReapproveRelato = async () => {
+    if (window.confirm('Tem certeza que deseja reaprovar este relato?')) {
+      setIsSaving(true);
+      try {
+        const { error } = await supabase
+          .from('relatos')
+          .update({ status: 'APROVADO' })
+          .eq('id', id);
+
+        if (error) throw error;
+
+        // Log da ação de reaprovação
+        const { data: { user } } = await supabase.auth.getUser();
+        const currentUserId = user ? user.id : null;
+        await supabase.from('relato_logs').insert({
+          relato_id: id,
+          user_id: currentUserId,
+          action_type: 'STATUS_CHANGE',
+          details: {
+            old_status: relato.status,
+            new_status: 'APROVADO'
+          }
+        });
+
+        showToast('Relato reaprovado com sucesso!', 'success');
+        navigate('/relatos/aprovacao'); // Redireciona para a página de aprovação
+      } catch (error) {
+        console.error('Erro ao reaprovar relato:', error);
+        showToast(`Erro ao reaprovar o relato: ${error.message}`, 'error');
+      } finally {
+        setIsSaving(false);
+      }
+    }
+  };
+
   const fetchRelato = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -309,8 +344,14 @@ const RelatoDetailsPage = () => {
       )}
 
       <div className="mt-6 flex space-x-2">
-        {(canManageRelatos || isResponsibleForRelato) && !isEditing && (
-          <Button onClick={() => setIsEditing(true)}>Editar</Button>
+        {relato.status === 'REPROVADO' && canManageRelatos && !isEditing ? (
+          <Button onClick={handleReapproveRelato} disabled={isSaving}>
+            {isSaving ? 'Reaprovando...' : 'Reaprovar'}
+          </Button>
+        ) : (
+          (canManageRelatos || isResponsibleForRelato) && !isEditing && (
+            <Button onClick={() => setIsEditing(true)}>Editar</Button>
+          )
         )}
         {canManageRelatos && !isEditing && (
           <Button variant="destructive" onClick={handleDeleteRelato} disabled={isDeleting}>
