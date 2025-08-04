@@ -33,7 +33,7 @@ const HomePage = () => {
   return (
     <MainLayout title="Página Inicial" hideHeader={true}>
       <div className="text-center mb-6">
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Copa Energia</h1>
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Ce-SGI</h1>
         <p className="text-base text-gray-600">Sistema de Gestão Integrada</p>
       </div>
 

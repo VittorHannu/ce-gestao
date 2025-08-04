@@ -27,6 +27,7 @@ function UsersPage() {
 
   return (
     <MainLayout>
+      <h1 className="text-2xl font-bold mb-4">Usuários</h1>
       <div className="mb-4 flex items-center gap-2">
         <div className="flex-grow">
           <SearchInput

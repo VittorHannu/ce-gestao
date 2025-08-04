@@ -4,6 +4,7 @@ import { Button } from '@/core/components/ui/button';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { useRelatoCounts } from '../hooks/useRelatoCounts';
 import LoadingSpinner from '@/01-common/components/LoadingSpinner';
+import MainLayout from '@/01-common/components/MainLayout';
 import { FileText, CheckCircle, Clock, XCircle, BarChart } from 'lucide-react';
 import RelatoStatsCard from '../components/RelatoStatsCard'; // Importa o novo componente de card
 
@@ -51,8 +52,8 @@ const RelatosPage = () => {
   ];
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold text-center mb-8">Segurança Laboral</h1>
+    <MainLayout title="Segurança Laboral">
+      <h1 className="text-2xl font-bold mb-8">Segurança Laboral</h1>
       <div className="grid grid-cols-2 gap-4">
         {cardData.map((card, index) => (
           <RelatoStatsCard
@@ -102,7 +103,7 @@ const RelatosPage = () => {
           <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
         </div>
       </Link>
-    </div>
+    </MainLayout>
   );
 };
 
