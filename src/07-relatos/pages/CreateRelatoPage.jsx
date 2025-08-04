@@ -58,6 +58,21 @@ const CreateRelatoPage = () => {
         if (responsaveisError) throw responsaveisError;
       }
 
+      // Registrar log de criação do relato
+      const { error: logError } = await supabase
+        .from('relato_logs')
+        .insert({
+          relato_id: newRelato.id,
+          user_id: formData.is_anonymous ? null : (user ? user.id : null), // ID do usuário que criou, ou null se anônimo
+          action_type: 'CREATE',
+          details: { ...relatoData, responsaveis: responsaveis } // Fotografia completa dos dados do relato
+        });
+
+      if (logError) {
+        console.error('Erro ao registrar log de criação:', logError);
+        // Não lançar erro fatal aqui, pois o relato já foi criado com sucesso
+      }
+
       showToast('Relato enviado com sucesso!', 'success');
       navigate('/relatos');
     } catch (error) {
