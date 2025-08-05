@@ -47,6 +47,8 @@ O agente de IA é responsável por garantir a qualidade, a organização e a fun
     *   **Diagnóstico de Erros de Importação**: Em caso de `TypeError: 'text/html' is not a valid JavaScript MIME type.` ou erros de `Failed to resolve import`, a primeira ação deve ser executar `pnpm run build`. A mensagem de erro do build geralmente aponta o arquivo exato e o import problemático, facilitando a correção.
     *   **Auditoria Periódica de Imports**: Após a conclusão de uma etapa de refatoração (ex: mover todos os arquivos de uma funcionalidade), realizar uma auditoria completa de todos os imports nos arquivos afetados, mesmo que o build tenha passado. Isso ajuda a identificar erros sutis que podem causar problemas em tempo de execução ou em cenários específicos.
 
+*   **Atualização de Nome de Usuário e Sincronização**: Ao permitir que um usuário altere seu nome completo no aplicativo, é crucial que essa alteração seja feita no `user_metadata` do registro do usuário em `auth.users` (usando `supabase.auth.updateUser({ data: { full_name: newFullName } })`). Isso garantirá que o trigger de banco de dados (`handle_new_user_or_update_profile`) propague a mudança para a tabela `public.profiles`, mantendo a consistência dos dados.
+
 *   **Gestão de Versões (Git)**:
     *   O agente de IA é responsável por executar automaticamente os comandos `git add .`, `git commit -m "..."` e `git push` após cada alteração de código ou conjunto de alterações lógicas, a menos que o usuário instrua explicitamente o contrário. As mensagens de commit serão descritivas e seguirão um padrão claro (ex: `feat:`, `fix:`, `refactor:`).
 

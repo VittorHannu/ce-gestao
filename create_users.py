@@ -15,68 +15,13 @@ SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdX
 # Lista de nomes completos dos usuários a serem criados.
 # VOCÊ COLARÁ SUA LISTA AQUI QUANDO EU SOLICITAR.
 user_full_names = [
-    "Ângela Regina Romera",
-    "Cleudimar P. Cerqueira",
-    "Daniel Ranfley S. Cunha",
-    "Dhionatan Ciel",
-    "Elton Belém De Oliveira",
-    "Gabriel Alves Melo",
-    "José Braga Felizardo",
-    "José Flavio Barbosa De Brito",
-    "Pedro De Jesus Mato",
-    "Roniere Pereira Passos",
-    "Raniere Alves Nascimento",
-    "Wagner Batista De Souza",
-    "Tiago Barros",
-    "Francinilton Gonçalves",
-    "Gabriel Alcantara",
-    "Matheus Felipe",
-    "Adiel Matias Da Silva",
-    "Ana Carolina Martins Victor Coutinho",
-    "Armando Moura Rocha De Carvalho",
-    "Atanubio Pinto De Oliveira",
-    "Averlan Pereira Da Silva",
-    "Bruno Vinicios Jorge Da Silva",
-    "Clesio Pinto Dos Santos",
-    "Daniel Goncalves Da Silva",
-    "Danielle De Oliveira Maia",
-    "Edinaldo Tolentino Dos Santos",
-    "Eduardo De Franca Silva",
-    "Edvanio Da Silva Costa",
-    "Eliosmar Martins Dos Santos",
-    "Fernando Lima Rodrigues",
-    "Hemerson Pires De Freitas",
-    "Irisvaldo Milhomens Marinho",
-    "Istim Barbosa Marques",
-    "Janilton De Souza Magalhaes",
-    "Jheimy Ribeiro Rodrigues",
-    "Jose Edvaldo Fragoso Da Silva",
-    "Josimar Jorge Da Silva",
-    "Leandro Jose Da Silva",
-    "Leovenildo Da Silva",
-    "Lourivan Cardoso Da Silva",
-    "Luiz Gustavo Chaves Botelho",
-    "Luiz Philipe Mendes Silveira",
-    "Marcelo Batista Da Silva",
-    "Marcelo Cardoso Barros",
-    "Maxwel Teixeira Lima",
-    "Meire Pereira De Almeida",
-    "Raimundo Alex Martins Botelho",
-    "Regenildo Lusmar Da Silva",
-    "Rennan Alves Dos Santos",
-    "Ricardo Martins Lima",
-    "Rilmayer Faria Brito",
-    "Rogerio Alves De Almeida",
-    "Rogerio De Araujo Lima",
-    "Ronyeri Gomes De Sousa",
-    "Sebastiao Ferreira Menes",
-    "Semaias Martins Teixeira",
-    "Solimar Souza Dias",
-    "Valdivan Da Silva Barros",
-    "Valdivino Ribeiro Da Silva",
-    "Vanusa Alves Da Mota",
-    "Victor Matheus Parente Muniz",
-    "Weslei Ferreira De Jesus Silva"
+    "Nathele Lopes Regino",
+    "Iris Araújo Lima",
+    "José Alex da Silva Gomes",
+    "Jason Pereira",
+    "Edimilson Soares",
+    "Simone Barbosa da Silva",
+    "Elis Regina Francisca de Souza"
 ]
 
 # --- FUNÇÕES AUXILIARES ---
@@ -122,14 +67,15 @@ def main():
     created_users_data = []
     existing_emails = set()
 
-    # Opcional: Buscar emails existentes no Supabase para evitar colisões
-    # try:
-    #     response = supabase.from('profiles').select('email').execute()
-    #     if response.data:
-    #         for profile in response.data:
-    #             existing_emails.add(profile['email'])
-    # except Exception as e:
-    #     print(f"AVISO: Não foi possível buscar emails existentes do Supabase: {e}. Pode haver colisões de email.")
+    try:
+        print("Buscando emails existentes no Supabase para evitar colisões...")
+        response = supabase.table('profiles').select('email').execute()
+        if response.data:
+            for profile in response.data:
+                existing_emails.add(profile['email'])
+        print(f"Encontrados {len(existing_emails)} emails existentes.")
+    except Exception as e:
+        print(f"AVISO: Não foi possível buscar emails existentes do Supabase: {e}. Pode haver colisões de email.")
 
     print(f"Iniciando a criação de {len(user_full_names)} usuários...")
 
