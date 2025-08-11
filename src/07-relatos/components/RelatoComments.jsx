@@ -12,12 +12,28 @@ const RelatoComments = ({ relatoId }) => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null); // Novo estado para o ID do usuário logado
+  const [canDeleteAnyComment, setCanDeleteAnyComment] = useState(false); // Novo estado para permissão de apagar qualquer comentário
   const { showToast } = useToast();
 
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setCurrentUserId(user?.id || null);
+
+      // Busca a permissão can_delete_any_comment do perfil do usuário
+      if (user) {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('can_delete_any_comment')
+          .eq('id', user.id)
+          .single();
+
+        if (error) {
+          console.error('Erro ao buscar permissão de exclusão:', error);
+        } else if (profile) {
+          setCanDeleteAnyComment(profile.can_delete_any_comment);
+        }
+      }
     };
     fetchUser();
   }, []);
@@ -165,7 +181,7 @@ const RelatoComments = ({ relatoId }) => {
                 <span>
                   Por {comment.profiles?.full_name || comment.profiles?.email || 'Usuário Desconhecido'} em {new Date(comment.created_at).toLocaleString()}
                 </span>
-                {comment.user_id === currentUserId && (
+                { (comment.user_id === currentUserId || canDeleteAnyComment) && (
                   <Button variant="ghost" size="sm" onClick={() => handleDeleteComment(comment.id)}>
                     Excluir
                   </Button>
