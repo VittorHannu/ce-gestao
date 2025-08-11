@@ -4,6 +4,7 @@ import { useToast } from '@/01-common/hooks/useToast';
 import LoadingSpinner from '@/01-common/components/LoadingSpinner';
 import { Button } from '@/core/components/ui/button';
 import { Textarea } from '@/core/components/ui/textarea';
+import { Send } from 'lucide-react';
 
 const RelatoComments = ({ relatoId }) => {
   const [comments, setComments] = useState([]);
@@ -135,16 +136,22 @@ const RelatoComments = ({ relatoId }) => {
   return (
     <div className="mt-8 p-4 rounded-lg">
       <h2 className="text-xl font-bold mb-4">Comentários</h2>
-      <form onSubmit={handleSubmitComment} className="flex flex-col gap-2 mb-6">
+      <form onSubmit={handleSubmitComment} className="relative mb-6">
         <Textarea
           placeholder="Adicione um comentário..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           rows="3"
           disabled={submitting}
+          className="pr-10 resize-none"
         />
-        <Button type="submit" disabled={submitting} className="self-end">
-          {submitting ? 'Enviando...' : 'Enviar Comentário'}
+        <Button
+          type="submit"
+          size="icon"
+          disabled={submitting || !newComment.trim()}
+          className="absolute bottom-2 right-2"
+        >
+          <Send className="h-4 w-4" />
         </Button>
       </form>
       <div className="space-y-4">
