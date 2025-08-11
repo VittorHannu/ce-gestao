@@ -133,7 +133,19 @@ const RelatoComments = ({ relatoId }) => {
   return (
     <div className="mt-8 p-4 rounded-lg">
       <h2 className="text-xl font-bold mb-4">Comentários</h2>
-      <div className="space-y-4 mb-6 max-h-60 overflow-y-auto">
+      <form onSubmit={handleSubmitComment} className="flex flex-col gap-2 mb-6">
+        <Textarea
+          placeholder="Adicione um comentário..."
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          rows="3"
+          disabled={submitting}
+        />
+        <Button type="submit" disabled={submitting} className="self-end">
+          {submitting ? 'Enviando...' : 'Enviar Comentário'}
+        </Button>
+      </form>
+      <div className="space-y-4">
         {comments.length === 0 ? (
           <p className="text-gray-600">Nenhum comentário ainda. Seja o primeiro a comentar!</p>
         ) : (
@@ -154,18 +166,6 @@ const RelatoComments = ({ relatoId }) => {
           ))
         )}
       </div>
-      <form onSubmit={handleSubmitComment} className="flex flex-col gap-2">
-        <Textarea
-          placeholder="Adicione um comentário..."
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          rows="3"
-          disabled={submitting}
-        />
-        <Button type="submit" disabled={submitting} className="self-end">
-          {submitting ? 'Enviando...' : 'Enviar Comentário'}
-        </Button>
-      </form>
     </div>
   );
 };
