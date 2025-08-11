@@ -8,6 +8,7 @@ import RelatoForm from '../components/RelatoForm'; // Importa o formulário
 import RelatoDisplayDetails from '../components/RelatoDisplayDetails'; // Importa o componente de exibição de detalhes
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile'; // Para verificar permissão
 import BackButton from '@/01-common/components/BackButton'; // Importa o BackButton
+import RelatoComments from '../components/RelatoComments';
 
 const RelatoDetailsPage = () => {
   const { id } = useParams();
@@ -402,6 +403,8 @@ const RelatoDetailsPage = () => {
           </Button>
         )}
       </div>
+
+      <RelatoComments relatoId={id} />
     </div>
   );
 };
