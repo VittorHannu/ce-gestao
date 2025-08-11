@@ -9,8 +9,7 @@ const DateFilter = () => {
   const years = [currentYear, currentYear - 1, currentYear - 2]; // Mostra os últimos 3 anos
 
   return (
-    <div className="flex flex-col gap-2 p-4 bg-card rounded-lg shadow">
-      <p className="text-sm font-medium text-card-foreground">Filtrar por período:</p>
+    <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2 w-full flex-wrap">
         <Select value={year.toString()} onValueChange={(value) => setYear(parseInt(value, 10))}>
           <SelectTrigger className="w-[120px]">

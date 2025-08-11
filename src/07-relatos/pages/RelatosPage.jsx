@@ -55,7 +55,7 @@ const RelatosPage = () => {
   return (
     <MainLayout title="Segurança Laboral">
       <h1 className="text-2xl font-bold mb-8 text-center">Segurança Laboral</h1>
-      <div className="mb-8">
+      <div className="mb-8 mx-auto w-fit">
         <DateFilter />
       </div>
       <div className="grid grid-cols-2 gap-4">
