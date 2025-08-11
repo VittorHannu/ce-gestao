@@ -5,7 +5,7 @@ import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { useRelatoCounts } from '../hooks/useRelatoCounts';
 import LoadingSpinner from '@/01-common/components/LoadingSpinner';
 import MainLayout from '@/01-common/components/MainLayout';
-import { FileText, CheckCircle, Clock, XCircle, BarChart } from 'lucide-react';
+import { FileText, CheckCircle, Clock, XCircle, BarChart, Plus, User } from 'lucide-react';
 import RelatoStatsCard from '../components/RelatoStatsCard';
 import DateFilter from '@/01-common/components/DateFilter'; // Importa o novo componente de card
 
@@ -77,6 +77,7 @@ const RelatosPage = () => {
         {!isLoadingProfile && userProfile?.can_manage_relatos && (
           <Link to="/relatos/aprovacao" className="w-full">
             <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2 shadow-none">
+              <CheckCircle className="h-5 w-5" />
               <span>Aprovar Relatos</span>
               {relatoCounts?.pendenteAprovacao > 0 && (
                 <span className="ml-2 px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-full">
@@ -87,10 +88,14 @@ const RelatosPage = () => {
           </Link>
         )}
         <Link to="/relatos/novo" className="w-full">
-          <Button size="lg" className="w-full shadow-none">Criar Novo Relato</Button>
+          <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2 shadow-none">
+            <Plus className="h-5 w-5" />
+            <span>Criar Novo Relato</span>
+          </Button>
         </Link>
         <Link to="/relatos/atribuidos" className="w-full">
           <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2 shadow-none">
+            <User className="h-5 w-5" />
             <span>Relatos Atribuídos a Você</span>
             {relatoCounts?.relatosAtribuidos > 0 && (
               <span className="ml-2 px-2 py-1 text-xs font-bold text-white bg-blue-500 rounded-full">
