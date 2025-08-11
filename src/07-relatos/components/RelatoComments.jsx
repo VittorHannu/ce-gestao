@@ -102,7 +102,7 @@ const RelatoComments = ({ relatoId }) => {
       const { error } = await supabase.from('relato_comentarios').insert({
         relato_id: relatoId,
         user_id: user.id,
-        comment_text: newComment.trim(),
+        comment_text: newComment.trim()
       });
 
       if (error) {

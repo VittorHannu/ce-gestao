@@ -367,46 +367,50 @@ const RelatoDetailsPage = () => {
           initialResponsibles={currentResponsibles} // Passa os responsáveis atuais
         />
       ) : (
-        <div className="p-4 bg-white rounded-lg shadow-sm">
-          <RelatoDisplayDetails relato={relato} responsibles={displayResponsibles} />
+        <div>
+          <div className="p-4 bg-white rounded-lg shadow-sm">
+            <RelatoDisplayDetails relato={relato} responsibles={displayResponsibles} />
+
+            <div className="mt-6 flex flex-wrap gap-2">
+              <>
+                {relato.status === 'REPROVADO' && canManageRelatos && !isEditing ? (
+                  <Button onClick={handleReapproveRelato} disabled={isSaving}>
+                    {isSaving ? 'Reaprovando...' : 'Reaprovar'}
+                  </Button>
+                ) : (
+                  (canManageRelatos || isResponsibleForRelato) && !isEditing && (
+                    <>
+                      <Button onClick={() => setIsEditing(true)}>Editar</Button>
+                      {relato.status !== 'REPROVADO' && canManageRelatos && (
+                        <Button variant="warning" onClick={handleReproveRelato} disabled={isReproving}>
+                          {isReproving ? 'Reprovando...' : 'Reprovar'}
+                        </Button>
+                      )}
+                    </>
+                  )
+                )}
+                {canDeleteRelatos && !isEditing && (
+                  <Button variant="destructive" onClick={handleDeleteRelato} disabled={isDeleting}>
+                    {isDeleting ? 'Excluindo...' : 'Excluir'}
+                  </Button>
+                )}
+                {isEditing && (
+                  <Button variant="outline" onClick={() => setIsEditing(false)} disabled={isSaving}>
+                    Cancelar
+                  </Button>
+                )}
+                {!isEditing && (
+                  <Button variant="outline" onClick={() => navigate(`/relatos/logs/${id}`)}>
+                        Ver Histórico de Alterações
+                  </Button>
+                )}
+              </>
+            </div>
+          </div>
+
+          <RelatoComments relatoId={id} />
         </div>
       )}
-
-      <div className="mt-6 flex flex-wrap gap-2">
-        {relato.status === 'REPROVADO' && canManageRelatos && !isEditing ? (
-          <Button onClick={handleReapproveRelato} disabled={isSaving}>
-            {isSaving ? 'Reaprovando...' : 'Reaprovar'}
-          </Button>
-        ) : (
-          (canManageRelatos || isResponsibleForRelato) && !isEditing && (
-            <>
-              <Button onClick={() => setIsEditing(true)}>Editar</Button>
-              {relato.status !== 'REPROVADO' && canManageRelatos && (
-                <Button variant="warning" onClick={handleReproveRelato} disabled={isReproving}>
-                  {isReproving ? 'Reprovando...' : 'Reprovar'}
-                </Button>
-              )}
-            </>
-          )
-        )}
-        {canDeleteRelatos && !isEditing && (
-          <Button variant="destructive" onClick={handleDeleteRelato} disabled={isDeleting}>
-            {isDeleting ? 'Excluindo...' : 'Excluir'}
-          </Button>
-        )}
-        {isEditing && (
-          <Button variant="outline" onClick={() => setIsEditing(false)} disabled={isSaving}>
-            Cancelar
-          </Button>
-        )}
-        {!isEditing && (
-          <Button variant="outline" onClick={() => navigate(`/relatos/logs/${id}`)}>
-                Ver Histórico de Alterações
-          </Button>
-        )}
-      </div>
-
-      <RelatoComments relatoId={id} />
     </div>
   );
 };
