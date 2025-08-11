@@ -6,7 +6,8 @@ import { useRelatoCounts } from '../hooks/useRelatoCounts';
 import LoadingSpinner from '@/01-common/components/LoadingSpinner';
 import MainLayout from '@/01-common/components/MainLayout';
 import { FileText, CheckCircle, Clock, XCircle, BarChart } from 'lucide-react';
-import RelatoStatsCard from '../components/RelatoStatsCard'; // Importa o novo componente de card
+import RelatoStatsCard from '../components/RelatoStatsCard';
+import DateFilter from '@/01-common/components/DateFilter'; // Importa o novo componente de card
 
 const RelatosPage = () => {
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
@@ -54,6 +55,9 @@ const RelatosPage = () => {
   return (
     <MainLayout title="Segurança Laboral">
       <h1 className="text-2xl font-bold mb-8 text-center">Segurança Laboral</h1>
+      <div className="mb-8">
+        <DateFilter />
+      </div>
       <div className="grid grid-cols-2 gap-4">
         {cardData.map((card, index) => (
           <RelatoStatsCard

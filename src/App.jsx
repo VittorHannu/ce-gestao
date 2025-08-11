@@ -196,20 +196,24 @@ function AppWrapper({ showToast }) {
   );
 }
 
+import { DateFilterProvider } from './01-common/hooks/useDateFilter.jsx';
+
 function App() {
   const { toast, showToast, hideToast } = useToast();
 
   return (
     <BrowserRouter>
-      <AppWrapper showToast={showToast} />
-      {toast && (
-        <Toast
-          key={toast.id}
-          message={toast.message}
-          type={toast.type}
-          onClose={hideToast}
-        />
-      )}
+      <DateFilterProvider>
+        <AppWrapper showToast={showToast} />
+        {toast && (
+          <Toast
+            key={toast.id}
+            message={toast.message}
+            type={toast.type}
+            onClose={hideToast}
+          />
+        )}
+      </DateFilterProvider>
     </BrowserRouter>
   );
 }

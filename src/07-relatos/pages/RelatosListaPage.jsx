@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useDateFilter } from '@/01-common/hooks/useDateFilter.jsx';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '@/01-common/lib/supabase';
 import { useToast } from '@/01-common/hooks/useToast';
@@ -13,6 +14,7 @@ const RelatosListaPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [responsibleFilter, setResponsibleFilter] = useState('all'); // 'all', 'with_responsibles', 'without_responsibles'
+  const { startDate, endDate } = useDateFilter();
   const { showToast } = useToast();
   const location = useLocation();
 
@@ -46,7 +48,9 @@ const RelatosListaPage = () => {
     const { data, error } = await supabase.rpc('search_relatos_unaccented', {
       p_search_term: searchTerm,
       p_status_filter: statusFilter ? statusFilter.toUpperCase() : null,
-      p_responsible_filter: responsibleFilter // Passa o novo filtro
+      p_responsible_filter: responsibleFilter,
+      p_start_date: startDate,
+      p_end_date: endDate
     });
 
     console.log('Supabase query result:');
@@ -61,7 +65,7 @@ const RelatosListaPage = () => {
       console.log('Relatos state after setRelatos:', data);
     }
     setLoading(false);
-  }, [location.search, searchTerm, responsibleFilter, showToast]); // Adiciona responsibleFilter como dependência
+  }, [location.search, searchTerm, responsibleFilter, showToast, startDate, endDate]);
 
   useEffect(() => {
     fetchRelatos();
