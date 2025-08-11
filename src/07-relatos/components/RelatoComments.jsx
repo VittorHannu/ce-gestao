@@ -53,6 +53,8 @@ const RelatoComments = ({ relatoId }) => {
           if (payload.eventType === 'INSERT') {
             setComments((prev) => [...prev, payload.new]);
           } else if (payload.eventType === 'DELETE') {
+            console.log('Realtime DELETE event received:', payload);
+            console.log('Deleting comment with ID:', payload.old.id);
             setComments((prev) => prev.filter((comment) => comment.id !== payload.old.id));
           } // UPDATE events could be handled here too if comments are editable
         }
