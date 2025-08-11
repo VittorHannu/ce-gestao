@@ -45,6 +45,7 @@ const CreateUserPage = React.lazy(() => import('@/05-adm/pages/CreateUserPage'))
 const UserDetailsPage = React.lazy(() => import('@/05-adm/pages/UserDetailsPage'));
 const FeedbackReportsPage = React.lazy(() => import('@/07-relatos/pages/FeedbackReportsPage'));
 const RelatosReprovadosPage = React.lazy(() => import('@/07-relatos/pages/RelatosReprovadosPage'));
+const RelatoLogsPage = React.lazy(() => import('@/07-relatos/pages/RelatoLogsPage'));
 
 import MainLayout from '@/01-common/components/MainLayout';
 
@@ -182,6 +183,7 @@ function AppWrapper({ showToast }) {
         <Route path="/relatos/estatisticas" element={<Suspense fallback={<LoadingSpinner />}><RelatosStatsPage /></Suspense>} />
         <Route path="/relatos/atribuidos" element={<Suspense fallback={<LoadingSpinner />}><RelatosAtribuidosPage /></Suspense>} />
         <Route path="/relatos/reprovados" element={<Suspense fallback={<LoadingSpinner />}><RelatosReprovadosPage /></Suspense>} />
+        <Route path="/relatos/logs/:id" element={<Suspense fallback={<LoadingSpinner />}><RelatoLogsPage /></Suspense>} />
         <Route path="/users-management" element={<ProtectedRoute user={user} requiredPermission="can_view_users"><Suspense fallback={<LoadingSpinner />}><UsersPage /></Suspense></ProtectedRoute>} />
         <Route path="/users-management/create" element={<ProtectedRoute user={user} requiredPermission="can_create_users"><Suspense fallback={<LoadingSpinner />}><CreateUserPage /></Suspense></ProtectedRoute>} />
         <Route path="/users-management/:userId" element={<ProtectedRoute user={user} requiredPermission="can_view_users"><Suspense fallback={<LoadingSpinner />}><UserDetailsPage /></Suspense></ProtectedRoute>} />
