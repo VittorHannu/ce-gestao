@@ -131,7 +131,7 @@ const RelatoComments = ({ relatoId }) => {
   }
 
   return (
-    <div className="mt-8 p-4 border rounded-lg bg-gray-50">
+    <div className="mt-8 p-4 rounded-lg">
       <h2 className="text-xl font-bold mb-4">Comentários</h2>
       <div className="space-y-4 mb-6 max-h-60 overflow-y-auto">
         {comments.length === 0 ? (

@@ -367,7 +367,9 @@ const RelatoDetailsPage = () => {
           initialResponsibles={currentResponsibles} // Passa os responsáveis atuais
         />
       ) : (
-        <RelatoDisplayDetails relato={relato} responsibles={displayResponsibles} />
+        <div className="p-4 bg-white rounded-lg shadow-sm">
+          <RelatoDisplayDetails relato={relato} responsibles={displayResponsibles} />
+        </div>
       )}
 
       <div className="mt-6 flex flex-wrap gap-2">
