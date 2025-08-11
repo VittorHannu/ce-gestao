@@ -12,7 +12,7 @@ const DateFilter = () => {
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2 w-full flex-wrap">
         <Select value={year.toString()} onValueChange={(value) => setYear(parseInt(value, 10))}>
-          <SelectTrigger className="w-[120px]">
+          <SelectTrigger className="w-auto border bg-background shadow-sm hover:bg-accent hover:text-accent-foreground">
             <SelectValue placeholder="Ano" />
           </SelectTrigger>
           <SelectContent>
@@ -23,7 +23,7 @@ const DateFilter = () => {
         </Select>
 
         <Select value={semester.toString()} onValueChange={(value) => setSemester(parseInt(value, 10))}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-auto border bg-background shadow-sm hover:bg-accent hover:text-accent-foreground">
             <SelectValue placeholder="Semestre" />
           </SelectTrigger>
           <SelectContent>
