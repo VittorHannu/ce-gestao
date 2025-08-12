@@ -107,9 +107,9 @@ const LoginPage = ({ showToast }) => {
                   required
                 />
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col items-center space-y-4"> {/* Changed to flex-col and added space-y */}
                 <button
-                  className="bg-[#EE8800] hover:bg-[#D47A00] text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EE8800] focus:ring-offset-2"
+                  className="bg-[#EE8800] hover:bg-[#D47A00] text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EE8800] focus:ring-offset-2 w-full" /* Added w-full */
                   type="submit"
                   disabled={loading}
                 >
@@ -128,12 +128,12 @@ const LoginPage = ({ showToast }) => {
           </div>
           {/* New button for anonymous relato submission */}
           <div className="mt-6 text-center w-full"> {/* Added w-full to ensure it takes full width */}
-            <p className="text-sm text-gray-600 mb-2">Não tem uma conta ou quer enviar um relato anônimo?</p>
+            <p className="text-sm text-gray-600 mb-2">Não tem uma conta ou quer apenas enviar um relato?</p>
             <Link
               to="/relatos/novo" // Corrected route for CreateRelatoPage
               className="bg-gray-200 hover:bg-gray-300 text-[#243834] font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
             >
-              Enviar Relato Anônimo
+              Enviar Relato
             </Link>
           </div>
         </div>
