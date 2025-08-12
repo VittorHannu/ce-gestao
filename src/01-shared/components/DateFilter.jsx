@@ -1,6 +1,6 @@
 import React from 'react';
-import { useDateFilter } from '@/01-common/hooks/useDateFilter';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/core/components/ui/select';
+import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/01-shared/components/ui/select';
 
 const DateFilter = () => {
   const { year, setYear, semester, setSemester } = useDateFilter();

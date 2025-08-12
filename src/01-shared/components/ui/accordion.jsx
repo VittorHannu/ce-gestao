@@ -1,7 +1,3 @@
-
-
-
-
 /*
  * Este componente React implementa um acordeão, um elemento de interface do usuário
  * que permite exibir e ocultar seções de conteúdo de forma organizada.
@@ -27,7 +23,7 @@ import * as React from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDownIcon } from 'lucide-react';
 
-import { cn } from '@/01-common/utils/utils';
+import { cn } from '@/01-shared/utils/utils';
 
 /**
  * @typedef {Object} AccordionProps

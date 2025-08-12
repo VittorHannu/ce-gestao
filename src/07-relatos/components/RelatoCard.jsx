@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/core/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/01-shared/components/ui/card';
 import { CheckCircle, Clock, AlertCircle } from 'lucide-react'; // Importa os ícones
 
 const RelatoCard = ({ relato, disableLink }) => {

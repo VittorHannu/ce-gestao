@@ -1,5 +1,5 @@
 import React from 'react';
-import BackButton from '@/01-common/components/BackButton';
+import BackButton from '@/01-shared/components/BackButton';
 
 const RelatosStatsPage = () => {
   return (

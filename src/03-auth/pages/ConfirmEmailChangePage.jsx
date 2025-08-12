@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
-import { supabase } from '@/01-common/lib/supabase';
-import LoadingSpinner from '@/01-common/components/LoadingSpinner';
-import PublicLayout from '@/01-common/components/PublicLayout';
+import { supabase } from '@/01-shared/lib/supabase';
+import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
+import PublicLayout from '@/01-shared/components/PublicLayout';
 
 const ConfirmEmailChangePage = () => {
   const location = useLocation();

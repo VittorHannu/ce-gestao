@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/01-common/lib/supabase';
-import MainLayout from '@/01-common/components/MainLayout';
-import DataLoader from '@/01-common/components/data-loader/DataLoader';
-import { Card, CardContent, CardHeader, CardTitle } from '@/core/components/ui/card';
-import { Badge } from '@/core/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/core/components/ui/select';
+import { supabase } from '@/01-shared/lib/supabase';
+import MainLayout from '@/01-shared/components/MainLayout';
+import DataLoader from '@/01-shared/components/data-loader/DataLoader';
+import { Card, CardContent, CardHeader, CardTitle } from '@/01-shared/components/ui/card';
+import { Badge } from '@/01-shared/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/01-shared/components/ui/select';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useOutletContext } from 'react-router-dom';
-import BackButton from '@/01-common/components/BackButton';
+import BackButton from '@/01-shared/components/BackButton';
 
 const FeedbackReportsPage = () => {
   const queryClient = useQueryClient();

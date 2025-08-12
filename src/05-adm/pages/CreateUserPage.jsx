@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import MainLayout from '@/01-common/components/MainLayout';
+import MainLayout from '@/01-shared/components/MainLayout';
 import CreateUserForm from '@/05-adm/components/CreateUserForm';
 
 const CreateUserPage = () => {

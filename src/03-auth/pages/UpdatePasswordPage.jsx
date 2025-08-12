@@ -15,7 +15,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/01-common/lib/supabase';
+import { supabase } from '@/01-shared/lib/supabase';
 import { useNavigate } from 'react-router-dom';
 
 const UpdatePasswordPage = ({ showToast }) => {

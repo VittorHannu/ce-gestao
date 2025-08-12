@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/01-common/lib/supabase';
+import { supabase } from '@/01-shared/lib/supabase';
 
 const fetchUserProfile = async () => {
   const { data: { user } } = await supabase.auth.getUser();

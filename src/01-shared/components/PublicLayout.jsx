@@ -30,7 +30,7 @@ const PublicLayout = () => {
     <div className="min-h-screen flex flex-col">
       <main
         className="flex-1 px-2 py-3"
-        style={{ paddingTop: 'max(12px, env(safe-area-inset-top))' }}
+        style={{ paddingTop: 'max(8px, env(safe-area-inset-top))' }} /* Reduced minimum paddingTop */
       >
         <Outlet />
       </main>

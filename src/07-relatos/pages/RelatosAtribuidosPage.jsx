@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/01-common/lib/supabase';
-import { useToast } from '@/01-common/hooks/useToast';
-import LoadingSpinner from '@/01-common/components/LoadingSpinner';
+import { supabase } from '@/01-shared/lib/supabase';
+import { useToast } from '@/01-shared/hooks/useToast';
+import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import RelatoCard from '../components/RelatoCard';
-import BackButton from '@/01-common/components/BackButton';
-import { Button } from '@/core/components/ui/button'; // Importar Button
+import BackButton from '@/01-shared/components/BackButton';
+import { Button } from '@/01-shared/components/ui/button'; // Importar Button
 
 const RelatosAtribuidosPage = () => {
   const [relatos, setRelatos] = useState([]);

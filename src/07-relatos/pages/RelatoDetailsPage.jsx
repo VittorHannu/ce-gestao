@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { supabase } from '@/01-common/lib/supabase';
-import { useToast } from '@/01-common/hooks/useToast';
-import LoadingSpinner from '@/01-common/components/LoadingSpinner';
-import { Button } from '@/core/components/ui/button';
+import { supabase } from '@/01-shared/lib/supabase';
+import { useToast } from '@/01-shared/hooks/useToast';
+import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
+import { Button } from '@/01-shared/components/ui/button';
 import RelatoForm from '../components/RelatoForm'; // Importa o formulário
 import RelatoDisplayDetails from '../components/RelatoDisplayDetails'; // Importa o componente de exibição de detalhes
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile'; // Para verificar permissão
-import BackButton from '@/01-common/components/BackButton'; // Importa o BackButton
+import BackButton from '@/01-shared/components/BackButton'; // Importa o BackButton
 import RelatoComments from '../components/RelatoComments';
 
 const RelatoDetailsPage = () => {

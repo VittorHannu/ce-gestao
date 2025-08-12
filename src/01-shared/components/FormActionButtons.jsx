@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@/core/components/ui/button';
+import { Button } from '@/01-shared/components/ui/button';
 
 const FormActionButtons = ({
   onCancel,

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/01-common/lib/supabase';
-import { useToast } from '@/01-common/hooks/useToast';
-import { Button } from '@/core/components/ui/button';
-import LoadingSpinner from '@/01-common/components/LoadingSpinner';
+
+
+import { Button } from '@/01-shared/components/ui/button';
+
 import RelatoDisplayDetails from '../components/RelatoDisplayDetails'; // Importa o componente de exibição de detalhes
-import BackButton from '@/01-common/components/BackButton'; // Importa o BackButton
+import { supabase } from '@/01-shared/lib/supabase';
+import { useToast } from '@/01-shared/hooks/useToast';
+import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
+import BackButton from '@/01-shared/components/BackButton'; // Importa o BackButton
 import { Link } from 'react-router-dom';
 
 const RelatosAprovacaoPage = () => {

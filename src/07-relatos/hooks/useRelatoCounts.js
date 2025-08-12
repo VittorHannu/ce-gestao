@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
-import { useDateFilter } from '@/01-common/hooks/useDateFilter';
-import { supabase } from '@/01-common/lib/supabase';
+import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
+import { supabase } from '@/01-shared/lib/supabase';
 
 const fetchRelatoCounts = async (user, startDate, endDate) => {
   // Contagem de Todos os Relatos Aprovados

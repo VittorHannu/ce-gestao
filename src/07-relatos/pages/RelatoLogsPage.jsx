@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabase } from '@/01-common/lib/supabase';
-import { useToast } from '@/01-common/hooks/useToast';
-import LoadingSpinner from '@/01-common/components/LoadingSpinner';
-import BackButton from '@/01-common/components/BackButton';
+import { supabase } from '@/01-shared/lib/supabase';
+import { useToast } from '@/01-shared/hooks/useToast';
+import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
+import BackButton from '@/01-shared/components/BackButton';
 
 const RelatoLogsPage = () => {
   const { id } = useParams();

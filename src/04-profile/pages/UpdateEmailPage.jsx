@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { supabase } from '@/01-common/lib/supabase';
+import { supabase } from '@/01-shared/lib/supabase';
 
-import { Input } from '@/core/components/ui/input';
-import { Label } from '@/core/components/ui/label';
-import MainLayout from '@/01-common/components/MainLayout';
-import FormActionButtons from '@/01-common/components/FormActionButtons';
+import { Input } from '@/01-shared/components/ui/input';
+import { Label } from '@/01-shared/components/ui/label';
+import MainLayout from '@/01-shared/components/MainLayout';
+import FormActionButtons from '@/01-shared/components/FormActionButtons';
 
 const UpdateEmailPage = () => {
   const { showToast } = useOutletContext();

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { supabase } from '@/01-common/lib/supabase';
+import { supabase } from '@/01-shared/lib/supabase';
 import { useOutletContext } from 'react-router-dom';
 
-import { Button } from '@/core/components/ui/button';
-import { Input } from '@/core/components/ui/input';
-import { Label } from '@/core/components/ui/label';
-import { Textarea } from '@/core/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/core/components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/core/components/ui/dialog';
+import { Button } from '@/01-shared/components/ui/button';
+import { Input } from '@/01-shared/components/ui/input';
+import { Label } from '@/01-shared/components/ui/label';
+import { Textarea } from '@/01-shared/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/01-shared/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/01-shared/components/ui/dialog';
 
 const FeedbackForm = ({ isOpen, onClose }) => {
   const { showToast, user } = useOutletContext();

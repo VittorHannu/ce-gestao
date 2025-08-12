@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/01-common/lib/supabase';
+import { supabase } from '@/01-shared/lib/supabase';
 import { CheckCircle, Clock, AlertCircle } from 'lucide-react';
 
 const RelatoDisplayDetails = ({ relato, responsibles = [] }) => {

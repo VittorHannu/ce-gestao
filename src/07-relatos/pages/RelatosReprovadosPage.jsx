@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/01-common/lib/supabase';
-import { useToast } from '@/01-common/hooks/useToast';
-import LoadingSpinner from '@/01-common/components/LoadingSpinner';
+import { supabase } from '@/01-shared/lib/supabase';
+import { useToast } from '@/01-shared/hooks/useToast';
+import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import RelatoCard from '../components/RelatoCard';
-import BackButton from '@/01-common/components/BackButton';
+import BackButton from '@/01-shared/components/BackButton';
 
 const RelatosReprovadosPage = () => {
   const [reprovadosRelatos, setReprovadosRelatos] = useState([]);

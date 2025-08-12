@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/01-common/lib/supabase';
-import { useToast } from '@/01-common/hooks/useToast';
-import LoadingSpinner from '@/01-common/components/LoadingSpinner';
-import { Button } from '@/core/components/ui/button';
-import { Textarea } from '@/core/components/ui/textarea';
+import { supabase } from '@/01-shared/lib/supabase';
+import { useToast } from '@/01-shared/hooks/useToast';
+import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
+import { Button } from '@/01-shared/components/ui/button';
+import { Textarea } from '@/01-shared/components/ui/textarea';
 import { Send } from 'lucide-react';
 
 const RelatoComments = ({ relatoId }) => {

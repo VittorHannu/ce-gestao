@@ -17,13 +17,18 @@
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { supabase } from '@/01-common/lib/supabase';
-import Toast from '@/core/components/ui/Toast';
-import { useToast } from '@/01-common/hooks/useToast';
+import { supabase } from '@/01-shared/lib/supabase';
+import Toast from '@/01-shared/components/ui/Toast';
+import { useToast } from '@/01-shared/hooks/useToast';
 
 
-import ProtectedRoute from '@/01-common/components/protected-route/ProtectedRoute';
-import LoadingSpinner from '@/01-common/components/LoadingSpinner';
+import ProtectedRoute from '@/01-shared/components/protected-route/ProtectedRoute';
+import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
+
+import MainLayout from '@/01-shared/components/MainLayout';
+import PublicLayout from '@/01-shared/components/PublicLayout';
+import { DateFilterProvider } from './01-shared/hooks/useDateFilter.jsx';
+
 
 const LoginPage = React.lazy(() => import('@/03-auth/pages/LoginPage'));
 const HomePage = React.lazy(() => import('@/06-home/pages/HomePage'));
@@ -47,10 +52,10 @@ const FeedbackReportsPage = React.lazy(() => import('@/07-relatos/pages/Feedback
 const RelatosReprovadosPage = React.lazy(() => import('@/07-relatos/pages/RelatosReprovadosPage'));
 const RelatoLogsPage = React.lazy(() => import('@/07-relatos/pages/RelatoLogsPage'));
 
-import MainLayout from '@/01-common/components/MainLayout';
 
 
-import PublicLayout from '@/01-common/components/PublicLayout';
+
+
 
 
 import '@/00-global/styles/App.css';
@@ -199,7 +204,8 @@ function AppWrapper({ showToast }) {
   );
 }
 
-import { DateFilterProvider } from './01-common/hooks/useDateFilter.jsx';
+
+
 
 function App() {
   const { toast, showToast, hideToast } = useToast();

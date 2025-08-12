@@ -3,12 +3,12 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { User, Camera, Shield, LogOut, Mail, Key } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { supabase } from '@/01-common/lib/supabase';
+import { supabase } from '@/01-shared/lib/supabase';
 
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
-import DataLoader from '@/01-common/components/data-loader/DataLoader';
-import { Button } from '@/core/components/ui/button';
-import MainLayout from '@/01-common/components/MainLayout';
+import DataLoader from '@/01-shared/components/data-loader/DataLoader';
+import { Button } from '@/01-shared/components/ui/button';
+import MainLayout from '@/01-shared/components/MainLayout';
 
 const ProfilePage = () => {
   const navigate = useNavigate();

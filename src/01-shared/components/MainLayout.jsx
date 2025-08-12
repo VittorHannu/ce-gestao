@@ -50,7 +50,7 @@ const MainLayout = ({ children, _user }) => {
           ref={mainRef}
           className="flex-grow px-2 overflow-y-visible max-w-screen-md mx-auto"
           style={{
-            paddingTop: 'max(12px, env(safe-area-inset-top))',
+            paddingTop: 'max(8px, env(safe-area-inset-top))', /* Reduced minimum paddingTop */
             paddingBottom: showBottomNav ? 'calc(60px + env(safe-area-inset-bottom) + 15px)' : '15px'
           }}
         >

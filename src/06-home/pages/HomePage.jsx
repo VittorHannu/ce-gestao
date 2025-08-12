@@ -17,9 +17,9 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MainLayout from '@/01-common/components/MainLayout';
-import FeedbackForm from '@/01-common/components/FeedbackForm';
-import { Button } from '@/core/components/ui/button';
+import MainLayout from '@/01-shared/components/MainLayout';
+import FeedbackForm from '@/01-shared/components/FeedbackForm';
+import { Button } from '@/01-shared/components/ui/button';
 import { MessageSquare, List } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
 

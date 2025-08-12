@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import MainLayout from '@/01-common/components/MainLayout';
+import MainLayout from '@/01-shared/components/MainLayout';
 import { useNavigate } from 'react-router-dom';
-import SearchInput from '@/01-common/components/SearchInput';
+import SearchInput from '@/01-shared/components/SearchInput';
 import { useUsers } from '@/05-adm/hooks/useUsers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '@/core/components/ui/button';
+import { Button } from '@/01-shared/components/ui/button';
 
 
 function UsersPage() {

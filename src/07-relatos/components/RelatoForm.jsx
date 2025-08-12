@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Input } from '@/core/components/ui/input';
-import { Textarea } from '@/core/components/ui/textarea';
-import { Checkbox } from '@/core/components/ui/checkbox';
-import { Label } from '@/core/components/ui/label';
-import { Button } from '@/core/components/ui/button';
-import MultiUserSelect from '@/01-common/components/MultiUserSelect';
+import { Input } from '@/01-shared/components/ui/input';
+import { Textarea } from '@/01-shared/components/ui/textarea';
+import { Checkbox } from '@/01-shared/components/ui/checkbox';
+import { Label } from '@/01-shared/components/ui/label';
+import { Button } from '@/01-shared/components/ui/button';
+import MultiUserSelect from '@/01-shared/components/MultiUserSelect';
 
 const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Enviar Relato', canManageRelatos = false, canEditTratativa = false, allUsers = [], initialResponsibles = [] }) => {
   const [isAnonymous, setIsAnonymous] = useState(initialData?.is_anonymous || false);

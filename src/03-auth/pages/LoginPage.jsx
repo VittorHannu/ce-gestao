@@ -19,7 +19,7 @@
 
 
 import React, { useState } from 'react';
-import { supabase } from '@/01-common/lib/supabase';
+import { supabase } from '@/01-shared/lib/supabase';
 import { Building } from 'lucide-react';
 import { Link } from 'react-router-dom';
 

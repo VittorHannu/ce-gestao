@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RelatoForm from '../components/RelatoForm';
 
-import { supabase } from '@/01-common/lib/supabase';
-import BackButton from '@/01-common/components/BackButton';
+import { supabase } from '@/01-shared/lib/supabase';
+import BackButton from '@/01-shared/components/BackButton';
 
 const CreateRelatoPage = ({ showToast }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -89,7 +89,7 @@ const CreateRelatoPage = ({ showToast }) => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4"> {/* Re-added p-4 */}
       <div className="flex items-center gap-4 mb-4">
         <BackButton />
         <h1 className="text-2xl font-bold">Criar Novo Relato</h1>

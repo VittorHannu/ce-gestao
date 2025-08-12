@@ -1,13 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/core/components/ui/button';
+import { Button } from '@/01-shared/components/ui/button';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { useRelatoCounts } from '../hooks/useRelatoCounts';
-import LoadingSpinner from '@/01-common/components/LoadingSpinner';
-import MainLayout from '@/01-common/components/MainLayout';
+
+
 import { FileText, CheckCircle, Clock, XCircle, BarChart, Plus, User } from 'lucide-react';
 import RelatoStatsCard from '../components/RelatoStatsCard';
-import DateFilter from '@/01-common/components/DateFilter'; // Importa o novo componente de card
+import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
+import MainLayout from '@/01-shared/components/MainLayout';
+import DateFilter from '@/01-shared/components/DateFilter'; // Importa o novo componente de card
 
 const RelatosPage = () => {
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();

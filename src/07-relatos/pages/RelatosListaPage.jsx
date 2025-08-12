@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useDateFilter } from '@/01-common/hooks/useDateFilter.jsx';
+import { useDateFilter } from '@/01-shared/hooks/useDateFilter.jsx';
 import { useLocation } from 'react-router-dom';
-import { supabase } from '@/01-common/lib/supabase';
-import { useToast } from '@/01-common/hooks/useToast';
-import LoadingSpinner from '@/01-common/components/LoadingSpinner';
+import { supabase } from '@/01-shared/lib/supabase';
+import { useToast } from '@/01-shared/hooks/useToast';
+import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import RelatoCard from '../components/RelatoCard';
-import BackButton from '@/01-common/components/BackButton';
-import SearchInput from '@/01-common/components/SearchInput';
-import { Button } from '@/core/components/ui/button'; // Importar Button
+import BackButton from '@/01-shared/components/BackButton';
+import SearchInput from '@/01-shared/components/SearchInput';
+import { Button } from '@/01-shared/components/ui/button'; // Importar Button
 
 const RelatosListaPage = () => {
   const [relatos, setRelatos] = useState([]);

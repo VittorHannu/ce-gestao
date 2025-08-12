@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Button } from '@/core/components/ui/button';
-import { Input } from '@/core/components/ui/input';
-import { Label } from '@/core/components/ui/label';
-import { useToast } from '@/01-common/hooks/useToast';
+import { Button } from '@/01-shared/components/ui/button';
+import { Input } from '@/01-shared/components/ui/input';
+import { Label } from '@/01-shared/components/ui/label';
+import { useToast } from '@/01-shared/hooks/useToast';
 import { createUser } from '@/05-adm/services/userService';
 
 const CreateUserForm = ({ onUserCreated, onCancel }) => {
