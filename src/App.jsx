@@ -159,7 +159,9 @@ function AppWrapper({ showToast }) {
           <Route path="/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordPage showToast={showToast} /></Suspense>} />
           <Route path="/auth" element={<Suspense fallback={<LoadingSpinner />}><LoginPage showToast={showToast} /></Suspense>} />
           <Route path="/auth/confirm" element={<Suspense fallback={<LoadingSpinner />}><ConfirmEmailChangePage showToast={showToast} /></Suspense>} />
-           {/* Added for anonymous access */}
+          {/* Rota para criar relato, acessível sem autenticação */}
+          <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage showToast={showToast} /></Suspense>} />
+          {/* Added for anonymous access */}
           {/* Qualquer outra rota sem sessão vai para /auth */}
           <Route path="*" element={<Navigate to="/auth" />} />
         </Route>
