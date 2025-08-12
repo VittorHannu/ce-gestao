@@ -21,6 +21,7 @@
 import React, { useState } from 'react';
 import { supabase } from '@/01-common/lib/supabase';
 import { Building } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const LoginPage = ({ showToast }) => {
   const [loading, setLoading] = useState(false);
@@ -123,6 +124,16 @@ const LoginPage = ({ showToast }) => {
               </button>
             </div>
           </form>
+          {/* New button for anonymous relato submission */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600 mb-2">Não tem uma conta ou quer enviar um relato anônimo?</p>
+            <Link
+              to="/relatos/novo" // Corrected route for CreateRelatoPage
+              className="bg-gray-200 hover:bg-gray-300 text-[#243834] font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+            >
+              Enviar Relato Anônimo
+            </Link>
+          </div>
         </div>
       </div>
     </div>

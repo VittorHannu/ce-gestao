@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RelatoForm from '../components/RelatoForm';
-import { useToast } from '@/01-common/hooks/useToast';
+
 import { supabase } from '@/01-common/lib/supabase';
 import BackButton from '@/01-common/components/BackButton';
 
-const CreateRelatoPage = () => {
+const CreateRelatoPage = ({ showToast }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const handleCreateRelato = async (formData) => {
@@ -73,8 +72,14 @@ const CreateRelatoPage = () => {
         // Não lançar erro fatal aqui, pois o relato já foi criado com sucesso
       }
 
+      console.log('Attempting to show toast and navigate...'); // NEW LINE
       showToast('Relato enviado com sucesso!', 'success');
-      navigate('/relatos');
+      // Conditional navigation based on user authentication status
+      if (user) { // If user is logged in
+        navigate('/relatos'); // Navigate to the main relatos page
+      } else { // If user is anonymous
+        navigate('/auth'); // Navigate to the login page
+      }
     } catch (error) {
       console.error('Erro detalhado ao criar relato:', error);
       showToast(`Erro ao enviar o relato: ${error.message}`, 'error');

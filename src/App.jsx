@@ -159,6 +159,7 @@ function AppWrapper({ showToast }) {
           <Route path="/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordPage showToast={showToast} /></Suspense>} />
           <Route path="/auth" element={<Suspense fallback={<LoadingSpinner />}><LoginPage showToast={showToast} /></Suspense>} />
           <Route path="/auth/confirm" element={<Suspense fallback={<LoadingSpinner />}><ConfirmEmailChangePage showToast={showToast} /></Suspense>} />
+           {/* Added for anonymous access */}
           {/* Qualquer outra rota sem sessão vai para /auth */}
           <Route path="*" element={<Navigate to="/auth" />} />
         </Route>
@@ -176,7 +177,7 @@ function AppWrapper({ showToast }) {
         <Route path="/perfil/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordProfilePage /></Suspense>} />
         <Route path="/perfil/update-email" element={<Suspense fallback={<LoadingSpinner />}><UpdateEmailPage /></Suspense>} />
         <Route path="/relatos" element={<Suspense fallback={<LoadingSpinner />}><RelatosPage /></Suspense>} />
-        <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage /></Suspense>} />
+        <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage showToast={showToast} /></Suspense>} />
         <Route path="/relatos/aprovacao" element={<ProtectedRoute user={user} requiredPermission="can_manage_relatos"><Suspense fallback={<LoadingSpinner />}><RelatosAprovacaoPage /></Suspense></ProtectedRoute>} />
         <Route path="/relatos/lista" element={<Suspense fallback={<LoadingSpinner />}><RelatosListaPage /></Suspense>} />
         <Route path="/relatos/detalhes/:id" element={<Suspense fallback={<LoadingSpinner />}><RelatoDetailsPage /></Suspense>} />
