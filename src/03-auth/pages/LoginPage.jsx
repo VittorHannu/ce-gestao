@@ -72,60 +72,62 @@ const LoginPage = ({ showToast }) => {
 
       {/* Coluna da Direita (Formulário de Login) */}
       <div className="w-full md:w-1/2 flex items-center justify-center bg-gray-100 p-8">
-        <div className="w-full max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
-          <div className="flex items-center justify-center mb-6">
-            <img src="/favicon.ico" alt="Logo" className="w-8 h-8 mr-3" />
-            <h2 className="text-3xl font-bold text-[#243834]">CE-GESTÃO</h2>
+        <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto"> {/* Added flex-col wrapper */}
+          <div className="w-full bg-white p-8 rounded-lg shadow-lg">
+            <div className="flex items-center justify-center mb-6">
+              <img src="/favicon.ico" alt="Logo" className="w-8 h-8 mr-3" />
+              <h2 className="text-3xl font-bold text-[#243834]">CE-GESTÃO</h2>
+            </div>
+            <form onSubmit={handleLogin}>
+              <div className="mb-4">
+                <label className="block text-[#243834] text-sm font-bold mb-2" htmlFor="email">
+                Email
+                </label>
+                <input
+                  className="border border-[#243834] rounded-lg w-full py-2 px-3 text-[#243834] leading-tight focus:outline-none focus:ring-2 focus:ring-[#EE8800] focus:border-transparent"
+                  id="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-6">
+                <label className="block text-[#243834] text-sm font-bold mb-2" htmlFor="password">
+                Senha
+                </label>
+                <input
+                  className="border border-[#243834] rounded-lg w-full py-2 px-3 text-[#243834] mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-[#EE8800] focus:border-transparent"
+                  id="password"
+                  type="password"
+                  placeholder="********"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <button
+                  className="bg-[#EE8800] hover:bg-[#D47A00] text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EE8800] focus:ring-offset-2"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? 'Carregando...' : 'Entrar'}
+                </button>
+                <button
+                  type="button"
+                  className="inline-block align-baseline font-bold text-sm text-[#243834] hover:text-[#1A2825] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EE8800] focus:ring-offset-2"
+                  onClick={handlePasswordReset}
+                  disabled={loading}
+                >
+                Esqueceu sua senha?
+                </button>
+              </div>
+            </form>
           </div>
-          <form onSubmit={handleLogin}>
-            <div className="mb-4">
-              <label className="block text-[#243834] text-sm font-bold mb-2" htmlFor="email">
-              Email
-              </label>
-              <input
-                className="border border-[#243834] rounded-lg w-full py-2 px-3 text-[#243834] leading-tight focus:outline-none focus:ring-2 focus:ring-[#EE8800] focus:border-transparent"
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-6">
-              <label className="block text-[#243834] text-sm font-bold mb-2" htmlFor="password">
-              Senha
-              </label>
-              <input
-                className="border border-[#243834] rounded-lg w-full py-2 px-3 text-[#243834] mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-[#EE8800] focus:border-transparent"
-                id="password"
-                type="password"
-                placeholder="********"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <button
-                className="bg-[#EE8800] hover:bg-[#D47A00] text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EE8800] focus:ring-offset-2"
-                type="submit"
-                disabled={loading}
-              >
-                {loading ? 'Carregando...' : 'Entrar'}
-              </button>
-              <button
-                type="button"
-                className="inline-block align-baseline font-bold text-sm text-[#243834] hover:text-[#1A2825] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#EE8800] focus:ring-offset-2"
-                onClick={handlePasswordReset}
-                disabled={loading}
-              >
-              Esqueceu sua senha?
-              </button>
-            </div>
-          </form>
           {/* New button for anonymous relato submission */}
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center w-full"> {/* Added w-full to ensure it takes full width */}
             <p className="text-sm text-gray-600 mb-2">Não tem uma conta ou quer enviar um relato anônimo?</p>
             <Link
               to="/relatos/novo" // Corrected route for CreateRelatoPage
