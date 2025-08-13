@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Added useEffect
 import { useNavigate } from 'react-router-dom';
 import RelatoForm from '../components/RelatoForm';
 
@@ -7,7 +7,27 @@ import BackButton from '@/01-shared/components/BackButton';
 
 const CreateRelatoPage = ({ showToast }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state for login status
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsUserLoggedIn(!!session); // Set true if session exists, false otherwise
+    };
+    checkUser();
+
+    // Listen for auth state changes
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setIsUserLoggedIn(!!session);
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []); // Run once on mount, and cleanup on unmount
 
   const handleCreateRelato = async (formData) => {
     setIsLoading(true);
@@ -97,7 +117,12 @@ const CreateRelatoPage = ({ showToast }) => {
       <p className="mb-6 text-gray-600">
         Preencha o formulário abaixo com o máximo de detalhes possível. Sua contribuição é fundamental para a segurança de todos.
       </p>
-      <RelatoForm onSubmit={handleCreateRelato} isLoading={isLoading} submitButtonText="Enviar Relato" />
+      <RelatoForm
+        onSubmit={handleCreateRelato}
+        isLoading={isLoading}
+        submitButtonText="Enviar Relato"
+        isUserLoggedIn={isUserLoggedIn} // Pass the new prop
+      />
     </div>
   );
 };
