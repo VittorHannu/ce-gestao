@@ -61,7 +61,12 @@ const RelatoDetailsPage = () => {
 
       {isEditing ? (
         <RelatoForm
-          onSubmit={(formData) => handleUpdateRelato(formData, canManageRelatos)}
+          onSubmit={async (formData) => {
+            const success = await handleUpdateRelato(formData, canManageRelatos);
+            if (success) {
+              setIsEditing(false); // Exit edit mode
+            }
+          }}
           isLoading={isSaving}
           initialData={relato} // Passa os dados iniciais para o formulário
           submitButtonText="Salvar Alterações"
@@ -86,7 +91,16 @@ const RelatoDetailsPage = () => {
                     <>
                       <Button onClick={() => setIsEditing(true)}>Editar</Button>
                       {relato.status !== 'REPROVADO' && canManageRelatos && (
-                        <Button variant="warning" onClick={() => handleReproveRelato('Motivo de reprovação')} disabled={isReproving}>
+                        <Button
+                          variant="warning"
+                          onClick={async () => {
+                            const success = await handleReproveRelato('Motivo de reprovação');
+                            if (success) {
+                              navigate('/relatos/reprovados');
+                            }
+                          }}
+                          disabled={isReproving}
+                        >
                           {isReproving ? 'Reprovando...' : 'Reprovar'}
                         </Button>
                       )}
@@ -94,7 +108,18 @@ const RelatoDetailsPage = () => {
                   )
                 )}
                 {canDeleteRelatos && !isEditing && (
-                  <Button variant="destructive" onClick={handleDeleteRelato} disabled={isDeleting}>
+                  <Button
+                    variant="destructive"
+                    onClick={async () => {
+                      if (window.confirm('Tem certeza que deseja excluir este relato? Esta ação não pode ser desfeita.')) {
+                        const success = await handleDeleteRelato();
+                        if (success) {
+                          navigate('/relatos'); // Navigate to the main relatos list after deletion
+                        }
+                      }
+                    }}
+                    disabled={isDeleting}
+                  >
                     {isDeleting ? 'Excluindo...' : 'Excluir'}
                   </Button>
                 )}

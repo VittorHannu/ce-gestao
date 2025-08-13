@@ -63,7 +63,7 @@ const RelatosListaPage = () => {
     } else {
       let filteredData = data;
       // Only apply this filter if no specific status (like 'reprovado' or 'pendente') is requested
-      if (!statusFilter || (statusFilter !== 'reprovado' && statusFilter !== 'pendente')) {
+      if (!statusFilter || (statusFilter !== 'REPROVADO' && statusFilter !== 'PENDENTE')) {
         filteredData = data.filter(relato =>
           relato.status !== 'PENDENTE' && relato.status !== 'REPROVADO'
         );

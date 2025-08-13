@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/01-shared/lib/supabase';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 
 const useRelatoManagement = (relatoId) => {
   const { showToast } = useOutletContext();
+  const navigate = useNavigate();
   const [relato, setRelato] = useState(null);
   const [allUsers, setAllUsers] = useState([]);
   const [currentResponsibles, setCurrentResponsibles] = useState([]);
@@ -100,10 +101,10 @@ const useRelatoManagement = (relatoId) => {
 
       showToast('Relato atualizado com sucesso!', 'success');
       fetchRelato(); // Re-fetch to get latest data
+      return true; // Indicate success
     } catch (err) {
       showToast(`Erro ao atualizar relato: ${err.message}`, 'error');
-    } finally {
-      setIsSaving(false);
+      return false; // Indicate failure
     }
   };
 
@@ -113,14 +114,20 @@ const useRelatoManagement = (relatoId) => {
     try {
       const { error } = await supabase
         .from('relatos')
-        .update({ status: 'reprovado', reproval_reason: reason })
+        .update({ status: 'REPROVADO' })
         .eq('id', relatoId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('handleReproveRelato: Supabase update error:', error);
+        throw error;
+      }
       showToast('Relato reprovado com sucesso!', 'success');
       fetchRelato();
+      return true; // Indicate success
     } catch (err) {
+      console.error('handleReproveRelato: Error during reproval:', err);
       showToast(`Erro ao reprovar relato: ${err.message}`, 'error');
+      return false; // Indicate failure
     } finally {
       setIsReproving(false);
     }
@@ -132,7 +139,7 @@ const useRelatoManagement = (relatoId) => {
     try {
       const { error } = await supabase
         .from('relatos')
-        .update({ status: 'pendente' }) // Removed reproval_reason: null
+        .update({ status: 'APROVADO' })
         .eq('id', relatoId);
 
       if (error) throw error;
@@ -156,11 +163,10 @@ const useRelatoManagement = (relatoId) => {
 
       if (error) throw error;
       showToast('Relato deletado com sucesso!', 'success');
-      // Optionally navigate away after deletion
+      return true; // Indicate success
     } catch (err) {
       showToast(`Erro ao deletar relato: ${err.message}`, 'error');
-    } finally {
-      setIsDeleting(false);
+      return false; // Indicate failure
     }
   };
 
