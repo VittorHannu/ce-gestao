@@ -4,7 +4,7 @@ import { supabase } from '@/01-shared/lib/supabase';
 
 import { Checkbox } from '@/01-shared/components/ui/checkbox';
 import { Button } from '@/01-shared/components/ui/button';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/01-shared/components/ui/alert-dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/01-shared/components/ui/alert-dialog';
 import MainLayout from '@/01-shared/components/MainLayout';
 
 const UserDetailsPage = () => {

@@ -22,7 +22,7 @@ const MultiUserSelect = ({ options, selectedValues, onChange, placeholder = 'Sel
   };
 
   const filteredOptions = options.filter(option =>
-    removeAccents(option.label).toLowerCase().includes(removeAccents(searchTerm).toLowerCase())
+    removeAccents(option.label || '').toLowerCase().includes(removeAccents(searchTerm || '').toLowerCase())
   );
 
   return (

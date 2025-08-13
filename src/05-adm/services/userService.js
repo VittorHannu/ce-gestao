@@ -14,8 +14,8 @@
 
 
 
-import { supabase } from '@/01-common/lib/supabase';
-import { handleServiceError } from '@/01-common/lib/errorUtils';
+import { supabase } from '@/01-shared/lib/supabase';
+import { handleServiceError } from '@/01-shared/lib/errorUtils';
 
 export const getAllUsers = async () => {
   const { data, error } = await supabase

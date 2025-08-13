@@ -78,7 +78,109 @@ O agente de IA é responsável por garantir a qualidade, a organização e a fun
 
 
 ---
-*Este arquivo é mantido ativamente pelo agente de IA para garantir a continuidade e a qualidade do projeto.*
+*Este arquivo é mantido ativamente pelo agente de IA Gemini, você mesmo que tá lendo e usando este arquivo Gemini CLI, para garantir a continuidade e a qualidade do projeto.*
 
 ### Próximas Tarefas (Contexto Salvo para Continuidade)
+
+**Plano Abrangente de Refatoração para `relatos-supabase`**
+
+Este plano visa melhorar a organização, modularidade, legibilidade e manutenibilidade da base de código, tornando-a mais fácil para os humanos entenderem e evoluírem. Cada etapa será explicada em termos simples.
+
+---
+
+### **Fase 1: Organização da Estrutura de Pastas e Componentes Compartilhados**
+
+**Objetivo:** Consolidar componentes de UI e padronizar a estrutura de pastas para recursos compartilhados.
+
+1.  **Mover Componentes de `src/core` para `src/01-shared`:
+    *   **Ação:** Mover todos os arquivos de `src/core/components/ui` para `src/01-shared/components/ui`.
+    *   **Status:** **CONCLUÍDO**. (Já fizemos isso, e o diretório `src/core` foi removido).
+
+2.  **Renomear `src/01-common` para `src/01-shared`:
+    *   **Ação:** Renomear a pasta `src/01-common` para `src/01-shared`.
+    *   **Status:** **CONCLUÍDO**. (Já fizemos isso).
+
+3.  **Atualizar Caminhos de Importação:
+    *   **Ação:** Atualizar todas as referências no código que apontam para os caminhos antigos (`@/core/...` e `@/01-common/...`) para o novo caminho (`@/01-shared/...`).
+    *   **Status:** **QUASE CONCLUÍDO**. A maioria foi atualizada, mas ainda temos pendências de linting que indicam que algumas referências podem ter sido perdidas ou que há problemas de sintaxe introduzidos.
+
+---
+
+### **Fase 2: Modularidade e Reutilização de Lógica (Extração de Hooks)**
+
+**Objetivo:** Reduzir a complexidade dos componentes de página e reutilizar a lógica comum através de Hooks personalizados.
+
+1.  **Extrair Lógica de `RelatoDetailsPage.jsx` para `useRelatoManagement`:
+    *   **Ação:** Criar o custom hook `src/07-relatos/hooks/useRelatoManagement.js`.
+    *   **Ação:** Mover estados (`relato`, `allUsers`, `currentResponsibles`, `loading`, `error`, `isSaving`, `isDeleting`, `isReproving`), funções de busca (`fetchRelato`, `fetchAllUsers`) e manipuladores de ação (`handleReproveRelato`, `handleReapproveRelato`, `handleUpdateRelato`, `handleDeleteRelato`) de `RelatoDetailsPage.jsx` para este novo hook.
+    *   **Ação:** Atualizar `RelatoDetailsPage.jsx` para usar o `useRelatoManagement` e desestruturar os valores retornados.
+    *   **Status:** **PENDENTE**. (Esta foi a ação que foi cancelada anteriormente).
+
+2.  **Extrair Lógica de `CreateRelatoPage.jsx`:
+    *   **Ação:** Analisar `CreateRelatoPage.jsx` para identificar lógica de formulário e submissão que possa ser extraída para um hook (ex: `useRelatoForm`).
+    *   **Status:** **PENDENTE**.
+
+3.  **Extrair Lógica de `UserDetailsPage.jsx`:
+    *   **Ação:** Analisar `UserDetailsPage.jsx` para identificar lógica de gerenciamento de permissões e exclusão de usuário que possa ser extraída para hooks (ex: `useUserPermissions`, `useUserDeletion`).
+    *   **Status:** **PENDENTE**.
+
+---
+
+### **Fase 3: Consistência na Camada de Serviços**
+
+**Objetivo:** Padronizar a forma como as interações com o Supabase são realizadas e o tratamento de erros é gerenciado.
+
+1.  **Criar um Módulo Centralizado para Operações Supabase (CRUD):
+    *   **Ação:** Analisar `src/01-shared/lib/supabase.js` e os arquivos de serviço existentes (ex: `userService.js`, `relatosService.js`).
+    *   **Ação:** Criar funções utilitárias genéricas para operações comuns de Supabase (buscar, inserir, atualizar, deletar) com tratamento de erros padronizado.
+    *   **Ação:** Refatorar os serviços existentes para usar essas funções utilitárias.
+    *   **Status:** **PENDENTE**.
+
+2.  **Padronizar o Tratamento de Erros com `useToast`:
+    *   **Ação:** Garantir que todas as chamadas de API e operações críticas usem o `useToast` para feedback ao usuário, conforme as diretrizes do `GEMINI.md`.
+    *   **Status:** **PENDENTE**.
+
+---
+
+### **Fase 4: Clareza e Legibilidade do Código**
+
+**Objetivo:** Melhorar a compreensão do código para facilitar a manutenção e futuras modificações.
+
+1.  **Revisão de Nomenclatura:
+    *   **Ação:** Garantir que nomes de variáveis, funções e componentes sejam claros e descritivos.
+    *   **Status:** **PENDENTE**.
+
+2.  **Simplificação de Lógica Complexa:
+    *   **Ação:** Identificar blocos de código complexos e simplificá-los, possivelmente dividindo-os em funções menores.
+    *   **Status:** **PENDENTE**.
+
+3.  **Comentários Estratégicos:
+    *   **Ação:** Adicionar comentários *apenas* para explicar o 'porquê' de decisões complexas ou não óbvias, evitando comentários óbvios sobre o 'o quê'.
+    *   **Status:** **PENDENTE**.
+
+---
+
+### **Fase 5: Resolução de Erros de Linting e Build**
+
+**Objetivo:** Garantir que o projeto compile e passe no linter sem erros.
+
+1.  **Resolver Erros de Linting em `src/01-shared/components/ui/select.jsx`:
+    *   **Ação:** Corrigir os caracteres de escape desnecessários (`Unnecessary escape character: \]`) que estão impedindo o linter de passar. Isso pode exigir uma abordagem mais manual ou cuidadosa.
+    *   **Status:** **PENDENTE**. (Este é o problema que nos travou).
+
+2.  **Resolver Aviso de Variável Não Utilizada em `src/05-adm/pages/UserDetailsPage.jsx`:
+    *   **Ação:** Adicionar um prefixo `_` à variável `AlertDialogTrigger` ou remover a importação se não for utilizada.
+    *   **Status:** **PENDENTE**.
+
+3.  **Verificação Pós-Refatoração:
+    *   **Ação:** Após cada fase de refatoração, executar `pnpm run lint` e `pnpm run build` para garantir que não haja novos erros.
+    *   **Status:** **PENDENTE**.
+
+---
+
+### **Próximos Passos Imediatos:**
+
+Para sair do loop de erro e progredir, o próximo passo é **retomar a Fase 2.1: Extrair Lógica de `RelatoDetailsPage.jsx` para `useRelatoManagement`**.
+
+Vou começar criando o arquivo `src/07-relatos/hooks/useRelatoManagement.js` e movendo a lógica inicial para ele, conforme o plano detalhado na Fase 2.1.
 
