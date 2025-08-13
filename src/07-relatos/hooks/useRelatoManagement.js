@@ -67,6 +67,109 @@ const useRelatoManagement = (relatoId) => {
         newRelatoData.hora_aproximada_ocorrencia = null;
       }
 
+      // Get current user for logging
+      const { data: { user } } = await supabase.auth.getUser();
+      const currentUserId = user ? user.id : null;
+
+      const logsToInsert = [];
+
+      // Helper to normalize values for comparison (empty string to null)
+      const normalizeForComparison = (value) => {
+        if (value === '') return null;
+        if (value === undefined) return null; // Treat undefined as null for comparison
+        return value;
+      };
+
+      // Compare fields and collect changes for logging
+      const fieldsToCompare = [
+        'local_ocorrencia',
+        'descricao',
+        'riscos_identificados',
+        'planejamento_cronologia_solucao',
+        'danos_ocorridos',
+        'data_ocorrencia',
+        'hora_aproximada_ocorrencia',
+        'data_conclusao_solucao'
+      ];
+
+      for (const field of fieldsToCompare) {
+        let oldValue = normalizeForComparison(relato[field]);
+        let newValue = normalizeForComparison(newRelatoData[field]);
+
+        // Special handling for date fields: ensure they are in 'YYYY-MM-DD' string format for comparison
+        if (field === 'data_ocorrencia' || field === 'data_conclusao_solucao') {
+          oldValue = oldValue ? new Date(oldValue).toISOString().split('T')[0] : null;
+          newValue = newValue ? new Date(newValue).toISOString().split('T')[0] : null;
+        }
+
+        // Compare values. Use String() conversion for robust comparison of potentially mixed types.
+        if (String(oldValue) !== String(newValue)) {
+          logsToInsert.push({
+            relato_id: relatoId, // Use relatoId from hook
+            user_id: currentUserId,
+            action_type: 'UPDATE',
+            details: {
+              field: field,
+              old_value: oldValue,
+              new_value: newValue
+            }
+          });
+        }
+      }
+
+      // Log responsible changes (only if canManageRelatos)
+      // This part needs access to 'currentResponsibles' and 'allUsers' from the hook's state
+      // and 'newResponsibleIdsArray' from formData
+      if (canManageRelatos) {
+        const oldResponsibleIds = currentResponsibles; // This is already an array of IDs
+        const newResponsibleIdsArray = newResponsibleIds || []; // Ensure it's an array
+
+        // Find added responsibles
+        const addedResponsibles = newResponsibleIdsArray.filter(
+          (newId) => !oldResponsibleIds.includes(newId)
+        );
+        for (const addedId of addedResponsibles) {
+          const responsibleProfile = allUsers.find(u => u.id === addedId);
+          logsToInsert.push({
+            relato_id: relatoId,
+            user_id: currentUserId,
+            action_type: 'ADD_RESPONSIBLE',
+            details: {
+              responsible_id: addedId,
+              responsible_name: responsibleProfile?.full_name || responsibleProfile?.email || 'Usuário Desconhecido'
+            }
+          });
+        }
+
+        // Find removed responsibles
+        const removedResponsibles = oldResponsibleIds.filter(
+          (oldId) => !newResponsibleIdsArray.includes(oldId)
+        );
+        for (const removedId of removedResponsibles) {
+          const responsibleProfile = allUsers.find(u => u.id === removedId);
+          logsToInsert.push({
+            relato_id: relatoId,
+            user_id: currentUserId,
+            action_type: 'REMOVE_RESPONSIBLE',
+            details: {
+              responsible_id: removedId,
+              responsible_name: responsibleProfile?.full_name || responsibleProfile?.email || 'Usuário Desconhecido'
+            }
+          });
+        }
+      }
+
+      // Insert all collected logs before updating the relato itself
+      if (logsToInsert.length > 0) {
+        const { error: logsInsertError } = await supabase
+          .from('relato_logs')
+          .insert(logsToInsert);
+        if (logsInsertError) {
+          console.error('Erro ao inserir logs de atualização:', logsInsertError);
+          // Não lançar erro fatal aqui, pois o relato ainda pode ser atualizado
+        }
+      }
+
       // 1. Update relato data (excluding responsaveis)
       const { error: updateRelatoError } = await supabase
         .from('relatos')
@@ -121,6 +224,26 @@ const useRelatoManagement = (relatoId) => {
         console.error('handleReproveRelato: Supabase update error:', error);
         throw error;
       }
+
+      // Log da ação de reprovação
+      const { data: { user } } = await supabase.auth.getUser();
+      const currentUserId = user ? user.id : null;
+      const { error: logError } = await supabase.from('relato_logs').insert({
+        relato_id: relatoId,
+        user_id: currentUserId,
+        action_type: 'STATUS_CHANGE',
+        details: {
+          old_status: relato.status, // Assuming 'relato' state is up-to-date
+          new_status: 'REPROVADO',
+          reproval_reason: reason // Include the reason in the log
+        }
+      });
+
+      if (logError) {
+        console.error('Erro ao registrar log de reprovação:', logError);
+        // Do not throw fatal error here, as the report status was already updated
+      }
+
       showToast('Relato reprovado com sucesso!', 'success');
       fetchRelato();
       return true; // Indicate success
@@ -167,6 +290,9 @@ const useRelatoManagement = (relatoId) => {
     } catch (err) {
       showToast(`Erro ao deletar relato: ${err.message}`, 'error');
       return false; // Indicate failure
+    }
+  finally {
+      setIsDeleting(false);
     }
   };
 
