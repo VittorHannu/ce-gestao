@@ -61,8 +61,15 @@ const RelatosListaPage = () => {
       console.error('Erro ao buscar relatos:', error);
       showToast('Erro ao carregar relatos.', 'error');
     } else {
-      setRelatos(data);
-      console.log('Relatos state after setRelatos:', data);
+      let filteredData = data;
+      // Only apply this filter if no specific status (like 'reprovado' or 'pendente') is requested
+      if (!statusFilter || (statusFilter !== 'reprovado' && statusFilter !== 'pendente')) {
+        filteredData = data.filter(relato =>
+          relato.status !== 'PENDENTE' && relato.status !== 'REPROVADO'
+        );
+      }
+      setRelatos(filteredData);
+      console.log('Relatos state after setRelatos:', filteredData);
     }
     setLoading(false);
   }, [location.search, searchTerm, responsibleFilter, showToast, startDate, endDate]);
