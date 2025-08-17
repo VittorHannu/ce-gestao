@@ -1,10 +1,9 @@
-
 -- supabase/migrations/02_setup_notification_sending.sql
 
 -- 1. Habilitar a extensão pg_net para requisições de rede
 create extension if not exists pg_net with schema extensions;
 
--- 2. Criar a função que envia a notificação push
+-- 2. Criar a função que envia a notificação push (esta função permanece a mesma)
 create or replace function public.send_push_notification(subscription jsonb, payload_data jsonb)
 returns void
 language plpgsql
@@ -63,7 +62,7 @@ begin
   topic := 'new-relato'; -- Exemplo de tópico
 
   auth_header := 'WebPush ' || jwt;
-  crypto_key_header := 'dh=' || p256dh_key || ';p256ecdsa=' || extensions.url_encode(vapid_private_key); -- A chave pública é derivada da privada no padrão ES256
+  crypto_key_header := 'dh=' || p256dh_key || ';p256ecdsa=' || extensions.url_encode(vapid_private_key);
   encryption_header := 'salt=' || extensions.url_encode(random_bytes(16));
 
   -- Enviar a requisição HTTP para o serviço de push
@@ -85,34 +84,39 @@ begin
 end;
 $$;
 
-
--- 3. Criar a função de gatilho (trigger) que será chamada
-create or replace function public.handle_new_relato_notification()
+-- 3. CORRIGIDO: Criar a função de gatilho que será chamada quando um RESPONSÁVEL é atribuído
+create or replace function public.handle_new_responsavel_notification()
 returns trigger
 language plpgsql
 as $$
 declare
   subscription_record record;
-  assigned_user_id uuid;
   payload jsonb;
+  relato_code_text text;
 begin
-  -- ID do usuário para quem o relato foi atribuído
-  assigned_user_id := NEW.responsavel_id;
+  -- Obter o código do relato para a notificação
+  select relato_code into relato_code_text from public.relatos where id = NEW.relato_id;
 
   -- Montar o payload (dados da notificação)
   payload := jsonb_build_object(
     'title', 'Novo Relato Atribuído!',
-    'body', 'Um novo relato (' || NEW.id::text || ') foi atribuído a você.',
-    'icon', '/favicon.ico', -- Caminho para o ícone
+    'body', 'O relato ' || coalesce(relato_code_text, NEW.relato_id::text) || ' foi atribuído a você.',
+    'icon', '/favicon.ico',
     'data', jsonb_build_object(
-      'url', '/relatos/' || NEW.id::text -- URL para abrir ao clicar
+      'url', '/relatos/' || NEW.relato_id::text
     )
   );
 
+  -- Se o campo responsável for opcional e não preenchido, não faz nada.
+  if NEW.user_id is null then
+    return NEW;
+  end if;
+
   -- Buscar todas as inscrições do usuário atribuído e enviar a notificação
   for subscription_record in
-    select subscription_data from public.push_subscriptions where user_id = assigned_user_id
+    select subscription_data from public.push_subscriptions where user_id = NEW.user_id
   loop
+    -- Chama a função de envio de notificação
     perform public.send_push_notification(subscription_record.subscription_data, payload);
   end loop;
 
@@ -120,13 +124,15 @@ begin
 end;
 $$;
 
--- 4. Criar o gatilho na tabela de relatos
--- ATENÇÃO: O gatilho será criado na tabela 'relatos'. Se o nome da sua tabela for diferente, ajuste abaixo.
+-- 4. CORRIGIDO: Apagar o gatilho antigo e criar o novo na tabela correta
+-- Apaga o gatilho antigo e incorreto da tabela 'relatos'
 drop trigger if exists on_new_relato_send_notification on public.relatos;
-create trigger on_new_relato_send_notification
-  after insert on public.relatos
+
+-- Cria o novo gatilho na tabela 'relato_responsaveis'
+drop trigger if exists on_new_responsavel_send_notification on public.relato_responsaveis;
+create trigger on_new_responsavel_send_notification
+  after insert on public.relato_responsaveis
   for each row
-  execute function public.handle_new_relato_notification();
+  execute function public.handle_new_responsavel_notification();
 
-comment on trigger on_new_relato_send_notification on public.relatos is 'When a new report is created, send a push notification to the assigned user.';
-
+comment on trigger on_new_responsavel_send_notification on public.relato_responsaveis is 'Quando um responsável é adicionado a um relato, envia uma notificação push para ele.';
