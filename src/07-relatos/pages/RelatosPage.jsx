@@ -56,10 +56,8 @@ const RelatosPage = () => {
 
   return (
     <MainLayout>
-      <div className="mb-8 mx-auto w-fit">
-        <DateFilter />
-      </div>
       <div className="grid grid-cols-2 gap-4">
+        <DateFilter />
         {cardData.map((card, index) => (
           <RelatoStatsCard
             key={index}

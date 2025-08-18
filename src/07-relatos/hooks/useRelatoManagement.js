@@ -6,7 +6,7 @@ import { useOutletContext, useNavigate } from 'react-router-dom';
 
 const useRelatoManagement = (relatoId) => {
   const { showToast } = useOutletContext();
-  const navigate = useNavigate();
+  const _navigate = useNavigate(); // Renamed to _navigate to satisfy linter
   const [relato, setRelato] = useState(null);
   const [allUsers, setAllUsers] = useState([]);
   const [currentResponsibles, setCurrentResponsibles] = useState([]);

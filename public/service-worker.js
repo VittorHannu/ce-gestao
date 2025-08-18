@@ -1,10 +1,11 @@
+/* global clients */
 // public/service-worker.js
-self.addEventListener('install', (event) => {
+self.addEventListener('install', (_event) => {
   console.log('Service Worker installing.');
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', (_event) => {
   console.log('Service Worker activating.');
   clients.claim();
 });

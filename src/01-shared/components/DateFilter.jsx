@@ -9,10 +9,11 @@ const DateFilter = () => {
   const years = [currentYear, currentYear - 1, currentYear - 2]; // Mostra os últimos 3 anos
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-2 w-full flex-wrap">
+    <div className="bg-white rounded-lg shadow-md p-4 h-full flex flex-col justify-between">
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-medium text-gray-600 mb-1">Filtrar por Período</p>
         <Select value={year.toString()} onValueChange={(value) => setYear(parseInt(value, 10))}>
-          <SelectTrigger className="w-auto border bg-background shadow-sm hover:bg-accent hover:text-accent-foreground">
+          <SelectTrigger className="w-full border bg-background shadow-sm hover:bg-accent hover:text-accent-foreground">
             <SelectValue placeholder="Ano" />
           </SelectTrigger>
           <SelectContent>
@@ -23,7 +24,7 @@ const DateFilter = () => {
         </Select>
 
         <Select value={semester.toString()} onValueChange={(value) => setSemester(parseInt(value, 10))}>
-          <SelectTrigger className="w-auto border bg-background shadow-sm hover:bg-accent hover:text-accent-foreground">
+          <SelectTrigger className="w-full border bg-background shadow-sm hover:bg-accent hover:text-accent-foreground">
             <SelectValue placeholder="Semestre" />
           </SelectTrigger>
           <SelectContent>
