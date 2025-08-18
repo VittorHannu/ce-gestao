@@ -71,10 +71,10 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-8 p-4 rounded-lg bg-gray-50 shadow-inner">
       {/* Seção: Informações Básicas */}
       <div className="p-4 border rounded-lg bg-white">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Informações Básicas</h3>
+        <h3 className="text-xl font-bold text-gray-800 pb-4 mb-6 border-b border-gray-200">Informações Básicas</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {isUserLoggedIn && (
             <div className="md:col-span-2 flex items-center space-x-2">
@@ -88,7 +88,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
           )}
 
           <div>
-            <Label htmlFor="local_ocorrencia">Local da Ocorrência *</Label>
+            <Label htmlFor="local_ocorrencia" className="mb-2">Local da Ocorrência *</Label>
             <Input
               id="local_ocorrencia"
               value={localOcorrencia}
@@ -98,50 +98,52 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
             />
           </div>
 
-          <div>
-            <Label htmlFor="data_ocorrencia">Data da Ocorrência *</Label>
-            <div className="flex items-center space-x-2">
-              <Input
-                id="data_ocorrencia"
-                type="date"
-                value={dataOcorrencia}
-                onChange={(e) => setDataOcorrencia(e.target.value)}
-                required
-                className="bg-gray-100"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setDataOcorrencia('')}
-                className="px-3 py-2 text-sm"
-              >
-                Limpar
-              </Button>
+          <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6"> {/* Nested grid for date and time */}
+            <div>
+              <Label htmlFor="data_ocorrencia" className="mb-2">Data da Ocorrência *</Label>
+              <div className="flex items-center space-x-2">
+                <Input
+                  id="data_ocorrencia"
+                  type="date"
+                  value={dataOcorrencia}
+                  onChange={(e) => setDataOcorrencia(e.target.value)}
+                  required
+                  className="bg-gray-100"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setDataOcorrencia('')}
+                  className="px-3 py-2 text-sm"
+                >
+                  Limpar
+                </Button>
+              </div>
             </div>
-          </div>
 
-          <div>
-            <Label htmlFor="hora_aproximada">Hora Aproximada</Label>
-            <div className="flex items-center space-x-2">
-              <Input
-                id="hora_aproximada"
-                type="time"
-                value={horaAproximada}
-                onChange={(e) => setHoraAproximada(e.target.value)}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setHoraAproximada('')}
-                className="px-3 py-2 text-sm"
-              >
-                Limpar
-              </Button>
+            <div>
+              <Label htmlFor="hora_aproximada" className="mb-2">Hora Aproximada</Label>
+              <div className="flex items-center space-x-2">
+                <Input
+                  id="hora_aproximada"
+                  type="time"
+                  value={horaAproximada}
+                  onChange={(e) => setHoraAproximada(e.target.value)}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setHoraAproximada('')}
+                  className="px-3 py-2 text-sm"
+                >
+                  Limpar
+                </Button>
+              </div>
             </div>
           </div>
 
           <div className="md:col-span-2">
-            <Label htmlFor="descricao">Descrição da Ocorrência *</Label>
+            <Label htmlFor="descricao" className="mb-2">Descrição da Ocorrência *</Label>
             <Textarea
               id="descricao"
               rows={4}
@@ -151,53 +153,9 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
               className="bg-gray-100"
             />
           </div>
-        </div>
-      </div>
 
-      {/* Seção: Detalhes da Ocorrência */}
-      <div className="p-4 border rounded-lg bg-white">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Detalhes da Ocorrência</h3>
-        <div className="space-y-6">
-          <div>
-            <Label htmlFor="riscos_identificados">Riscos Identificados *</Label>
-            <Textarea
-              id="riscos_identificados"
-              rows={3}
-              value={riscosIdentificados}
-              onChange={(e) => setRiscosIdentificados(e.target.value)}
-              required
-              className="bg-gray-100"
-            />
-          </div>
-
-          <div>
-            <div className="flex items-center space-x-2 mb-2">
-              <Checkbox
-                id="houve_danos"
-                checked={houveDanos}
-                onCheckedChange={setHouveDanos}
-              />
-              <Label htmlFor="houve_danos">Houve danos materiais ou físicos?</Label>
-            </div>
-            {houveDanos && (
-              <Textarea
-                id="danos_ocorridos"
-                rows={3}
-                placeholder="Descreva os danos ocorridos..."
-                value={danosOcorridos}
-                onChange={(e) => setDanosOcorridos(e.target.value)}
-              />
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Seção: Outras Informações */}
-      <div className="p-4 border rounded-lg bg-white">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Outras Informações</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="tipo_relato">Tipo de Relato</Label>
+          <div> {/* Moved Tipo de Relato here */}
+            <Label htmlFor="tipo_relato" className="mb-2">Tipo de Relato</Label>
             <Select
               value={tipoRelato || ''}
               onValueChange={(value) => {
@@ -222,13 +180,51 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
         </div>
       </div>
 
+      {/* Seção: Detalhes da Ocorrência */}
+      <div className="p-4 border rounded-lg bg-white">
+        <h3 className="text-xl font-bold text-gray-800 pb-4 mb-6 border-b border-gray-200">Detalhes da Ocorrência</h3>
+        <div className="space-y-6">
+          <div>
+            <Label htmlFor="riscos_identificados" className="mb-2">Riscos Identificados *</Label>
+            <Textarea
+              id="riscos_identificados"
+              rows={3}
+              value={riscosIdentificados}
+              onChange={(e) => setRiscosIdentificados(e.target.value)}
+              required
+              className="bg-gray-100"
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center space-x-2 mb-2">
+              <Checkbox
+                id="houve_danos"
+                checked={houveDanos}
+                onCheckedChange={setHouveDanos}
+              />
+              <Label htmlFor="houve_danos" className="mb-2">Houve danos materiais ou físicos?</Label>
+            </div>
+            {houveDanos && (
+              <Textarea
+                id="danos_ocorridos"
+                rows={3}
+                placeholder="Descreva os danos ocorridos..."
+                value={danosOcorridos}
+                onChange={(e) => setDanosOcorridos(e.target.value)}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Seção: Tratativa e Conclusão */}
       {canEditTratativa && (
         <div className="p-4 border rounded-lg bg-white">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Tratativa e Conclusão (Opcional)</h3>
+          <h3 className="text-xl font-bold text-gray-800 pb-4 mb-6 border-b border-gray-200">Tratativa e Conclusão (Opcional)</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <Label htmlFor="planejamento_cronologia_solucao">Planejamento / Cronologia da Solução</Label>
+              <Label htmlFor="planejamento_cronologia_solucao" className="mb-2">Planejamento / Cronologia da Solução</Label>
               <Textarea
                 id="planejamento_cronologia_solucao"
                 rows={3}
@@ -239,7 +235,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
               />
             </div>
             <div>
-              <Label htmlFor="data_conclusao_solucao">Data de Conclusão da Solução</Label>
+              <Label htmlFor="data_conclusao_solucao" className="mb-2">Data de Conclusão da Solução</Label>
               <div className="flex items-center space-x-2">
                 <Input
                   id="data_conclusao_solucao"
@@ -260,7 +256,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
             </div>
             {canManageRelatos && (
               <div className="md:col-span-2">
-                <Label htmlFor="responsaveis">Responsáveis pela Tratativa</Label>
+                <Label htmlFor="responsaveis" className="mb-2">Responsáveis pela Tratativa</Label>
                 <MultiUserSelect
                   options={allUsers.map(user => ({ value: user.id, label: user.full_name || user.email }))}
                   selectedValues={selectedResponsibles}
