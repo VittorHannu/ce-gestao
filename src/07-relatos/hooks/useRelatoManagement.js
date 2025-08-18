@@ -38,7 +38,7 @@ export const useRelatoManagement = (relatoId) => {
       setCurrentResponsibles(relatoData.relato_responsaveis.map(r => r.user_id));
     } catch (err) {
       setError(err);
-      showToast(`Erro ao carregar relato: ${err.message}`, 'error');
+      handleServiceError('fetchRelato', err, showToast);
     } finally {
       setLoading(false);
     }
@@ -49,7 +49,7 @@ export const useRelatoManagement = (relatoId) => {
       const users = await getAllUsers();
       setAllUsers(users);
     } catch (err) {
-      showToast(`Erro ao carregar usuários: ${err.message}`, 'error');
+      handleServiceError('fetchAllUsers', err, showToast);
     }
   }, [showToast]);
 
@@ -93,7 +93,7 @@ export const useRelatoManagement = (relatoId) => {
       fetchRelato(); // Re-fetch relato to get updated data
       return true;
     } catch (err) {
-      showToast(`Erro ao atualizar relato: ${err.message}`, 'error');
+      handleServiceError('handleUpdateRelato', err, showToast);
       return false;
     } finally {
       setIsSaving(false);
@@ -122,7 +122,7 @@ export const useRelatoManagement = (relatoId) => {
       fetchRelato();
       return true;
     } catch (err) {
-      showToast(`Erro ao reprovar relato: ${err.message}`, 'error');
+      handleServiceError('handleReproveRelato', err, showToast);
       return false;
     } finally {
       setIsReproving(false);
@@ -151,7 +151,7 @@ export const useRelatoManagement = (relatoId) => {
       fetchRelato();
       return true;
     } catch (err) {
-      showToast(`Erro ao reaprovar relato: ${err.message}`, 'error');
+      handleServiceError('handleReapproveRelato', err, showToast);
       return false;
     } finally {
       setIsSaving(false);
@@ -193,7 +193,7 @@ export const useRelatoManagement = (relatoId) => {
       showToast('Relato excluído com sucesso!', 'success');
       return true;
     } catch (err) {
-      showToast(`Erro ao excluir relato: ${err.message}`, 'error');
+      handleServiceError('handleDeleteRelato', err, showToast);
       return false;
     } finally {
       setIsDeleting(false);

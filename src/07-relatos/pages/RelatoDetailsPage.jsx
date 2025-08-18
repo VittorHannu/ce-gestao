@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { Button } from '@/01-shared/components/ui/button';
 import RelatoForm from '../components/RelatoForm'; // Importa o formulário
@@ -11,7 +11,6 @@ import { useRelatoManagement } from '../hooks/useRelatoManagement';
 const RelatoDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { showToast } = useOutletContext();
 
   const [isEditing, setIsEditing] = useState(false); // Novo estado para modo de edição
 
@@ -19,13 +18,11 @@ const RelatoDetailsPage = () => {
     relato,
     allUsers,
     currentResponsibles,
-    setCurrentResponsibles,
     loading,
     error,
     isSaving,
     isDeleting,
     isReproving,
-    fetchRelato,
     handleUpdateRelato,
     handleReproveRelato,
     handleReapproveRelato,
