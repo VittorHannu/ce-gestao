@@ -5,15 +5,13 @@ import { Checkbox } from '@/01-shared/components/ui/checkbox';
 import { Label } from '@/01-shared/components/ui/label';
 import { Button } from '@/01-shared/components/ui/button';
 import MultiUserSelect from '@/01-shared/components/MultiUserSelect';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/01-shared/components/ui/select';
 
 const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Enviar Relato', canManageRelatos = false, canEditTratativa = false, allUsers = [], initialResponsibles = [], isUserLoggedIn }) => {
   const [isAnonymous, setIsAnonymous] = useState(() => {
     if (isUserLoggedIn) {
-      // If logged in, it should start unchecked for new reports,
-      // or reflect initialData for existing reports.
       return initialData?.is_anonymous || false;
     } else {
-      // If not logged in, it must always be anonymous.
       return true;
     }
   });
@@ -22,11 +20,12 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
   const [horaAproximada, setHoraAproximada] = useState(initialData?.hora_aproximada_ocorrencia || '');
   const [descricao, setDescricao] = useState(initialData?.descricao || '');
   const [riscosIdentificados, setRiscosIdentificados] = useState(initialData?.riscos_identificados || '');
-  const [houveDanos, setHouveDanos] = useState(!!initialData?.danos_ocorridos); // Converte para boolean
+  const [houveDanos, setHouveDanos] = useState(!!initialData?.danos_ocorridos);
   const [danosOcorridos, setDanosOcorridos] = useState(initialData?.danos_ocorridos || '');
   const [planejamentoCronologiaSolucao, setPlanejamentoCronologiaSolucao] = useState(initialData?.planejamento_cronologia_solucao || '');
   const [dataConclusaoSolucao, setDataConclusaoSolucao] = useState(initialData?.data_conclusao_solucao || '');
-  const [selectedResponsibles, setSelectedResponsibles] = useState([]); // Novo estado para responsáveis selecionados
+  const [tipoRelato, setTipoRelato] = useState(initialData?.tipo_relato || null);
+  const [selectedResponsibles, setSelectedResponsibles] = useState([]);
   const initialResponsiblesRef = useRef(initialResponsibles);
 
   useEffect(() => {
@@ -41,11 +40,11 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
       setDanosOcorridos(initialData.danos_ocorridos || '');
       setPlanejamentoCronologiaSolucao(initialData.planejamento_cronologia_solucao || '');
       setDataConclusaoSolucao(initialData.data_conclusao_solucao || '');
+      setTipoRelato(initialData.tipo_relato || '');
     }
   }, [initialData]);
 
   useEffect(() => {
-    // Inicializa os responsáveis selecionados apenas uma vez
     if (initialResponsiblesRef.current && initialResponsiblesRef.current.length > 0) {
       setSelectedResponsibles(initialResponsiblesRef.current);
     } else {
@@ -56,7 +55,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = {
-      is_anonymous: isUserLoggedIn ? isAnonymous : true, // Force true if not logged in
+      is_anonymous: isUserLoggedIn ? isAnonymous : true,
       local_ocorrencia: localOcorrencia,
       data_ocorrencia: dataOcorrencia,
       hora_aproximada_ocorrencia: horaAproximada,
@@ -65,7 +64,8 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
       danos_ocorridos: houveDanos ? danosOcorridos : null,
       planejamento_cronologia_solucao: planejamentoCronologiaSolucao || null,
       data_conclusao_solucao: dataConclusaoSolucao || null,
-      responsaveis: selectedResponsibles // Adiciona os responsáveis selecionados
+      tipo_relato: tipoRelato || null,
+      responsaveis: selectedResponsibles
     };
     onSubmit(formData);
   };
@@ -76,7 +76,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
       <div className="p-4 border rounded-lg bg-white">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Informações Básicas</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {isUserLoggedIn && ( // Conditionally render checkbox
+          {isUserLoggedIn && (
             <div className="md:col-span-2 flex items-center space-x-2">
               <Checkbox
                 id="is_anonymous"
@@ -188,6 +188,36 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
                 onChange={(e) => setDanosOcorridos(e.target.value)}
               />
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* Seção: Outras Informações */}
+      <div className="p-4 border rounded-lg bg-white">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Outras Informações</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label htmlFor="tipo_relato">Tipo de Relato</Label>
+            <Select
+              value={tipoRelato || ''}
+              onValueChange={(value) => {
+                // Se o usuário selecionar "Nenhum", limpamos o valor (definindo como null)
+                // Caso contrário, usamos o valor selecionado.
+                setTipoRelato(value === 'nenhum' ? null : value);
+              }}
+            >
+              <SelectTrigger id="tipo_relato" className="bg-gray-100">
+                <SelectValue placeholder="Selecione um tipo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="nenhum">Nenhum (Limpar seleção)</SelectItem>
+                <SelectItem value="Comportamento inseguro">Comportamento inseguro</SelectItem>
+                <SelectItem value="Condição Insegura">Condição Insegura</SelectItem>
+                <SelectItem value="Quase Acidente">Quase Acidente</SelectItem>
+                <SelectItem value="Acidente">Acidente</SelectItem>
+                <SelectItem value="Acidente fatal">Acidente fatal</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>

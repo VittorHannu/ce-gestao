@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 
 const FeedbackForm = ({ isOpen, onClose }) => {
   const { showToast, user } = useOutletContext();
-  const [reportType, setReportType] = useState('');
+  const [reportType, setReportType] = useState(undefined);
   const [subject, setSubject] = useState('');
   const [description, setDescription] = useState('');
 

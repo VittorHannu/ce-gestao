@@ -55,8 +55,7 @@ const RelatosPage = () => {
   ];
 
   return (
-    <MainLayout title="Segurança Laboral">
-      <h1 className="text-2xl font-bold mb-8 text-center">Segurança Laboral</h1>
+    <MainLayout>
       <div className="mb-8 mx-auto w-fit">
         <DateFilter />
       </div>
@@ -89,12 +88,6 @@ const RelatosPage = () => {
             </Button>
           </Link>
         )}
-        <Link to="/relatos/novo" className="w-full">
-          <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2 shadow-none">
-            <Plus className="h-5 w-5" />
-            <span>Criar Novo Relato</span>
-          </Button>
-        </Link>
         <Link to="/relatos/atribuidos" className="w-full">
           <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2 shadow-none">
             <User className="h-5 w-5" />
@@ -113,6 +106,16 @@ const RelatosPage = () => {
           <BarChart className="h-12 w-12 text-white mb-4" />
           <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
         </div>
+      </Link>
+      <Link to="/relatos/novo">
+        <Button
+          variant="warning"
+          className="fixed right-4 rounded-full shadow-lg h-12 px-6 flex items-center justify-center"
+          style={{ bottom: 'calc(60px + env(safe-area-inset-bottom) + 16px)' }}
+        >
+          <Plus className="h-6 w-6 mr-2" />
+          <span>Novo Relato</span>
+        </Button>
       </Link>
     </MainLayout>
   );

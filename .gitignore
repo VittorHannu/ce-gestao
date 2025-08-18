@@ -7,3 +7,6 @@ dist/
 
 # Environment variables
 .env
+
+# Arquivos de debug pessoal
+debug-console.mjs

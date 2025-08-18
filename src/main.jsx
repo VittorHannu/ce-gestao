@@ -1,3 +1,8 @@
+// Inicia o Eruda apenas em ambiente de desenvolvimento
+if (import.meta.env.DEV) {
+  import('eruda').then((eruda) => eruda.default.init());
+}
+
 /*
  * Este é o arquivo de entrada principal (`main.jsx`) da aplicação React.
  * Ele é responsável por inicializar o aplicativo, renderizar o componente `App`

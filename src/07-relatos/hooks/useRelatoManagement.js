@@ -89,7 +89,8 @@ const useRelatoManagement = (relatoId) => {
         'danos_ocorridos',
         'data_ocorrencia',
         'hora_aproximada_ocorrencia',
-        'data_conclusao_solucao'
+        'data_conclusao_solucao',
+        'tipo_relato'
       ];
 
       for (const field of fieldsToCompare) {
