@@ -169,11 +169,14 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="nenhum">Nenhum (Limpar seleção)</SelectItem>
-                <SelectItem value="Comportamento inseguro">Comportamento inseguro</SelectItem>
-                <SelectItem value="Condição Insegura">Condição Insegura</SelectItem>
-                <SelectItem value="Quase Acidente">Quase Acidente</SelectItem>
-                <SelectItem value="Acidente">Acidente</SelectItem>
-                <SelectItem value="Acidente fatal">Acidente fatal</SelectItem>
+                <SelectItem value="Fatal">Fatal</SelectItem>
+                <SelectItem value="Severo">Severo</SelectItem>
+                <SelectItem value="Acidente com afastamento">Acidente com afastamento</SelectItem>
+                <SelectItem value="Acidentes sem afastamento">Acidentes sem afastamento</SelectItem>
+                <SelectItem value="Primeiros socorros">Primeiros socorros</SelectItem>
+                <SelectItem value="quase acidente">quase acidente</SelectItem>
+                <SelectItem value="condição insegura">condição insegura</SelectItem>
+                <SelectItem value="comportamento inseguro">comportamento inseguro</SelectItem>
               </SelectContent>
             </Select>
           </div>
