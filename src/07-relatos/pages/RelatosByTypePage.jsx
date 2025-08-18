@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import MainLayout from '@/01-shared/components/MainLayout';
 import BackButton from '@/01-shared/components/BackButton';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import DateFilter from '@/01-shared/components/DateFilter';
 import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
 import { fetchRelatosCountByType } from '../services/relatoStatsService';
-import { Link } from 'react-router-dom'; // New import
-import { Button } from '@/01-shared/components/ui/button'; // New import
-import { Tag } from 'lucide-react'; // New import
+import { Link } from 'react-router-dom';
+import { Button } from '@/01-shared/components/ui/button';
+import { Tag } from 'lucide-react';
 
 const RelatosByTypePage = () => {
   const { startDate, endDate } = useDateFilter();
-  const [chartData, setChartData] = useState([]);
+  const [rawData, setRawData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -21,7 +21,7 @@ const RelatosByTypePage = () => {
       setError(null);
       try {
         const data = await fetchRelatosCountByType(startDate, endDate);
-        setChartData(data);
+        setRawData(data);
       } catch (err) {
         setError(err);
       } finally {
@@ -32,6 +32,56 @@ const RelatosByTypePage = () => {
     getChartData();
   }, [startDate, endDate]);
 
+  const toTitleCase = (str) => {
+    if (!str) return 'Não Especificado';
+    return str.replace(
+      /\w\S*/g,
+      (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+    );
+  };
+
+  const chartData = useMemo(() => {
+    const counts = rawData.reduce((acc, item) => {
+      const type = toTitleCase(item.tipo_relato);
+      acc[type] = (acc[type] || 0) + 1;
+      return acc;
+    }, {});
+
+    const transformedData = Object.keys(counts).map(type => ({
+      name: type,
+      value: counts[type]
+    }));
+
+    transformedData.sort((a, b) => b.value - a.value);
+    return transformedData;
+  }, [rawData]);
+
+  const birdPyramidData = useMemo(() => {
+    const orderedTypes = [
+      'Fatal',
+      'Severo',
+      'Acidente Com Afastamento',
+      'Acidente Sem Afastamento',
+      'Primeiros Socorros',
+      'Quase Acidente',
+      'Condição Insegura',
+      'Comportamento Inseguro',
+    ];
+
+    const counts = rawData.reduce((acc, item) => {
+      const type = toTitleCase(item.tipo_relato);
+      acc[type] = (acc[type] || 0) + 1;
+      return acc;
+    }, {});
+
+    const result = orderedTypes.map(type => ({
+      name: type,
+      value: counts[type] || 0
+    }));
+
+    return result;
+  }, [rawData]);
+
   if (loading) {
     return <LoadingSpinner />;
   }
@@ -39,6 +89,9 @@ const RelatosByTypePage = () => {
   if (error) {
     return <div className="container mx-auto p-4 text-red-500">Erro ao carregar dados: {error.message}</div>;
   }
+
+  const maxChartCount = Math.max(...chartData.map(d => d.value));
+  const maxPyramidCount = Math.max(...birdPyramidData.map(d => d.value));
 
   return (
     <MainLayout>
@@ -51,23 +104,21 @@ const RelatosByTypePage = () => {
         <DateFilter />
       </div>
 
-      <div className="p-4 border rounded-lg bg-white shadow-md">
+      <div className="p-4 border rounded-lg bg-white shadow-md mb-8">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Distribuição de Relatos por Tipo</h2>
         {chartData.length > 0 ? (
           <div className="space-y-4">
             {chartData.map((item) => {
-              const maxCount = Math.max(...chartData.map(d => d.value));
-              const barWidth = (item.value / maxCount) * 100; // Percentage width
+              const barWidth = (item.value / maxChartCount) * 100; // Percentage width
 
               return (
                 <div key={item.name} className="flex flex-col">
                   <p className="text-gray-700 font-medium mb-1">{item.name}</p>
                   <div className="flex items-center">
                     <div
-                      className="h-6 bg-blue-500 rounded-sm mr-2"
-                      style={{ width: `${barWidth}%`, maxWidth: '400px' }} // Max width for visual consistency
-                    ></div>
-                    <span className="text-gray-800 font-semibold">{item.value}</span>
+                      className="h-6 bg-blue-500 rounded-sm mr-2 flex items-center justify-center pr-2 text-white text-sm"
+                      style={{ width: `${barWidth}%`, minWidth: '30px', maxWidth: '400px' }}
+                    >{item.value}</div>
                   </div>
                 </div>
               );
@@ -77,6 +128,33 @@ const RelatosByTypePage = () => {
           <p className="text-center text-gray-500">Nenhum dado disponível para o período selecionado.</p>
         )}
       </div>
+
+      <div className="p-4 border rounded-lg bg-white shadow-md">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Pirâmide de Bird</h2>
+        {birdPyramidData.length > 0 ? (
+          <div className="flex flex-col items-center space-y-2">
+            {birdPyramidData.map((item, index) => {
+              const barWidth = (item.value / maxPyramidCount) * 100; // Percentage width
+              const backgroundColor = index === 0 ? 'bg-red-500' : index === 1 ? 'bg-orange-500' : index === 2 ? 'bg-yellow-500' : 'bg-green-500';
+
+              return (
+                <div key={item.name} className="w-full flex flex-col items-center">
+                  <p className="text-gray-700 font-medium mb-1">{item.name}</p>
+                  <div className="flex items-center justify-center w-full">
+                    <div
+                      className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
+                      style={{ width: `${barWidth}%`, minWidth: '40px', maxWidth: '600px' }}
+                    >{item.value}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">Nenhum dado disponível para a Pirâmide de Bird.</p>
+        )}
+      </div>
+
       <div className="flex justify-center mt-8">
         <Link to="/relatos/nao-classificados" className="w-full max-w-xs">
           <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2 shadow-none">

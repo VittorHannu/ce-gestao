@@ -19,23 +19,7 @@ export async function fetchRelatosCountByType(startDate, endDate) {
     throw error;
   }
 
-  // Perform client-side grouping and counting
-  const counts = data.reduce((acc, item) => {
-    const type = item.tipo_relato || 'Não Especificado';
-    acc[type] = (acc[type] || 0) + 1;
-    return acc;
-  }, {});
-
-  // Transform to array format for Recharts
-  const transformedData = Object.keys(counts).map(type => ({
-    name: type,
-    value: counts[type]
-  }));
-
-  // Sort by value (count) in descending order
-  transformedData.sort((a, b) => b.value - a.value);
-
-  return transformedData;
+  return data;
 }
 
 export async function fetchUnclassifiedRelatos() {

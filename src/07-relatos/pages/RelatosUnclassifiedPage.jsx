@@ -98,11 +98,11 @@ const RelatosUnclassifiedPage = () => {
                     <SelectItem value="Fatal">Fatal</SelectItem>
                     <SelectItem value="Severo">Severo</SelectItem>
                     <SelectItem value="Acidente com afastamento">Acidente com afastamento</SelectItem>
-                    <SelectItem value="Acidentes sem afastamento">Acidentes sem afastamento</SelectItem>
+                    <SelectItem value="Acidente sem afastamento">Acidente sem afastamento</SelectItem>
                     <SelectItem value="Primeiros socorros">Primeiros socorros</SelectItem>
-                    <SelectItem value="quase acidente">quase acidente</SelectItem>
-                    <SelectItem value="condição insegura">condição insegura</SelectItem>
-                    <SelectItem value="comportamento inseguro">comportamento inseguro</SelectItem>
+                    <SelectItem value="Quase acidente">Quase acidente</SelectItem>
+                    <SelectItem value="Condição insegura">Condição insegura</SelectItem>
+                    <SelectItem value="Comportamento inseguro">Comportamento inseguro</SelectItem>
                   </SelectContent>
                 </Select>
                 {canManageRelatos && ( // Only show save button if user can manage relatos
