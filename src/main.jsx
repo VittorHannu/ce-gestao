@@ -1,3 +1,4 @@
+// Dummy change for Vercel deploy.
 // Inicia o Eruda apenas em ambiente de desenvolvimento
 if (import.meta.env.DEV) {
   import('eruda').then((eruda) => eruda.default.init());
