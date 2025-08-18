@@ -136,120 +136,120 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
                 className="px-3 py-2 text-sm"
               >
                 Limpar
+              </Button>
+            </div>
+          </div>
+
+          <div className="md:col-span-2">
+            <Label htmlFor="descricao">Descrição da Ocorrência *</Label>
+            <Textarea
+              id="descricao"
+              rows={4}
+              value={descricao}
+              onChange={(e) => setDescricao(e.target.value)}
+              required
+              className="bg-gray-100"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Seção: Detalhes da Ocorrência */}
+      <div className="p-4 border rounded-lg bg-white">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Detalhes da Ocorrência</h3>
+        <div className="space-y-6">
+          <div>
+            <Label htmlFor="riscos_identificados">Riscos Identificados *</Label>
+            <Textarea
+              id="riscos_identificados"
+              rows={3}
+              value={riscosIdentificados}
+              onChange={(e) => setRiscosIdentificados(e.target.value)}
+              required
+              className="bg-gray-100"
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center space-x-2 mb-2">
+              <Checkbox
+                id="houve_danos"
+                checked={houveDanos}
+                onCheckedChange={setHouveDanos}
+              />
+              <Label htmlFor="houve_danos">Houve danos materiais ou físicos?</Label>
+            </div>
+            {houveDanos && (
+              <Textarea
+                id="danos_ocorridos"
+                rows={3}
+                placeholder="Descreva os danos ocorridos..."
+                value={danosOcorridos}
+                onChange={(e) => setDanosOcorridos(e.target.value)}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Seção: Tratativa e Conclusão */}
+      {canEditTratativa && (
+        <div className="p-4 border rounded-lg bg-white">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Tratativa e Conclusão (Opcional)</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <Label htmlFor="planejamento_cronologia_solucao">Planejamento / Cronologia da Solução</Label>
+              <Textarea
+                id="planejamento_cronologia_solucao"
+                rows={3}
+                value={planejamentoCronologiaSolucao}
+                onChange={(e) => setPlanejamentoCronologiaSolucao(e.target.value)}
+                placeholder="Descreva o planejamento ou cronologia da solução..."
+                className="bg-gray-100"
+              />
+            </div>
+            <div>
+              <Label htmlFor="data_conclusao_solucao">Data de Conclusão da Solução</Label>
+              <div className="flex items-center space-x-2">
+                <Input
+                  id="data_conclusao_solucao"
+                  type="date"
+                  value={dataConclusaoSolucao}
+                  onChange={(e) => setDataConclusaoSolucao(e.target.value)}
+                  className="bg-gray-100"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setDataConclusaoSolucao('')}
+                  className="px-3 py-2 text-sm"
+                >
+                    Limpar
                 </Button>
               </div>
             </div>
-
-            <div className="md:col-span-2">
-              <Label htmlFor="descricao">Descrição da Ocorrência *</Label>
-              <Textarea
-                id="descricao"
-                rows={4}
-                value={descricao}
-                onChange={(e) => setDescricao(e.target.value)}
-                required
-                className="bg-gray-100"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Seção: Detalhes da Ocorrência */}
-        <div className="p-4 border rounded-lg bg-white">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Detalhes da Ocorrência</h3>
-          <div className="space-y-6">
-            <div>
-              <Label htmlFor="riscos_identificados">Riscos Identificados *</Label>
-              <Textarea
-                id="riscos_identificados"
-                rows={3}
-                value={riscosIdentificados}
-                onChange={(e) => setRiscosIdentificados(e.target.value)}
-                required
-                className="bg-gray-100"
-              />
-            </div>
-
-            <div>
-              <div className="flex items-center space-x-2 mb-2">
-                <Checkbox
-                  id="houve_danos"
-                  checked={houveDanos}
-                  onCheckedChange={setHouveDanos}
-                />
-                <Label htmlFor="houve_danos">Houve danos materiais ou físicos?</Label>
-              </div>
-              {houveDanos && (
-                <Textarea
-                  id="danos_ocorridos"
-                  rows={3}
-                  placeholder="Descreva os danos ocorridos..."
-                  value={danosOcorridos}
-                  onChange={(e) => setDanosOcorridos(e.target.value)}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Seção: Tratativa e Conclusão */}
-        {canEditTratativa && (
-          <div className="p-4 border rounded-lg bg-white">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Tratativa e Conclusão (Opcional)</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {canManageRelatos && (
               <div className="md:col-span-2">
-                <Label htmlFor="planejamento_cronologia_solucao">Planejamento / Cronologia da Solução</Label>
-                <Textarea
-                  id="planejamento_cronologia_solucao"
-                  rows={3}
-                  value={planejamentoCronologiaSolucao}
-                  onChange={(e) => setPlanejamentoCronologiaSolucao(e.target.value)}
-                  placeholder="Descreva o planejamento ou cronologia da solução..."
-                  className="bg-gray-100"
+                <Label htmlFor="responsaveis">Responsáveis pela Tratativa</Label>
+                <MultiUserSelect
+                  options={allUsers.map(user => ({ value: user.id, label: user.full_name || user.email }))}
+                  selectedValues={selectedResponsibles}
+                  onChange={setSelectedResponsibles}
+                  placeholder="Selecione os responsáveis..."
                 />
               </div>
-              <div>
-                <Label htmlFor="data_conclusao_solucao">Data de Conclusão da Solução</Label>
-                <div className="flex items-center space-x-2">
-                  <Input
-                    id="data_conclusao_solucao"
-                    type="date"
-                    value={dataConclusaoSolucao}
-                    onChange={(e) => setDataConclusaoSolucao(e.target.value)}
-                    className="bg-gray-100"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setDataConclusaoSolucao('')}
-                    className="px-3 py-2 text-sm"
-                  >
-                    Limpar
-                  </Button>
-                </div>
-              </div>
-              {canManageRelatos && (
-                <div className="md:col-span-2">
-                  <Label htmlFor="responsaveis">Responsáveis pela Tratativa</Label>
-                  <MultiUserSelect
-                    options={allUsers.map(user => ({ value: user.id, label: user.full_name || user.email }))}
-                    selectedValues={selectedResponsibles}
-                    onChange={setSelectedResponsibles}
-                    placeholder="Selecione os responsáveis..."
-                  />
-                </div>
-              )}
-            </div>
+            )}
           </div>
-        )}
-
-        <div className="flex justify-end">
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Salvando...' : submitButtonText}
-          </Button>
         </div>
-      </form>
-    );
-  };
+      )}
+
+      <div className="flex justify-end">
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? 'Salvando...' : submitButtonText}
+        </Button>
+      </div>
+    </form>
+  );
+};
 
 export default RelatoForm;

@@ -291,7 +291,7 @@ const useRelatoManagement = (relatoId) => {
       showToast(`Erro ao deletar relato: ${err.message}`, 'error');
       return false; // Indicate failure
     }
-  finally {
+    finally {
       setIsDeleting(false);
     }
   };
@@ -317,7 +317,7 @@ const useRelatoManagement = (relatoId) => {
     handleUpdateRelato,
     handleReproveRelato,
     handleReapproveRelato,
-    handleDeleteRelato,
+    handleDeleteRelato
   };
 };
 

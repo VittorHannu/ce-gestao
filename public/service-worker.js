@@ -19,8 +19,8 @@ self.addEventListener('push', (event) => {
     icon: '/favicon.ico', // You can customize this
     badge: '/favicon.ico', // You can customize this
     data: {
-      url: data.url || '/', // URL to open when notification is clicked
-    },
+      url: data.url || '/' // URL to open when notification is clicked
+    }
   };
 
   event.waitUntil(

@@ -38,7 +38,7 @@ export async function subscribeUserToPush() {
       const applicationServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
       subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: applicationServerKey,
+        applicationServerKey: applicationServerKey
       });
       console.log('New push subscription created:', subscription);
 
@@ -62,8 +62,8 @@ export async function subscribeUserToPush() {
         },
         body: JSON.stringify({
           user_id: user.data.user.id,
-          subscription_data: subscription.toJSON(),
-        }),
+          subscription_data: subscription.toJSON()
+        })
       });
 
       if (!response.ok) {

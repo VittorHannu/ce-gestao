@@ -20,23 +20,23 @@ import { useNavigate } from 'react-router-dom';
 import MainLayout from '@/01-shared/components/MainLayout';
 import FeedbackForm from '@/01-shared/components/FeedbackForm';
 import { Button } from '@/01-shared/components/ui/button';
-import { MessageSquare, List, Bell } from 'lucide-react';
+import { MessageSquare, List } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
-import { requestNotificationPermission, subscribeUserToPush } from '@/01-shared/lib/pushNotifications';
+// import { requestNotificationPermission, subscribeUserToPush } from '@/01-shared/lib/pushNotifications';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { user } = useOutletContext();
   const [isFeedbackFormOpen, setIsFeedbackFormOpen] = useState(false);
 
-  const handleSubscribeToPush = async () => {
-    const permission = await requestNotificationPermission();
-    if (permission === 'granted') {
-      await subscribeUserToPush();
-    } else {
-      alert('Permissão para notificações negada. Por favor, habilite nas configurações do navegador.');
-    }
-  };
+  // const handleSubscribeToPush = async () => {
+  //   const permission = await requestNotificationPermission();
+  //   if (permission === 'granted') {
+  //     await subscribeUserToPush();
+  //   } else {
+  //     alert('Permissão para notificações negada. Por favor, habilite nas configurações do navegador.');
+  //   }
+  // };
 
   
 
@@ -62,10 +62,10 @@ const HomePage = () => {
             Ver Relatórios de Feedback
           </Button>
         )}
-        <Button onClick={handleSubscribeToPush} className="w-full max-w-xs">
+        {/* <Button onClick={handleSubscribeToPush} className="w-full max-w-xs">
           <Bell className="w-5 h-5 mr-2" />
           Ativar Notificações
-        </Button>
+        </Button> */}
       </div>
 
       <FeedbackForm
