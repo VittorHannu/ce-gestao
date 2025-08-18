@@ -4,15 +4,14 @@ import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { Button } from '@/01-shared/components/ui/button';
 import RelatoForm from '../components/RelatoForm'; // Importa o formulário
 import RelatoDisplayDetails from '../components/RelatoDisplayDetails'; // Importa o componente de exibição de detalhes
-import { useUserProfile } from '@/04-profile/hooks/useUserProfile'; // Para verificar permissão
 import BackButton from '@/01-shared/components/BackButton'; // Importa o BackButton
 import RelatoComments from '../components/RelatoComments';
-import useRelatoManagement from '../hooks/useRelatoManagement';
+import { useRelatoManagement } from '../hooks/useRelatoManagement';
 
 const RelatoDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { showToast: _showToast } = useOutletContext();
+  const { showToast } = useOutletContext();
 
   const [isEditing, setIsEditing] = useState(false); // Novo estado para modo de edição
 
@@ -20,20 +19,21 @@ const RelatoDetailsPage = () => {
     relato,
     allUsers,
     currentResponsibles,
-    setCurrentResponsibles: _setCurrentResponsibles,
+    setCurrentResponsibles,
     loading,
     error,
     isSaving,
     isDeleting,
     isReproving,
-    fetchRelato: _fetchRelato,
+    fetchRelato,
     handleUpdateRelato,
     handleReproveRelato,
     handleReapproveRelato,
-    handleDeleteRelato
+    handleDeleteRelato,
+    userProfile,
+    isLoadingProfile
   } = useRelatoManagement(id);
 
-  const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile(); // Moved this up
   const canManageRelatos = userProfile?.can_manage_relatos;
   const canDeleteRelatos = userProfile?.can_delete_relatos;
 

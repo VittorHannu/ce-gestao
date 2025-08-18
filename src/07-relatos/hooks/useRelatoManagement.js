@@ -1,12 +1,14 @@
-// src/07-relatos/hooks/useRelatoManagement.js
-
 import { useState, useEffect, useCallback } from 'react';
+import { useOutletContext } from 'react-router-dom';
+import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { supabase } from '@/01-shared/lib/supabase';
-import { useOutletContext, useNavigate } from 'react-router-dom';
+import { handleServiceError } from '@/01-shared/lib/errorUtils';
+import { getAllUsers } from '@/05-adm/services/userService';
 
-const useRelatoManagement = (relatoId) => {
+export const useRelatoManagement = (relatoId) => {
   const { showToast } = useOutletContext();
-  const _navigate = useNavigate(); // Renamed to _navigate to satisfy linter
+  const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
+
   const [relato, setRelato] = useState(null);
   const [allUsers, setAllUsers] = useState([]);
   const [currentResponsibles, setCurrentResponsibles] = useState([]);
@@ -16,23 +18,24 @@ const useRelatoManagement = (relatoId) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isReproving, setIsReproving] = useState(false);
 
-  // Fetch Relato details
   const fetchRelato = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      const { data, error } = await supabase
+      const { data: relatoData, error: relatoError } = await supabase
         .from('relatos')
         .select(`
           *,
-          responsibles:profiles(id, full_name),
-          comments:relato_comentarios(*, author:profiles(id, full_name))
+          relato_responsaveis(user_id),
+          relato_comentarios(*)
         `)
         .eq('id', relatoId)
         .single();
 
-      if (error) throw error;
-      setRelato(data);
-      setCurrentResponsibles(data.responsibles.map(r => r.id));
+      if (relatoError) throw relatoError;
+
+      setRelato(relatoData);
+      setCurrentResponsibles(relatoData.relato_responsaveis.map(r => r.user_id));
     } catch (err) {
       setError(err);
       showToast(`Erro ao carregar relato: ${err.message}`, 'error');
@@ -41,261 +44,161 @@ const useRelatoManagement = (relatoId) => {
     }
   }, [relatoId, showToast]);
 
-  // Fetch all users for responsible assignment
   const fetchAllUsers = useCallback(async () => {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, full_name');
-
-      if (error) throw error;
-      setAllUsers(data);
+      const users = await getAllUsers();
+      setAllUsers(users);
     } catch (err) {
       showToast(`Erro ao carregar usuários: ${err.message}`, 'error');
     }
   }, [showToast]);
 
-  // Handle updating relato
-  const handleUpdateRelato = async (formData, canManageRelatos) => {
+  const handleUpdateRelato = useCallback(async (formData, canManageRelatos) => {
     setIsSaving(true);
     try {
-      const { responsaveis: newResponsibleIds, ...newRelatoData } = formData;
-      const newResponsibleIdsArray = newResponsibleIds || []; // Ensure it's an array
+      const { responsibles, ...relatoData } = formData;
 
-      // Convert empty string for hora_aproximada_ocorrencia to null
-      if (newRelatoData.hora_aproximada_ocorrencia === '') {
-        newRelatoData.hora_aproximada_ocorrencia = null;
-      }
-
-      // Get current user for logging
-      const { data: { user } } = await supabase.auth.getUser();
-      const currentUserId = user ? user.id : null;
-
-      const logsToInsert = [];
-
-      // Helper to normalize values for comparison (empty string to null)
-      const normalizeForComparison = (value) => {
-        if (value === '') return null;
-        if (value === undefined) return null; // Treat undefined as null for comparison
-        return value;
-      };
-
-      // Compare fields and collect changes for logging
-      const fieldsToCompare = [
-        'local_ocorrencia',
-        'descricao',
-        'riscos_identificados',
-        'planejamento_cronologia_solucao',
-        'danos_ocorridos',
-        'data_ocorrencia',
-        'hora_aproximada_ocorrencia',
-        'data_conclusao_solucao',
-        'tipo_relato'
-      ];
-
-      for (const field of fieldsToCompare) {
-        let oldValue = normalizeForComparison(relato[field]);
-        let newValue = normalizeForComparison(newRelatoData[field]);
-
-        // Special handling for date fields: ensure they are in 'YYYY-MM-DD' string format for comparison
-        if (field === 'data_ocorrencia' || field === 'data_conclusao_solucao') {
-          oldValue = oldValue ? new Date(oldValue).toISOString().split('T')[0] : null;
-          newValue = newValue ? new Date(newValue).toISOString().split('T')[0] : null;
-        }
-
-        // Compare values. Use String() conversion for robust comparison of potentially mixed types.
-        if (String(oldValue) !== String(newValue)) {
-          logsToInsert.push({
-            relato_id: relatoId, // Use relatoId from hook
-            user_id: currentUserId,
-            action_type: 'UPDATE',
-            details: {
-              field: field,
-              old_value: oldValue,
-              new_value: newValue
-            }
-          });
-        }
-      }
-
-      // Log responsible changes (only if canManageRelatos)
-      // This part needs access to 'currentResponsibles' and 'allUsers' from the hook's state
-      // and 'newResponsibleIdsArray' from formData
-      if (canManageRelatos) {
-        const oldResponsibleIds = currentResponsibles; // This is already an array of IDs
-        const newResponsibleIdsArray = newResponsibleIds || []; // Ensure it's an array
-
-        // Find added responsibles
-        const addedResponsibles = newResponsibleIdsArray.filter(
-          (newId) => !oldResponsibleIds.includes(newId)
-        );
-        for (const addedId of addedResponsibles) {
-          const responsibleProfile = allUsers.find(u => u.id === addedId);
-          logsToInsert.push({
-            relato_id: relatoId,
-            user_id: currentUserId,
-            action_type: 'ADD_RESPONSIBLE',
-            details: {
-              responsible_id: addedId,
-              responsible_name: responsibleProfile?.full_name || responsibleProfile?.email || 'Usuário Desconhecido'
-            }
-          });
-        }
-
-        // Find removed responsibles
-        const removedResponsibles = oldResponsibleIds.filter(
-          (oldId) => !newResponsibleIdsArray.includes(oldId)
-        );
-        for (const removedId of removedResponsibles) {
-          const responsibleProfile = allUsers.find(u => u.id === removedId);
-          logsToInsert.push({
-            relato_id: relatoId,
-            user_id: currentUserId,
-            action_type: 'REMOVE_RESPONSIBLE',
-            details: {
-              responsible_id: removedId,
-              responsible_name: responsibleProfile?.full_name || responsibleProfile?.email || 'Usuário Desconhecido'
-            }
-          });
-        }
-      }
-
-      // Insert all collected logs before updating the relato itself
-      if (logsToInsert.length > 0) {
-        const { error: logsInsertError } = await supabase
-          .from('relato_logs')
-          .insert(logsToInsert);
-        if (logsInsertError) {
-          console.error('Erro ao inserir logs de atualização:', logsInsertError);
-          // Não lançar erro fatal aqui, pois o relato ainda pode ser atualizado
-        }
-      }
-
-      // 1. Update relato data (excluding responsaveis)
-      const { error: updateRelatoError } = await supabase
+      const { error: updateError } = await supabase
         .from('relatos')
-        .update(newRelatoData) // Use newRelatoData without responsaveis
+        .update(relatoData)
         .eq('id', relatoId);
 
-      if (updateRelatoError) throw updateRelatoError;
+      if (updateError) throw updateError;
 
-      // 2. Synchronize responsibles (ONLY if user has permission)
+      // Update responsibles if user has permission
       if (canManageRelatos) {
         // Delete existing responsibles
-        const { error: deleteResponsiblesError } = await supabase
+        const { error: deleteError } = await supabase
           .from('relato_responsaveis')
           .delete()
           .eq('relato_id', relatoId);
 
-        if (deleteResponsiblesError) throw deleteResponsiblesError;
+        if (deleteError) throw deleteError;
 
         // Insert new responsibles
-        if (newResponsibleIdsArray.length > 0) {
-          const responsiblesToInsert = newResponsibleIdsArray.map(userId => ({
+        if (responsibles && responsibles.length > 0) {
+          const newResponsibles = responsibles.map(userId => ({
             relato_id: relatoId,
             user_id: userId
           }));
-          const { error: insertResponsiblesError } = await supabase
+          const { error: insertError } = await supabase
             .from('relato_responsaveis')
-            .insert(responsiblesToInsert);
+            .insert(newResponsibles);
 
-          if (insertResponsiblesError) throw insertResponsiblesError;
+          if (insertError) throw insertError;
         }
       }
 
       showToast('Relato atualizado com sucesso!', 'success');
-      fetchRelato(); // Re-fetch to get latest data
-      return true; // Indicate success
+      fetchRelato(); // Re-fetch relato to get updated data
+      return true;
     } catch (err) {
       showToast(`Erro ao atualizar relato: ${err.message}`, 'error');
-      return false; // Indicate failure
+      return false;
+    } finally {
+      setIsSaving(false);
     }
-  };
+  }, [relatoId, showToast, fetchRelato]);
 
-  // Handle reproving relato
-  const handleReproveRelato = async (reason) => {
+  const handleReproveRelato = useCallback(async (reproveReason) => {
     setIsReproving(true);
     try {
-      const { error } = await supabase
+      const { error: updateError } = await supabase
         .from('relatos')
         .update({ status: 'REPROVADO' })
         .eq('id', relatoId);
 
-      if (error) {
-        console.error('handleReproveRelato: Supabase update error:', error);
-        throw error;
-      }
+      if (updateError) throw updateError;
 
-      // Log da ação de reprovação
-      const { data: { user } } = await supabase.auth.getUser();
-      const currentUserId = user ? user.id : null;
-      const { error: logError } = await supabase.from('relato_logs').insert({
+      // Log the action
+      await supabase.from('relato_logs').insert({
         relato_id: relatoId,
-        user_id: currentUserId,
-        action_type: 'STATUS_CHANGE',
-        details: {
-          old_status: relato.status, // Assuming 'relato' state is up-to-date
-          new_status: 'REPROVADO',
-          reproval_reason: reason // Include the reason in the log
-        }
+        user_id: userProfile?.id,
+        action_type: 'REPROVADO',
+        details: { reason: reproveReason }
       });
-
-      if (logError) {
-        console.error('Erro ao registrar log de reprovação:', logError);
-        // Do not throw fatal error here, as the report status was already updated
-      }
 
       showToast('Relato reprovado com sucesso!', 'success');
       fetchRelato();
-      return true; // Indicate success
+      return true;
     } catch (err) {
-      console.error('handleReproveRelato: Error during reproval:', err);
       showToast(`Erro ao reprovar relato: ${err.message}`, 'error');
-      return false; // Indicate failure
+      return false;
     } finally {
       setIsReproving(false);
     }
-  };
+  }, [relatoId, showToast, fetchRelato, userProfile]);
 
-  // Handle reapproving relato
-  const handleReapproveRelato = async () => {
-    setIsSaving(true);
+  const handleReapproveRelato = useCallback(async () => {
+    setIsSaving(true); // Using isSaving for reapprove as well
     try {
-      const { error } = await supabase
+      const { error: updateError } = await supabase
         .from('relatos')
-        .update({ status: 'APROVADO' })
+        .update({ status: 'PENDENTE' }) // Or 'APROVADO' depending on desired flow
         .eq('id', relatoId);
 
-      if (error) throw error;
-      showToast('Relato re-aprovado com sucesso!', 'success');
+      if (updateError) throw updateError;
+
+      // Log the action
+      await supabase.from('relato_logs').insert({
+        relato_id: relatoId,
+        user_id: userProfile?.id,
+        action_type: 'REAPROVADO',
+        details: {}
+      });
+
+      showToast('Relato reaprovado com sucesso!', 'success');
       fetchRelato();
+      return true;
     } catch (err) {
-      showToast(`Erro ao re-aprovar relato: ${err.message}`, 'error');
+      showToast(`Erro ao reaprovar relato: ${err.message}`, 'error');
+      return false;
     } finally {
       setIsSaving(false);
     }
-  };
+  }, [relatoId, showToast, fetchRelato, userProfile]);
 
-  // Handle deleting relato
-  const handleDeleteRelato = async () => {
+  const handleDeleteRelato = useCallback(async () => {
     setIsDeleting(true);
     try {
-      const { error } = await supabase
+      // Delete comments first due to foreign key constraints
+      const { error: commentsError } = await supabase
+        .from('relato_comentarios')
+        .delete()
+        .eq('relato_id', relatoId);
+      if (commentsError) throw commentsError;
+
+      // Delete responsibles
+      const { error: responsiblesError } = await supabase
+        .from('relato_responsaveis')
+        .delete()
+        .eq('relato_id', relatoId);
+      if (responsiblesError) throw responsiblesError;
+
+      // Delete logs
+      const { error: logsError } = await supabase
+        .from('relato_logs')
+        .delete()
+        .eq('relato_id', relatoId);
+      if (logsError) throw logsError;
+
+      // Finally, delete the relato
+      const { error: deleteError } = await supabase
         .from('relatos')
         .delete()
         .eq('id', relatoId);
 
-      if (error) throw error;
-      showToast('Relato deletado com sucesso!', 'success');
-      return true; // Indicate success
+      if (deleteError) throw deleteError;
+
+      showToast('Relato excluído com sucesso!', 'success');
+      return true;
     } catch (err) {
-      showToast(`Erro ao deletar relato: ${err.message}`, 'error');
-      return false; // Indicate failure
-    }
-    finally {
+      showToast(`Erro ao excluir relato: ${err.message}`, 'error');
+      return false;
+    } finally {
       setIsDeleting(false);
     }
-  };
+  }, [relatoId, showToast]);
 
   useEffect(() => {
     if (relatoId) {
@@ -308,18 +211,19 @@ const useRelatoManagement = (relatoId) => {
     relato,
     allUsers,
     currentResponsibles,
-    setCurrentResponsibles,
     loading,
     error,
     isSaving,
     isDeleting,
     isReproving,
-    fetchRelato,
+    userProfile,
+    isLoadingProfile,
     handleUpdateRelato,
     handleReproveRelato,
     handleReapproveRelato,
-    handleDeleteRelato
+    handleDeleteRelato,
+    setRelato,
+    setCurrentResponsibles,
+    fetchRelato // Expose fetchRelato to allow re-fetching from component if needed
   };
 };
-
-export default useRelatoManagement;
