@@ -80,7 +80,7 @@ const RelatosUnclassifiedPage = () => {
         <div className="space-y-4">
           {relatos.map((relato) => (
             <div key={relato.id} className="p-4 border rounded-lg bg-white shadow-md">
-              <h2 className="text-lg font-semibold text-gray-800 mb-2">Relato ID: {relato.id.substring(0, 8)}...</h2>
+              <h2 className="text-lg font-semibold text-gray-800 mb-2">Relato ID: {relato.relato_code}</h2>
               <p className="text-gray-700 mb-2">Local: {relato.local_ocorrencia}</p>
               <p className="text-gray-700 mb-4">Descrição: {relato.descricao}</p> {/* Full description */}
 
