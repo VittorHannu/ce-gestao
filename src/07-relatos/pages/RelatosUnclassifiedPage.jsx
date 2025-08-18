@@ -16,6 +16,7 @@ const RelatosUnclassifiedPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [classifyingId, setClassifyingId] = useState(null); // To track which relato is being classified
+  const [selectedTypes, setSelectedTypes] = useState({}); // New state to hold selected types temporarily
 
   const loadRelatos = useCallback(async () => {
     setLoading(true);
@@ -23,6 +24,12 @@ const RelatosUnclassifiedPage = () => {
     try {
       const data = await fetchUnclassifiedRelatos();
       setRelatos(data);
+      // Initialize selectedTypes with current relato types (which should be null for unclassified)
+      const initialSelectedTypes = {};
+      data.forEach(relato => {
+        initialSelectedTypes[relato.id] = relato.tipo_relato || 'CLEAR_SELECTION'; // Map null to CLEAR_SELECTION
+      });
+      setSelectedTypes(initialSelectedTypes);
     } catch (err) {
       setError(err);
       showToast(`Erro ao carregar relatos não classificados: ${err.message}`, 'error');
@@ -35,10 +42,14 @@ const RelatosUnclassifiedPage = () => {
     loadRelatos();
   }, [loadRelatos]);
 
-  const handleClassifyRelato = async (relatoId, newType) => {
+  const handleSaveClassification = async (relatoId) => {
+    const newType = selectedTypes[relatoId];
+    // If newType is an empty string (from "Nenhum"), set it to null for the database
+    const typeToSave = newType === 'CLEAR_SELECTION' ? null : newType;
+
     setClassifyingId(relatoId);
     try {
-      await updateRelatoType(relatoId, newType);
+      await updateRelatoType(relatoId, typeToSave); // Use typeToSave
       showToast('Relato classificado com sucesso!', 'success');
       loadRelatos(); // Reload the list to remove the classified relato
     } catch (err) {
@@ -71,18 +82,19 @@ const RelatosUnclassifiedPage = () => {
             <div key={relato.id} className="p-4 border rounded-lg bg-white shadow-md">
               <h2 className="text-lg font-semibold text-gray-800 mb-2">Relato ID: {relato.id.substring(0, 8)}...</h2>
               <p className="text-gray-700 mb-2">Local: {relato.local_ocorrencia}</p>
-              <p className="text-gray-700 mb-4">Descrição: {relato.descricao.substring(0, 100)}...</p>
+              <p className="text-gray-700 mb-4">Descrição: {relato.descricao}</p> {/* Full description */}
 
               <div className="flex items-center gap-2">
                 <Select
-                  onValueChange={(value) => handleClassifyRelato(relato.id, value)}
-                  value={relato.tipo_relato || ''} // Ensure controlled component
+                  onValueChange={(value) => setSelectedTypes(prev => ({ ...prev, [relato.id]: value }))}
+                  value={selectedTypes[relato.id]} // Use selectedTypes state directly
                   disabled={classifyingId === relato.id || !canManageRelatos} // Disable if not managing relatos
                 >
                   <SelectTrigger className="w-[180px] bg-gray-100">
                     <SelectValue placeholder="Classificar Tipo" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="CLEAR_SELECTION">Nenhum</SelectItem> {/* Simplified text */}
                     <SelectItem value="Fatal">Fatal</SelectItem>
                     <SelectItem value="Severo">Severo</SelectItem>
                     <SelectItem value="Acidente com afastamento">Acidente com afastamento</SelectItem>
@@ -93,6 +105,15 @@ const RelatosUnclassifiedPage = () => {
                     <SelectItem value="comportamento inseguro">comportamento inseguro</SelectItem>
                   </SelectContent>
                 </Select>
+                {canManageRelatos && ( // Only show save button if user can manage relatos
+                  <Button
+                    onClick={() => handleSaveClassification(relato.id)}
+                    disabled={classifyingId === relato.id || selectedTypes[relato.id] === (relato.tipo_relato || 'CLEAR_SELECTION')} // Adjusted disabled logic
+                    className="ml-2"
+                  >
+                    {classifyingId === relato.id ? 'Salvando...' : 'Salvar'}
+                  </Button>
+                )}
                 {classifyingId === relato.id && <LoadingSpinner />}
               </div>
             </div>
