@@ -44,6 +44,7 @@ const RelatosAprovacaoPage = React.lazy(() => import('@/07-relatos/pages/Relatos
 const RelatosListaPage = React.lazy(() => import('@/07-relatos/pages/RelatosListaPage'));
 const RelatoDetailsPage = React.lazy(() => import('@/07-relatos/pages/RelatoDetailsPage'));
 const RelatosStatsPage = React.lazy(() => import('@/07-relatos/pages/RelatosStatsPage'));
+const RelatosByTypePage = React.lazy(() => import('@/07-relatos/pages/RelatosByTypePage')); // New import
 const RelatosAtribuidosPage = React.lazy(() => import('@/07-relatos/pages/RelatosAtribuidosPage'));
 const UsersPage = React.lazy(() => import('@/05-adm/pages/UsersPage'));
 const CreateUserPage = React.lazy(() => import('@/05-adm/pages/CreateUserPage'));
@@ -51,6 +52,7 @@ const UserDetailsPage = React.lazy(() => import('@/05-adm/pages/UserDetailsPage'
 const FeedbackReportsPage = React.lazy(() => import('@/07-relatos/pages/FeedbackReportsPage'));
 const RelatosReprovadosPage = React.lazy(() => import('@/07-relatos/pages/RelatosReprovadosPage'));
 const RelatoLogsPage = React.lazy(() => import('@/07-relatos/pages/RelatoLogsPage'));
+const RelatosUnclassifiedPage = React.lazy(() => import('@/07-relatos/pages/RelatosUnclassifiedPage')); // New import
 
 
 
@@ -189,9 +191,11 @@ function AppWrapper({ showToast }) {
         <Route path="/relatos/lista" element={<Suspense fallback={<LoadingSpinner />}><RelatosListaPage /></Suspense>} />
         <Route path="/relatos/detalhes/:id" element={<Suspense fallback={<LoadingSpinner />}><RelatoDetailsPage /></Suspense>} />
         <Route path="/relatos/estatisticas" element={<Suspense fallback={<LoadingSpinner />}><RelatosStatsPage /></Suspense>} />
+        <Route path="/relatos/estatisticas/tipo" element={<Suspense fallback={<LoadingSpinner />}><RelatosByTypePage /></Suspense>} /> {/* New route */}
         <Route path="/relatos/atribuidos" element={<Suspense fallback={<LoadingSpinner />}><RelatosAtribuidosPage /></Suspense>} />
         <Route path="/relatos/reprovados" element={<Suspense fallback={<LoadingSpinner />}><RelatosReprovadosPage /></Suspense>} />
         <Route path="/relatos/logs/:id" element={<Suspense fallback={<LoadingSpinner />}><RelatoLogsPage /></Suspense>} />
+        <Route path="/relatos/nao-classificados" element={<Suspense fallback={<LoadingSpinner />}><RelatosUnclassifiedPage /></Suspense>} /> {/* New route */}
         <Route path="/users-management" element={<ProtectedRoute user={user} requiredPermission="can_view_users"><Suspense fallback={<LoadingSpinner />}><UsersPage /></Suspense></ProtectedRoute>} />
         <Route path="/users-management/create" element={<ProtectedRoute user={user} requiredPermission="can_create_users"><Suspense fallback={<LoadingSpinner />}><CreateUserPage /></Suspense></ProtectedRoute>} />
         <Route path="/users-management/:userId" element={<ProtectedRoute user={user} requiredPermission="can_view_users"><Suspense fallback={<LoadingSpinner />}><UserDetailsPage /></Suspense></ProtectedRoute>} />

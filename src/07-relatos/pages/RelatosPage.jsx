@@ -5,7 +5,7 @@ import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { useRelatoCounts } from '../hooks/useRelatoCounts';
 
 
-import { FileText, CheckCircle, Clock, XCircle, BarChart, Plus, User } from 'lucide-react';
+import { FileText, CheckCircle, Clock, XCircle, BarChart, Plus, User, Tag } from 'lucide-react'; // Added Tag icon
 import RelatoStatsCard from '../components/RelatoStatsCard';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import MainLayout from '@/01-shared/components/MainLayout';
