@@ -11,7 +11,7 @@ import { Tag } from 'lucide-react';
 
 const RelatosByTypePage = () => {
   const { startDate, endDate } = useDateFilter();
-  const [rawData, setRawData] = useState([]);
+  const [chartData, setChartData] = useState([]); // Renamed from rawData for clarity
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -21,7 +21,7 @@ const RelatosByTypePage = () => {
       setError(null);
       try {
         const data = await fetchRelatosCountByType(startDate, endDate);
-        setRawData(data);
+        setChartData(data); // Set the directly formatted data
       } catch (err) {
         setError(err);
       } finally {
@@ -32,29 +32,7 @@ const RelatosByTypePage = () => {
     getChartData();
   }, [startDate, endDate]);
 
-  const toTitleCase = (str) => {
-    if (!str) return 'Não Especificado';
-    return str.replace(
-      /\w\S*/g,
-      (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-    );
-  };
-
-  const chartData = useMemo(() => {
-    const counts = rawData.reduce((acc, item) => {
-      const type = toTitleCase(item.tipo_relato);
-      acc[type] = (acc[type] || 0) + 1;
-      return acc;
-    }, {});
-
-    const transformedData = Object.keys(counts).map(type => ({
-      name: type,
-      value: counts[type]
-    }));
-
-    transformedData.sort((a, b) => b.value - a.value);
-    return transformedData;
-  }, [rawData]);
+  // Removed toTitleCase as it's no longer needed for counting
 
   const birdPyramidData = useMemo(() => {
     const orderedTypes = [
@@ -65,22 +43,20 @@ const RelatosByTypePage = () => {
       'Primeiros Socorros',
       'Quase Acidente',
       'Condição Insegura',
-      'Comportamento Inseguro',
+      'Comportamento Inseguro'
     ];
 
-    const counts = rawData.reduce((acc, item) => {
-      const type = toTitleCase(item.tipo_relato);
-      acc[type] = (acc[type] || 0) + 1;
-      return acc;
-    }, {});
+    // Map the fetched data to a temporary object for easy lookup
+    const dataMap = new Map(chartData.map(item => [item.name, item.value]));
 
+    // Create the final result array, ensuring all orderedTypes are present
     const result = orderedTypes.map(type => ({
       name: type,
-      value: counts[type] || 0
+      value: dataMap.get(type) || 0 // Get value from map, default to 0 if not found
     }));
 
     return result;
-  }, [rawData]);
+  }, [chartData]); // Depend on chartData
 
   if (loading) {
     return <LoadingSpinner />;
@@ -90,7 +66,6 @@ const RelatosByTypePage = () => {
     return <div className="container mx-auto p-4 text-red-500">Erro ao carregar dados: {error.message}</div>;
   }
 
-  const maxChartCount = Math.max(...chartData.map(d => d.value));
   const maxPyramidCount = Math.max(...birdPyramidData.map(d => d.value));
 
   return (
@@ -104,34 +79,9 @@ const RelatosByTypePage = () => {
         <DateFilter />
       </div>
 
-      <div className="p-4 border rounded-lg bg-white shadow-md mb-8">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Distribuição de Relatos por Tipo</h2>
-        {chartData.length > 0 ? (
-          <div className="space-y-4">
-            {chartData.map((item) => {
-              const barWidth = (item.value / maxChartCount) * 100; // Percentage width
-
-              return (
-                <div key={item.name} className="flex flex-col">
-                  <p className="text-gray-700 font-medium mb-1">{item.name}</p>
-                  <div className="flex items-center">
-                    <div
-                      className="h-6 bg-blue-500 rounded-sm mr-2 flex items-center justify-center pr-2 text-white text-sm"
-                      style={{ width: `${barWidth}%`, minWidth: '30px', maxWidth: '400px' }}
-                    >{item.value}</div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="text-center text-gray-500">Nenhum dado disponível para o período selecionado.</p>
-        )}
-      </div>
-
       <div className="p-4 border rounded-lg bg-white shadow-md">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Pirâmide de Bird</h2>
-        {birdPyramidData.length > 0 ? (
+        {birdPyramidData.length > 0 && maxPyramidCount > 0 ? (
           <div className="flex flex-col items-center space-y-2">
             {birdPyramidData.map((item, index) => {
               const barWidth = (item.value / maxPyramidCount) * 100; // Percentage width
