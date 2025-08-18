@@ -7,30 +7,41 @@ export const DateFilterProvider = ({ children }) => {
     const storedYear = localStorage.getItem('dateFilterYear');
     return storedYear ? parseInt(storedYear, 10) : new Date().getFullYear();
   });
-  const [semester, setSemesterState] = useState(() => {
-    const storedSemester = localStorage.getItem('dateFilterSemester');
-    return storedSemester ? parseInt(storedSemester, 10) : 0;
+  // REMOVED: semester state
+  // REMOVED: month state
+
+  // NEW: Add periodType state
+  const [periodType, setPeriodTypeState] = useState(() => {
+    const storedPeriodType = localStorage.getItem('dateFilterPeriodType');
+    return storedPeriodType ? parseInt(storedPeriodType, 10) : 0; // 0 for 'Ano Todo'
   });
 
   // Funções para atualizar o estado e o localStorage
   const setYear = (newYear) => {
     setYearState(newYear);
     localStorage.setItem('dateFilterYear', newYear.toString());
+    // NEW: Reset periodType to 'Ano Todo' when year changes
+    setPeriodTypeState(0);
+    localStorage.setItem('dateFilterPeriodType', '0');
   };
 
-  const setSemester = (newSemester) => {
-    setSemesterState(newSemester);
-    localStorage.setItem('dateFilterSemester', newSemester.toString());
+  // NEW: setPeriodType function
+  const setPeriodType = (newPeriodType) => {
+    setPeriodTypeState(newPeriodType);
+    localStorage.setItem('dateFilterPeriodType', newPeriodType.toString());
   };
 
   const value = useMemo(() => {
     let startDate = null;
     let endDate = null;
 
-    if (semester === 1) { // 1º semestre (Janeiro a Junho)
+    if (periodType >= 1 && periodType <= 12) { // Specific month selected
+      startDate = new Date(Date.UTC(year, periodType - 1, 1)); // month - 1 because months are 0-indexed in JS Date
+      endDate = new Date(Date.UTC(year, periodType, 0, 23, 59, 59, 999)); // Last day of the selected month
+    } else if (periodType === 13) { // 1º semestre (Janeiro a Junho)
       startDate = new Date(Date.UTC(year, 0, 1));
       endDate = new Date(Date.UTC(year, 5, 30, 23, 59, 59, 999));
-    } else if (semester === 2) { // 2º semestre (Julho a Dezembro)
+    } else if (periodType === 14) { // 2º semestre (Julho a Dezembro)
       startDate = new Date(Date.UTC(year, 6, 1));
       endDate = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999));
     } else { // Ano todo (0 ou qualquer outro valor)
@@ -41,12 +52,12 @@ export const DateFilterProvider = ({ children }) => {
     return {
       year,
       setYear,
-      semester,
-      setSemester,
-      startDate: startDate ? startDate.toISOString().split('T')[0] : null, // Formato YYYY-MM-DD
-      endDate: endDate ? endDate.toISOString().split('T')[0] : null // Formato YYYY-MM-DD
+      periodType,
+      setPeriodType,
+      startDate: startDate ? startDate.toISOString().split('T')[0] : null,
+      endDate: endDate ? endDate.toISOString().split('T')[0] : null
     };
-  }, [year, semester]);
+  }, [year, periodType]);
 
   return (
     <DateFilterContext.Provider value={value}>
