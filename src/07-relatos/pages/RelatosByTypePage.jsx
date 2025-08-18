@@ -32,31 +32,32 @@ const RelatosByTypePage = () => {
     getChartData();
   }, [startDate, endDate]);
 
-  // Removed toTitleCase as it's no longer needed for counting
-
   const birdPyramidData = useMemo(() => {
     const orderedTypes = [
       'Fatal',
       'Severo',
-      'Acidente Com Afastamento',
-      'Acidente Sem Afastamento',
-      'Primeiros Socorros',
-      'Quase Acidente',
-      'Condição Insegura',
-      'Comportamento Inseguro'
+      'Acidente com afastamento',
+      'Acidentes sem afastamento',
+      'Primeiros socorros',
+      'quase acidente',
+      'condição insegura',
+      'comportamento inseguro'
     ];
 
-    // Map the fetched data to a temporary object for easy lookup
-    const dataMap = new Map(chartData.map(item => [item.name, item.value]));
+    // Normalize function for comparison
+    const normalizeString = (str) => str.toLowerCase().trim();
+
+    // Map the fetched data to a temporary object for easy lookup, normalizing keys
+    const dataMap = new Map(chartData.map(item => [normalizeString(item.name), item.value]));
 
     // Create the final result array, ensuring all orderedTypes are present
     const result = orderedTypes.map(type => ({
-      name: type,
-      value: dataMap.get(type) || 0 // Get value from map, default to 0 if not found
+      name: type, // Keep original casing for display
+      value: dataMap.get(normalizeString(type)) || 0 // Get value from map using normalized key
     }));
 
     return result;
-  }, [chartData]); // Depend on chartData
+  }, [chartData]);
 
   if (loading) {
     return <LoadingSpinner />;
