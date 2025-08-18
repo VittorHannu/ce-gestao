@@ -70,9 +70,12 @@ const RelatoDisplayDetails = ({ relato, responsibles = [] }) => {
       {relato.danos_ocorridos && <p><strong>Danos Ocorridos:</strong> {relato.danos_ocorridos}</p>}
       {relato.planejamento_cronologia_solucao && <p><strong>Planejamento/Cronologia da Solução:</strong> {relato.planejamento_cronologia_solucao}</p>}
       {relato.data_conclusao_solucao && <p><strong>Data de Conclusão da Solução:</strong> {new Date(relato.data_conclusao_solucao).toLocaleDateString()}</p>}
-      {responsibles.length > 0 && (
-        <p><strong>Responsáveis:</strong> {responsibles.map(r => formatFullName(r.full_name)).join(', ')}</p>
-      )}
+      <p>
+        <strong>Responsáveis:</strong>{' '}
+        {responsibles && responsibles.length > 0
+          ? responsibles.map(r => formatFullName(r.full_name)).join(', ')
+          : 'Nenhum responsável'}
+      </p>
       <div className="flex items-center">
         <StatusIcon className={`h-4 w-4 mr-2 ${statusColor}`} />
         <p><strong>Status:</strong> <span className={statusColor}>{statusText}</span></p>

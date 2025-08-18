@@ -48,7 +48,7 @@ const RelatosListaPage = () => {
     const { data, error } = await supabase.rpc('search_relatos_unaccented', {
       p_search_term: searchTerm,
       p_status_filter: statusFilter ? statusFilter.toUpperCase() : null,
-      p_responsible_filter: responsibleFilter,
+      p_responsible_filter: responsibleFilter, // Re-added this line
       p_start_date: startDate,
       p_end_date: endDate
     });
