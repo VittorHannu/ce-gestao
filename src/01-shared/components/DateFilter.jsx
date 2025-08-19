@@ -27,9 +27,7 @@ const DateFilter = () => {
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 h-full flex flex-col justify-between">
-      <div className="flex flex-col gap-2">
-        <p className="text-sm font-medium text-gray-600 mb-1">Filtrar por Período</p>
+    <div className="flex flex-col gap-2">
 
         {/* Year Selector (always visible) */}
         <Select value={year.toString()} onValueChange={(value) => setYear(parseInt(value, 10))}>
@@ -61,7 +59,6 @@ const DateFilter = () => {
           </SelectContent>
         </Select>
       </div>
-    </div>
   );
 };
 

@@ -6,6 +6,7 @@ import { useRelatoCounts } from '../hooks/useRelatoCounts';
 
 import { FileText, CheckCircle, Clock, XCircle, BarChart, Plus, User, AlertTriangle } from 'lucide-react';
 import RelatoStatsCard from '../components/RelatoStatsCard';
+import TotalReportsCard from '../components/TotalReportsCard';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import MainLayout from '@/01-shared/components/MainLayout';
 import DateFilter from '@/01-shared/components/DateFilter';
@@ -21,15 +22,6 @@ const RelatosPage = () => {
   }
 
   const cardData = [
-    {
-      label: 'Todos',
-      count: relatoCounts?.totalAprovados || 0,
-      icon: FileText,
-      path: '/relatos/lista?status=aprovado',
-      iconTextColor: 'text-blue-700',
-      iconBgColor: 'bg-blue-100',
-      progressBarColor: 'bg-blue-500'
-    },
     {
       label: 'Concluídos',
       count: relatoCounts?.concluidos || 0,
@@ -81,7 +73,7 @@ const RelatosPage = () => {
   return (
     <MainLayout>
       <div className="grid grid-cols-2 gap-4">
-        <DateFilter />
+        <TotalReportsCard totalReports={relatoCounts?.totalAprovados || 0} />
         {cardData.map((card, index) => (
           <RelatoStatsCard
             key={index}
