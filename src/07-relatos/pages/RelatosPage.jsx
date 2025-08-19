@@ -10,6 +10,7 @@ import RelatoStatsCard from '../components/RelatoStatsCard';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import MainLayout from '@/01-shared/components/MainLayout';
 import DateFilter from '@/01-shared/components/DateFilter'; // Importa o novo componente de card
+import PendingReportsButton from '../components/PendingReportsButton';
 
 const RelatosPage = () => {
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
@@ -72,20 +73,10 @@ const RelatosPage = () => {
             showPercentage={card.showPercentage}
           >
             {card.label === 'Todos' && !isLoadingProfile && userProfile?.can_manage_relatos && (
-              <Link to="/relatos/aprovacao" className="w-full">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={`w-full flex items-center justify-center space-x-2 shadow-none ${card.textColorClass}`}>
-                  <CheckCircle className="h-4 w-4" />
-                  <span>Aprovar</span>
-                  {relatoCounts?.pendenteAprovacao > 0 && (
-                    <span className="ml-2 px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-full">
-                      {relatoCounts.pendenteAprovacao}
-                    </span>
-                  )}
-                </Button>
-              </Link>
+              <PendingReportsButton
+                count={relatoCounts?.pendenteAprovacao}
+                className="text-red-600"
+              />
             )}
           </RelatoStatsCard>
         ))}
