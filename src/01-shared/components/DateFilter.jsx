@@ -31,7 +31,7 @@ const DateFilter = () => {
 
         {/* Year Selector (always visible) */}
         <Select value={year.toString()} onValueChange={(value) => setYear(parseInt(value, 10))}>
-          <SelectTrigger className="w-full border bg-background shadow-sm hover:bg-accent hover:text-accent-foreground">
+          <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
             <SelectValue placeholder="Ano" />
           </SelectTrigger>
           <SelectContent>
@@ -43,7 +43,7 @@ const DateFilter = () => {
 
         {/* NEW: Combined Month/Semester/Year Selector */}
         <Select value={periodType.toString()} onValueChange={(value) => setPeriodType(parseInt(value, 10))}>
-          <SelectTrigger className="w-full border bg-background shadow-sm hover:bg-accent hover:text-accent-foreground">
+          <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
             <SelectValue placeholder="Período" />
           </SelectTrigger>
           <SelectContent>
