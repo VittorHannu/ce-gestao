@@ -7,7 +7,7 @@ import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
 import { fetchRelatosCountByType } from '../services/relatoStatsService';
 import { Link } from 'react-router-dom';
 import { Button } from '@/01-shared/components/ui/button';
-import { Tag } from 'lucide-react';
+import { Tag, AlignLeft, AlignCenterHorizontal } from 'lucide-react';
 
 const RelatosByTypePage = () => {
   const { startDate, endDate } = useDateFilter();
@@ -81,8 +81,8 @@ const RelatosByTypePage = () => {
         <DateFilter />
       </div>
 
-      <div className="p-4 border rounded-lg bg-white shadow-md">
-        <div className="flex items-center justify-between mb-4">
+      <div className="p-6 border rounded-lg bg-white shadow-md">
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-800">Pirâmide de Bird</h2>
           <div className="flex space-x-2">
             <Button
@@ -91,7 +91,7 @@ const RelatosByTypePage = () => {
               onClick={() => setBarAlignment('left')}
               className={barAlignment === 'left' ? 'bg-gray-200' : ''}
             >
-              Esquerda
+              <AlignLeft className="h-4 w-4" />
             </Button>
             <Button
               variant="outline"
@@ -99,7 +99,7 @@ const RelatosByTypePage = () => {
               onClick={() => setBarAlignment('center')}
               className={barAlignment === 'center' ? 'bg-gray-200' : ''}
             >
-              Centro
+              <AlignCenterHorizontal className="h-4 w-4" />
             </Button>
           </div>
         </div>
