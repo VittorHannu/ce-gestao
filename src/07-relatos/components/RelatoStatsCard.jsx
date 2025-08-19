@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const RelatoStatsCard = ({ label, count, icon: Icon, path, textColorClass, bgColorClass, totalRelatos, showPercentage = true }) => {
+const RelatoStatsCard = ({ label, count, icon: Icon, path, textColorClass, bgColorClass, totalRelatos, showPercentage = true, children }) => {
   let percentage = totalRelatos > 0 ? (count / totalRelatos) * 100 : 0;
   // Garante que a porcentagem seja pelo menos 1% se houver contagem, para visibilidade da barra
   const displayPercentage = (count > 0 && percentage < 1) ? 1 : Math.round(percentage);
 
   return (
-    <Link to={path} className="block">
-      <div className="bg-white rounded-lg shadow-md p-4 cursor-pointer hover:shadow-xl transition-shadow duration-300 h-full flex flex-col justify-between">
+    <div className="bg-white rounded-lg shadow-md p-4 transition-shadow duration-300 h-full flex flex-col justify-between hover:shadow-xl">
+      <Link to={path} className="block hover:no-underline flex-grow">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-600 mb-1">{label}</p>
@@ -31,8 +31,9 @@ const RelatoStatsCard = ({ label, count, icon: Icon, path, textColorClass, bgCol
             </p>
           </div>
         )}
-      </div>
-    </Link>
+      </Link>
+      {children && <div className="mt-auto pt-3">{children}</div>}
+    </div>
   );
 };
 

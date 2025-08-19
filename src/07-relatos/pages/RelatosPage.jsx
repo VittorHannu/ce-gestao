@@ -70,24 +70,28 @@ const RelatosPage = () => {
             bgColorClass={card.bgColorClass}
             totalRelatos={relatoCounts?.totalAprovados || 0} // Passa o total para o cálculo da porcentagem
             showPercentage={card.showPercentage}
-          />
+          >
+            {card.label === 'Todos' && !isLoadingProfile && userProfile?.can_manage_relatos && (
+              <Link to="/relatos/aprovacao" className="w-full">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={`w-full flex items-center justify-center space-x-2 shadow-none ${card.textColorClass}`}>
+                  <CheckCircle className="h-4 w-4" />
+                  <span>Aprovar</span>
+                  {relatoCounts?.pendenteAprovacao > 0 && (
+                    <span className="ml-2 px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-full">
+                      {relatoCounts.pendenteAprovacao}
+                    </span>
+                  )}
+                </Button>
+              </Link>
+            )}
+          </RelatoStatsCard>
         ))}
       </div>
 
       <div className="flex flex-col items-center mt-12 space-y-4">
-        {!isLoadingProfile && userProfile?.can_manage_relatos && (
-          <Link to="/relatos/aprovacao" className="w-full">
-            <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2 shadow-none">
-              <CheckCircle className="h-5 w-5" />
-              <span>Aprovar Relatos</span>
-              {relatoCounts?.pendenteAprovacao > 0 && (
-                <span className="ml-2 px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-full">
-                  {relatoCounts.pendenteAprovacao}
-                </span>
-              )}
-            </Button>
-          </Link>
-        )}
         <Link to="/relatos/atribuidos" className="w-full">
           <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2 shadow-none">
             <User className="h-5 w-5" />
