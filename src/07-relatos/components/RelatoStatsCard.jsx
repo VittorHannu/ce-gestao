@@ -1,39 +1,38 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const RelatoStatsCard = ({ label, count, icon: Icon, path, textColorClass, bgColorClass, totalRelatos, showPercentage = true, children }) => {
-  let percentage = totalRelatos > 0 ? (count / totalRelatos) * 100 : 0;
-  // Garante que a porcentagem seja pelo menos 1% se houver contagem, para visibilidade da barra
-  const displayPercentage = (count > 0 && percentage < 1) ? 1 : Math.round(percentage);
+const RelatoStatsCard = ({ label, count, icon: Icon, path, iconTextColor, iconBgColor, progressBarColor, totalRelatos }) => {
+  const percentage = totalRelatos > 0 ? (count / totalRelatos) * 100 : 0;
+  const displayPercentage = Math.round(percentage);
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 transition-shadow duration-300 h-full flex flex-col justify-between hover:shadow-xl">
-      <Link to={path} className="block hover:no-underline flex-grow">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-600 mb-1">{label}</p>
-            <p className={`text-xl font-bold ${textColorClass} flex items-center gap-2`}>
-              <Icon className="w-5 h-5" /> {count}
-            </p>
+    <Link to={path} className="block h-full">
+      <div className="bg-white rounded-xl shadow-sm p-4 h-full flex flex-col justify-between hover:shadow-md transition-shadow duration-300">
+        
+        <div className="flex justify-between items-center">
+          <div className={`p-2 rounded-lg ${iconBgColor}`}>
+            <Icon className={`w-6 h-6 ${iconTextColor}`} />
           </div>
+          <p className="text-2xl font-bold text-gray-900">{count}</p>
         </div>
 
-        {showPercentage && (
-          <div className="mt-3">
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div
-                className={`h-2 rounded-full ${bgColorClass}`}
-                style={{ width: `${displayPercentage}%` }}
-              ></div>
+        <div className="mt-auto">
+          <p className="text-base font-semibold text-gray-600">{label}</p>
+          
+          {percentage > 0 && (
+            <div className="flex items-center gap-2 mt-2">
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full ${progressBarColor}`}
+                  style={{ width: `${displayPercentage}%` }}
+                ></div>
+              </div>
+              <p className="text-sm font-medium text-gray-600 w-12 text-right">{displayPercentage}%</p>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              {displayPercentage}% do total
-            </p>
-          </div>
-        )}
-      </Link>
-      {children && <div className="mt-auto pt-3">{children}</div>}
-    </div>
+          )}
+        </div>
+      </div>
+    </Link>
   );
 };
 

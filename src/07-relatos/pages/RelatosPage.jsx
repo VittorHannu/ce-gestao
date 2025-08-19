@@ -26,32 +26,36 @@ const RelatosPage = () => {
       count: relatoCounts?.totalAprovados || 0,
       icon: FileText,
       path: '/relatos/lista?status=aprovado',
-      textColorClass: 'text-blue-600',
-      bgColorClass: 'bg-blue-600'
+      iconTextColor: 'text-blue-700',
+      iconBgColor: 'bg-blue-100',
+      progressBarColor: 'bg-blue-500'
     },
     {
       label: 'Concluídos',
       count: relatoCounts?.concluidos || 0,
       icon: CheckCircle,
       path: '/relatos/lista?status=concluido',
-      textColorClass: 'text-green-600',
-      bgColorClass: 'bg-green-600'
+      iconTextColor: 'text-green-700',
+      iconBgColor: 'bg-green-100',
+      progressBarColor: 'bg-green-500'
     },
     {
       label: 'Em Andamento',
       count: relatoCounts?.emAndamento || 0,
       icon: Clock,
       path: '/relatos/lista?status=em_andamento',
-      textColorClass: 'text-orange-600',
-      bgColorClass: 'bg-orange-600'
+      iconTextColor: 'text-amber-700',
+      iconBgColor: 'bg-amber-100',
+      progressBarColor: 'bg-amber-500'
     },
     {
       label: 'Sem Tratativa',
       count: relatoCounts?.semTratativa || 0,
       icon: XCircle,
       path: '/relatos/lista?status=sem_tratativa',
-      textColorClass: 'text-red-600',
-      bgColorClass: 'bg-red-600'
+      iconTextColor: 'text-rose-700',
+      iconBgColor: 'bg-rose-100',
+      progressBarColor: 'bg-rose-500'
     }
   ];
 
@@ -85,8 +89,9 @@ const RelatosPage = () => {
             count={card.count}
             icon={card.icon}
             path={card.path}
-            textColorClass={card.textColorClass}
-            bgColorClass={card.bgColorClass}
+            iconTextColor={card.iconTextColor}
+            iconBgColor={card.iconBgColor}
+            progressBarColor={card.progressBarColor}
             totalRelatos={relatoCounts?.totalAprovados || 0}
           />
         ))}
