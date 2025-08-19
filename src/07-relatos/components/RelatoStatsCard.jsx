@@ -21,13 +21,21 @@ const RelatoStatsCard = ({ label, count, icon: Icon, path, iconTextColor, iconBg
           
           {percentage > 0 && (
             <div className="flex items-center gap-2 mt-2">
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 rounded-full h-4 relative overflow-hidden">
                 <div
-                  className={`h-2 rounded-full ${progressBarColor}`}
+                  className={`h-4 rounded-full ${progressBarColor} flex items-center justify-end pr-1`}
                   style={{ width: `${displayPercentage}%` }}
-                ></div>
+                >
+                  {displayPercentage >= 25 && (
+                    <span className="text-xs font-bold text-white">{displayPercentage}%</span>
+                  )}
+                </div>
+                {displayPercentage < 25 && (
+                  <span className="absolute right-1 top-1/2 -translate-y-1/2 text-xs font-medium text-gray-600">
+                    {displayPercentage}%
+                  </span>
+                )}
               </div>
-              <p className="text-sm font-medium text-gray-600 w-12 text-right">{displayPercentage}%</p>
             </div>
           )}
         </div>
