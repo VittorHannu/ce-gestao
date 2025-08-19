@@ -7,16 +7,13 @@ const RelatoStatsCard = ({ label, count, icon: Icon, path, iconTextColor, iconBg
 
   return (
     <Link to={path} className="block h-full">
-      <div className="bg-white rounded-xl shadow-sm p-4 h-full flex flex-col justify-between hover:shadow-md transition-shadow duration-300">
+      <div className="bg-white rounded-xl shadow-sm p-4 h-full flex flex-col justify-between gap-2 hover:shadow-md transition-shadow duration-300">
         
-        <div className="flex justify-between items-center mb-2">
-          <div className={`p-2 rounded-lg ${iconBgColor}`}>
-            <Icon className={`w-6 h-6 ${iconTextColor}`} />
-          </div>
+        <div className="flex justify-start items-center">
           <p className="text-2xl font-bold text-gray-900">{count}</p>
         </div>
 
-        <div className="mt-auto">
+        <div>
           <p className="text-base font-semibold text-gray-600">{label}</p>
           
           {percentage > 0 && (
