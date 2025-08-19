@@ -71,7 +71,14 @@ const RelatosUnclassifiedPage = () => {
     try {
       await updateRelatoType(relatoId, typeToSave); // Use typeToSave
       showToast('Relato classificado com sucesso!', 'success');
-      loadRelatos(); // Reload the list to remove the classified relato
+      // Filter out the classified relato from the state instead of reloading all relatos
+      setRelatos(prevRelatos => prevRelatos.filter(r => r.id !== relatoId));
+      // Also remove the selected type for this relato from the selectedTypes state
+      setSelectedTypes(prev => {
+        const newState = { ...prev };
+        delete newState[relatoId];
+        return newState;
+      });
     } catch (err) {
       showToast(`Erro ao classificar relato: ${err.message}`, 'error');
     } finally {
@@ -133,7 +140,7 @@ const RelatosUnclassifiedPage = () => {
                     {classifyingId === relato.id ? 'Salvando...' : 'Salvar'}
                   </Button>
                 )}
-                {classifyingId === relato.id && <LoadingSpinner />}
+                
               </div>
             </div>
           ))}
