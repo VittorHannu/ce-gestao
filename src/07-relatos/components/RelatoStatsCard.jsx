@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const RelatoStatsCard = ({ label, count, icon: Icon, path, textColorClass, bgColorClass, totalRelatos }) => {
+const RelatoStatsCard = ({ label, count, icon: Icon, path, textColorClass, bgColorClass, totalRelatos, showPercentage = true }) => {
   let percentage = totalRelatos > 0 ? (count / totalRelatos) * 100 : 0;
   // Garante que a porcentagem seja pelo menos 1% se houver contagem, para visibilidade da barra
   const displayPercentage = (count > 0 && percentage < 1) ? 1 : Math.round(percentage);
@@ -18,17 +18,19 @@ const RelatoStatsCard = ({ label, count, icon: Icon, path, textColorClass, bgCol
           </div>
         </div>
 
-        <div className="mt-3">
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div
-              className={`h-2 rounded-full ${bgColorClass}`}
-              style={{ width: `${displayPercentage}%` }}
-            ></div>
+        {showPercentage && (
+          <div className="mt-3">
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className={`h-2 rounded-full ${bgColorClass}`}
+                style={{ width: `${displayPercentage}%` }}
+              ></div>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              {displayPercentage}% do total
+            </p>
           </div>
-          <p className="text-xs text-gray-500 mt-1">
-            {displayPercentage}% do total
-          </p>
-        </div>
+        )}
       </div>
     </Link>
   );

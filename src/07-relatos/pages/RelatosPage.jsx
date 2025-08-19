@@ -26,7 +26,8 @@ const RelatosPage = () => {
       icon: FileText,
       path: '/relatos/lista?status=aprovado',
       textColorClass: 'text-blue-600',
-      bgColorClass: 'bg-blue-600'
+      bgColorClass: 'bg-blue-600',
+      showPercentage: false
     },
     {
       label: 'Concluídos',
@@ -68,6 +69,7 @@ const RelatosPage = () => {
             textColorClass={card.textColorClass}
             bgColorClass={card.bgColorClass}
             totalRelatos={relatoCounts?.totalAprovados || 0} // Passa o total para o cálculo da porcentagem
+            showPercentage={card.showPercentage}
           />
         ))}
       </div>
