@@ -4,12 +4,11 @@ import { Button } from '@/01-shared/components/ui/button';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { useRelatoCounts } from '../hooks/useRelatoCounts';
 
-import { FileText, CheckCircle, Clock, XCircle, BarChart, Plus, User, AlertTriangle } from 'lucide-react';
+import { CheckCircle, Clock, XCircle, BarChart, Plus, User, AlertTriangle } from 'lucide-react';
 import RelatoStatsCard from '../components/RelatoStatsCard';
 import TotalReportsCard from '../components/TotalReportsCard';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import MainLayout from '@/01-shared/components/MainLayout';
-import DateFilter from '@/01-shared/components/DateFilter';
 import SettingsGroup from '@/01-shared/components/settings/SettingsGroup';
 import SettingsItem from '@/01-shared/components/settings/SettingsItem';
 

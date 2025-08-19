@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const RelatoStatsCard = ({ label, count, icon: Icon, path, iconTextColor, iconBgColor, progressBarColor, totalRelatos }) => {
+const RelatoStatsCard = ({ label, count, path, progressBarColor, totalRelatos }) => {
   const percentage = totalRelatos > 0 ? (count / totalRelatos) * 100 : 0;
   const displayPercentage = Math.round(percentage);
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import DateFilter from '@/01-shared/components/DateFilter';
-import { FileText } from 'lucide-react';
+
 
 const TotalReportsCard = ({ totalReports }) => {
   return (

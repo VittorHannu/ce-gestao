@@ -14,6 +14,7 @@ const RelatosByTypePage = () => {
   const [chartData, setChartData] = useState([]); // Renamed from rawData for clarity
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [barAlignment, setBarAlignment] = useState('center'); // New state for bar alignment
 
   useEffect(() => {
     const getChartData = async () => {
@@ -81,7 +82,27 @@ const RelatosByTypePage = () => {
       </div>
 
       <div className="p-4 border rounded-lg bg-white shadow-md">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Pirâmide de Bird</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">Pirâmide de Bird</h2>
+          <div className="flex space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setBarAlignment('left')}
+              className={barAlignment === 'left' ? 'bg-gray-200' : ''}
+            >
+              Esquerda
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setBarAlignment('center')}
+              className={barAlignment === 'center' ? 'bg-gray-200' : ''}
+            >
+              Centro
+            </Button>
+          </div>
+        </div>
         {birdPyramidData.length > 0 && maxPyramidCount > 0 ? (
           <div className="flex flex-col items-center space-y-2">
             {birdPyramidData.map((item, index) => {
@@ -89,9 +110,9 @@ const RelatosByTypePage = () => {
               const backgroundColor = index === 0 ? 'bg-red-500' : index === 1 ? 'bg-orange-500' : index === 2 ? 'bg-yellow-500' : 'bg-green-500';
 
               return (
-                <div key={item.name} className="w-full flex flex-col items-center">
+                <div key={item.name} className={`w-full flex flex-col ${barAlignment === 'left' ? 'items-start' : 'items-center'}`}>
                   <p className="text-gray-700 font-medium mb-1">{item.name}</p>
-                  <div className="flex items-center justify-center w-full">
+                  <div className={`flex items-center ${barAlignment === 'left' ? 'justify-start' : 'justify-center'} w-full`}>
                     <div
                       className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
                       style={{ width: `${barWidth}%`, minWidth: '40px', maxWidth: '600px' }}

@@ -29,36 +29,36 @@ const DateFilter = () => {
   return (
     <div className="flex flex-col items-center gap-0">
 
-        {/* Year Selector (always visible) */}
-        <Select value={year.toString()} onValueChange={(value) => setYear(parseInt(value, 10))}>
-          <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
-            <SelectValue placeholder="Ano" />
-          </SelectTrigger>
-          <SelectContent>
-            {years.map(y => (
-              <SelectItem key={y} value={y.toString()}>{y}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      {/* Year Selector (always visible) */}
+      <Select value={year.toString()} onValueChange={(value) => setYear(parseInt(value, 10))}>
+        <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
+          <SelectValue placeholder="Ano" />
+        </SelectTrigger>
+        <SelectContent>
+          {years.map(y => (
+            <SelectItem key={y} value={y.toString()}>{y}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
-        {/* NEW: Combined Month/Semester/Year Selector */}
-        <Select className="mt-[-0.5rem]" value={periodType.toString()} onValueChange={(value) => setPeriodType(parseInt(value, 10))}>
-          <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
-            <SelectValue placeholder="Período" />
-          </SelectTrigger>
-          <SelectContent>
-            {periodOptions.map(option => (
-              <SelectItem
-                key={option.value}
-                value={option.value.toString()}
-                className={option.isBold ? 'font-bold' : ''} // Apply font-bold class
-              >
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      {/* NEW: Combined Month/Semester/Year Selector */}
+      <Select className="mt-[-0.5rem]" value={periodType.toString()} onValueChange={(value) => setPeriodType(parseInt(value, 10))}>
+        <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
+          <SelectValue placeholder="Período" />
+        </SelectTrigger>
+        <SelectContent>
+          {periodOptions.map(option => (
+            <SelectItem
+              key={option.value}
+              value={option.value.toString()}
+              className={option.isBold ? 'font-bold' : ''} // Apply font-bold class
+            >
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 };
 
