@@ -3,10 +3,12 @@ import MainLayout from '@/01-shared/components/MainLayout';
 import BackButton from '@/01-shared/components/BackButton';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/01-shared/components/ui/select';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/01-shared/components/ui/accordion';
 import { Button } from '@/01-shared/components/ui/button';
 import { useOutletContext } from 'react-router-dom';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile'; // New import
 import { fetchUnclassifiedRelatos, updateRelatoType } from '../services/relatoStatsService'; // Using the new service functions
+import RelatoDisplayDetails from '../components/RelatoDisplayDetails';
 
 const RelatosUnclassifiedPage = () => {
   const { showToast } = useOutletContext();
@@ -77,48 +79,51 @@ const RelatosUnclassifiedPage = () => {
       {relatos.length === 0 ? (
         <p className="text-center text-gray-500 mt-8">Não há relatos não classificados no momento.</p>
       ) : (
-        <div className="space-y-4">
+        <Accordion type="single" collapsible className="w-full space-y-4">
           {relatos.map((relato) => (
-            <div key={relato.id} className="p-4 border rounded-lg bg-white shadow-md">
-              <h2 className="text-lg font-semibold text-gray-800 mb-2">Relato ID: {relato.relato_code}</h2>
-              <p className="text-gray-700 mb-2">Local: {relato.local_ocorrencia}</p>
-              <p className="text-gray-700 mb-4">Descrição: {relato.descricao}</p> {/* Full description */}
-
-              <div className="flex items-center gap-2">
-                <Select
-                  onValueChange={(value) => setSelectedTypes(prev => ({ ...prev, [relato.id]: value }))}
-                  value={selectedTypes[relato.id]} // Use selectedTypes state directly
-                  disabled={classifyingId === relato.id || !canManageRelatos} // Disable if not managing relatos
-                >
-                  <SelectTrigger className="w-[180px] bg-gray-100">
-                    <SelectValue placeholder="Classificar Tipo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="CLEAR_SELECTION">Nenhum</SelectItem> {/* Simplified text */}
-                    <SelectItem value="Fatal">Fatal</SelectItem>
-                    <SelectItem value="Severo">Severo</SelectItem>
-                    <SelectItem value="Acidente com afastamento">Acidente com afastamento</SelectItem>
-                    <SelectItem value="Acidente sem afastamento">Acidente sem afastamento</SelectItem>
-                    <SelectItem value="Primeiros socorros">Primeiros socorros</SelectItem>
-                    <SelectItem value="Quase acidente">Quase acidente</SelectItem>
-                    <SelectItem value="Condição insegura">Condição insegura</SelectItem>
-                    <SelectItem value="Comportamento inseguro">Comportamento inseguro</SelectItem>
-                  </SelectContent>
-                </Select>
-                {canManageRelatos && ( // Only show save button if user can manage relatos
-                  <Button
-                    onClick={() => handleSaveClassification(relato.id)}
-                    disabled={classifyingId === relato.id || selectedTypes[relato.id] === (relato.tipo_relato || 'CLEAR_SELECTION')} // Adjusted disabled logic
-                    className="ml-2"
+            <AccordionItem value={relato.id} className="p-4 border rounded-lg bg-white shadow-md">
+              <AccordionTrigger>
+                <h2 className="text-lg font-semibold text-gray-800">Relato ID: {relato.relato_code}</h2>
+                <p className="text-gray-700">Local: {relato.local_ocorrencia}</p>
+              </AccordionTrigger>
+              <AccordionContent>
+                <RelatoDisplayDetails relato={relato} />
+                <div className="flex items-center gap-2 mt-4">
+                  <Select
+                    onValueChange={(value) => setSelectedTypes(prev => ({ ...prev, [relato.id]: value }))}
+                    value={selectedTypes[relato.id]} // Use selectedTypes state directly
+                    disabled={classifyingId === relato.id || !canManageRelatos} // Disable if not managing relatos
                   >
-                    {classifyingId === relato.id ? 'Salvando...' : 'Salvar'}
-                  </Button>
-                )}
-                {classifyingId === relato.id && <LoadingSpinner />}
-              </div>
-            </div>
+                    <SelectTrigger className="w-[180px] bg-gray-100">
+                      <SelectValue placeholder="Classificar Tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="CLEAR_SELECTION">Nenhum</SelectItem> {/* Simplified text */}
+                      <SelectItem value="Fatal">Fatal</SelectItem>
+                      <SelectItem value="Severo">Severo</SelectItem>
+                      <SelectItem value="Acidente com afastamento">Acidente com afastamento</SelectItem>
+                      <SelectItem value="Acidente sem afastamento">Acidente sem afastamento</SelectItem>
+                      <SelectItem value="Primeiros socorros">Primeiros socorros</SelectItem>
+                      <SelectItem value="Quase acidente">Quase acidente</SelectItem>
+                      <SelectItem value="Condição insegura">Condição insegura</SelectItem>
+                      <SelectItem value="Comportamento inseguro">Comportamento inseguro</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {canManageRelatos && ( // Only show save button if user can manage relatos
+                    <Button
+                      onClick={() => handleSaveClassification(relato.id)}
+                      disabled={classifyingId === relato.id || selectedTypes[relato.id] === (relato.tipo_relato || 'CLEAR_SELECTION')} // Adjusted disabled logic
+                      className="ml-2"
+                    >
+                      {classifyingId === relato.id ? 'Salvando...' : 'Salvar'}
+                    </Button>
+                  )}
+                  {classifyingId === relato.id && <LoadingSpinner />}
+                </div>
+            </AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
+        </Accordion>
       )}
     </MainLayout>
   );
