@@ -4,13 +4,13 @@ import { Button } from '@/01-shared/components/ui/button';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { useRelatoCounts } from '../hooks/useRelatoCounts';
 
-
-import { FileText, CheckCircle, Clock, XCircle, BarChart, Plus, User } from 'lucide-react'; // Added Tag icon
+import { FileText, CheckCircle, Clock, XCircle, BarChart, Plus, User, AlertTriangle } from 'lucide-react';
 import RelatoStatsCard from '../components/RelatoStatsCard';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import MainLayout from '@/01-shared/components/MainLayout';
-import DateFilter from '@/01-shared/components/DateFilter'; // Importa o novo componente de card
-import PendingReportsButton from '../components/PendingReportsButton';
+import DateFilter from '@/01-shared/components/DateFilter';
+import SettingsGroup from '@/01-shared/components/settings/SettingsGroup';
+import SettingsItem from '@/01-shared/components/settings/SettingsItem';
 
 const RelatosPage = () => {
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
@@ -27,8 +27,7 @@ const RelatosPage = () => {
       icon: FileText,
       path: '/relatos/lista?status=aprovado',
       textColorClass: 'text-blue-600',
-      bgColorClass: 'bg-blue-600',
-      showPercentage: false
+      bgColorClass: 'bg-blue-600'
     },
     {
       label: 'Concluídos',
@@ -56,6 +55,25 @@ const RelatosPage = () => {
     }
   ];
 
+  const managementItems = [
+    {
+      label: 'Pendentes',
+      value: relatoCounts?.pendenteAprovacao || 0,
+      icon: AlertTriangle,
+      iconColor: 'bg-red-500',
+      path: '/relatos/aprovacao',
+      show: !isLoadingProfile && userProfile?.can_manage_relatos
+    },
+    {
+      label: 'Atribuídos a Você',
+      value: relatoCounts?.relatosAtribuidos || 0,
+      icon: User,
+      iconColor: 'bg-purple-500',
+      path: '/relatos/atribuidos',
+      show: true
+    }
+  ];
+
   return (
     <MainLayout>
       <div className="grid grid-cols-2 gap-4">
@@ -69,34 +87,27 @@ const RelatosPage = () => {
             path={card.path}
             textColorClass={card.textColorClass}
             bgColorClass={card.bgColorClass}
-            totalRelatos={relatoCounts?.totalAprovados || 0} // Passa o total para o cálculo da porcentagem
-            showPercentage={card.showPercentage}
-          >
-            {card.label === 'Todos' && !isLoadingProfile && userProfile?.can_manage_relatos && (
-              <PendingReportsButton
-                count={relatoCounts?.pendenteAprovacao}
-                className="text-red-600"
-              />
-            )}
-          </RelatoStatsCard>
+            totalRelatos={relatoCounts?.totalAprovados || 0}
+          />
         ))}
       </div>
 
-      <div className="flex flex-col items-center mt-12 space-y-4">
-        <Link to="/relatos/atribuidos" className="w-full">
-          <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2 shadow-none">
-            <User className="h-5 w-5" />
-            <span>Relatos Atribuídos a Você</span>
-            {relatoCounts?.relatosAtribuidos > 0 && (
-              <span className="ml-2 px-2 py-1 text-xs font-bold text-white bg-blue-500 rounded-full">
-                {relatoCounts.relatosAtribuidos}
-              </span>
-            )}
-          </Button>
-        </Link>
+      <div className="mt-6">
+        <SettingsGroup>
+          {managementItems.filter(item => item.show).map((item, index) => (
+            <SettingsItem
+              key={index}
+              label={item.label}
+              value={item.value}
+              icon={item.icon}
+              iconColor={item.iconColor}
+              path={item.path}
+            />
+          ))}
+        </SettingsGroup>
       </div>
 
-      <Link to="/relatos/estatisticas" className="w-full block mt-12">
+      <Link to="/relatos/estatisticas" className="w-full block mt-6">
         <div className="bg-yellow-500 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center">
           <BarChart className="h-12 w-12 text-white mb-4" />
           <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>

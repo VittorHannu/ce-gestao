@@ -1,0 +1,40 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { ChevronRight } from 'lucide-react';
+
+const SettingsItem = ({ icon: Icon, iconColor, label, path, value, isLast }) => {
+  const content = (
+    <>
+      <div className="flex items-center">
+        {Icon && (
+          <div className={`w-7 h-7 rounded-md flex items-center justify-center mr-4 ${iconColor}`}>
+            <Icon className="w-5 h-5 text-white" />
+          </div>
+        )}
+        <span className="text-gray-800 dark:text-gray-200 font-medium">{label}</span>
+      </div>
+      <div className="flex items-center">
+        {value != null && (
+          <span className="text-gray-500 dark:text-gray-400 mr-2">{value}</span>
+        )}
+        <ChevronRight className="w-5 h-5 text-gray-400" />
+      </div>
+    </>
+  );
+
+  return (
+    <div className="relative">
+      <Link
+        to={path}
+        className="w-full flex justify-between items-center px-4 py-3 text-left transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-700"
+      >
+        {content}
+      </Link>
+      {!isLast && (
+        <div className="absolute bottom-0 left-14 right-0 h-px bg-gray-200 dark:bg-gray-700" />
+      )}
+    </div>
+  );
+};
+
+export default SettingsItem;
