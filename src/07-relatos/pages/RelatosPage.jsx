@@ -7,6 +7,7 @@ import { useRelatoCounts } from '../hooks/useRelatoCounts';
 import { CheckCircle, Clock, XCircle, BarChart, Plus, User, AlertTriangle } from 'lucide-react';
 import RelatoStatsCard from '../components/RelatoStatsCard';
 import TotalReportsCard from '../components/TotalReportsCard';
+import DateFilterCard from '../components/DateFilterCard';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import MainLayout from '@/01-shared/components/MainLayout';
 import SettingsGroup from '@/01-shared/components/settings/SettingsGroup';
@@ -22,13 +23,25 @@ const RelatosPage = () => {
 
   const cardData = [
     {
+      label: 'Filtrar por Período',
+      component: <DateFilterCard />,
+      isLink: false
+    },
+    {
+      label: 'Total de Relatos',
+      component: <TotalReportsCard totalReports={relatoCounts?.totalAprovados || 0} />,
+      path: '/relatos/lista',
+      isLink: true
+    },
+    {
       label: 'Concluídos',
       count: relatoCounts?.concluidos || 0,
       icon: CheckCircle,
       path: '/relatos/lista?status=concluido',
       iconTextColor: 'text-green-700',
       iconBgColor: 'bg-green-100',
-      progressBarColor: 'bg-green-500'
+      progressBarColor: 'bg-green-500',
+      isLink: true
     },
     {
       label: 'Em Andamento',
@@ -37,7 +50,8 @@ const RelatosPage = () => {
       path: '/relatos/lista?status=em_andamento',
       iconTextColor: 'text-amber-700',
       iconBgColor: 'bg-amber-100',
-      progressBarColor: 'bg-amber-500'
+      progressBarColor: 'bg-amber-500',
+      isLink: true
     },
     {
       label: 'Sem Tratativa',
@@ -46,7 +60,8 @@ const RelatosPage = () => {
       path: '/relatos/lista?status=sem_tratativa',
       iconTextColor: 'text-rose-700',
       iconBgColor: 'bg-rose-100',
-      progressBarColor: 'bg-rose-500'
+      progressBarColor: 'bg-rose-500',
+      isLink: true
     }
   ];
 
@@ -72,19 +87,30 @@ const RelatosPage = () => {
   return (
     <MainLayout>
       <div className="grid grid-cols-2 gap-4">
-        <TotalReportsCard totalReports={relatoCounts?.totalAprovados || 0} />
         {cardData.map((card, index) => (
-          <RelatoStatsCard
-            key={index}
-            label={card.label}
-            count={card.count}
-            icon={card.icon}
-            path={card.path}
-            iconTextColor={card.iconTextColor}
-            iconBgColor={card.iconBgColor}
-            progressBarColor={card.progressBarColor}
-            totalRelatos={relatoCounts?.totalAprovados || 0}
-          />
+          card.component ? (
+            card.isLink ? (
+              <Link to={card.path} key={index} className="w-full block">
+                {card.component}
+              </Link>
+            ) : (
+              <div key={index} className="w-full block">
+                {card.component}
+              </div>
+            )
+          ) : (
+            <RelatoStatsCard
+              key={index}
+              label={card.label}
+              count={card.count}
+              icon={card.icon}
+              path={card.path}
+              iconTextColor={card.iconTextColor}
+              iconBgColor={card.iconBgColor}
+              progressBarColor={card.progressBarColor}
+              totalRelatos={relatoCounts?.totalAprovados || 0}
+            />
+          )
         ))}
       </div>
 
