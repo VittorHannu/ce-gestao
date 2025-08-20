@@ -14,7 +14,7 @@ const RelatosByTypePage = () => {
   const [chartData, setChartData] = useState([]); // Renamed from rawData for clarity
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [barAlignment, setBarAlignment] = useState('center'); // New state for bar alignment
+  const [barAlignment, setBarAlignment] = useState('left'); // New state for bar alignment
 
   useEffect(() => {
     const getChartData = async () => {
