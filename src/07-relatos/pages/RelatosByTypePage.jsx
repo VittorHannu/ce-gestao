@@ -38,11 +38,11 @@ const RelatosByTypePage = () => {
       'Fatal',
       'Severo',
       'Acidente com afastamento',
-      'Acidentes sem afastamento',
+      'Acidente sem afastamento',
       'Primeiros socorros',
-      'quase acidente',
-      'condição insegura',
-      'comportamento inseguro'
+      'Quase acidente',
+      'Condição insegura',
+      'Comportamento inseguro'
     ];
 
     // Normalize function for comparison
