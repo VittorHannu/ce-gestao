@@ -55,7 +55,7 @@ const CreateRelatoPage = ({ showToast }) => {
 
       if (formData.is_anonymous) {
         const { error } = await supabase.functions.invoke('create-anonymous-relato', {
-          body: { relatoData },
+          body: { relatoData }
         });
         if (error) throw error;
       } else {

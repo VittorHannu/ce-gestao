@@ -11,7 +11,7 @@ import { Button } from '@/01-shared/components/ui/button'; // Importar Button
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/01-shared/components/ui/select';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { updateRelatoType } from '../services/relatoStatsService';
-import RelatoDisplayDetails from '../components/RelatoDisplayDetails';
+import _RelatoDisplayDetails from '../components/RelatoDisplayDetails';
 
 const RelatosListaPage = () => {
   const [relatos, setRelatos] = useState([]);
@@ -25,7 +25,7 @@ const RelatosListaPage = () => {
   const queryParams = new URLSearchParams(location.search);
   const tipoRelatoFilter = queryParams.get('tipo_relato');
 
-  const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
+  const { data: userProfile, isLoading: _isLoadingProfile } = useUserProfile();
   const canManageRelatos = userProfile?.can_manage_relatos;
   const [classifyingId, setClassifyingId] = useState(null);
   const [selectedTypes, setSelectedTypes] = useState({});
@@ -163,38 +163,38 @@ const RelatosListaPage = () => {
               <RelatoCard relato={relato} />
               {tipoRelatoFilter && ( // Render classification UI only if tipoRelatoFilter is present
                 <div className="flex items-center gap-2 mt-4">
-                <Select
-                  onValueChange={(value) => setSelectedTypes(prev => ({ ...prev, [relato.id]: value }))}
-                  value={selectedTypes[relato.id]}
-                  disabled={classifyingId === relato.id || !canManageRelatos}
-                >
-                  <SelectTrigger className="w-[180px] bg-gray-100">
-                    <SelectValue placeholder={tipoRelatoFilter === 'Sem Classificação' ? "Classificar Tipo" : "Mudar Classificação"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="CLEAR_SELECTION">Nenhum</SelectItem>
-                    <SelectItem value="Fatal">Fatal</SelectItem>
-                    <SelectItem value="Severo">Severo</SelectItem>
-                    <SelectItem value="Acidente com afastamento">Acidente com afastamento</SelectItem>
-                    <SelectItem value="Acidente sem afastamento">Acidente sem afastamento</SelectItem>
-                    <SelectItem value="Primeiros socorros">Primeiros socorros</SelectItem>
-                    <SelectItem value="Quase acidente">Quase acidente</SelectItem>
-                    <SelectItem value="Condição insegura">Condição insegura</SelectItem>
-                    <SelectItem value="Comportamento inseguro">Comportamento inseguro</SelectItem>
-                  </SelectContent>
-                </Select>
-                {canManageRelatos && selectedTypes[relato.id] && selectedTypes[relato.id] !== 'CLEAR_SELECTION' && (
-                  <Button
-                    onClick={() => handleSaveClassification(relato.id)}
-                    disabled={classifyingId === relato.id || selectedTypes[relato.id] === relato.tipo_relato}
-                    className="ml-2"
+                  <Select
+                    onValueChange={(value) => setSelectedTypes(prev => ({ ...prev, [relato.id]: value }))}
+                    value={selectedTypes[relato.id]}
+                    disabled={classifyingId === relato.id || !canManageRelatos}
                   >
-                    {classifyingId === relato.id ? 'Salvando...' : 'Salvar'}
-                  </Button>
-                )}
-              </div>
-            )}
-              </div>
+                    <SelectTrigger className="w-[180px] bg-gray-100">
+                      <SelectValue placeholder={tipoRelatoFilter === 'Sem Classificação' ? 'Classificar Tipo' : 'Mudar Classificação'} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="CLEAR_SELECTION">Nenhum</SelectItem>
+                      <SelectItem value="Fatal">Fatal</SelectItem>
+                      <SelectItem value="Severo">Severo</SelectItem>
+                      <SelectItem value="Acidente com afastamento">Acidente com afastamento</SelectItem>
+                      <SelectItem value="Acidente sem afastamento">Acidente sem afastamento</SelectItem>
+                      <SelectItem value="Primeiros socorros">Primeiros socorros</SelectItem>
+                      <SelectItem value="Quase acidente">Quase acidente</SelectItem>
+                      <SelectItem value="Condição insegura">Condição insegura</SelectItem>
+                      <SelectItem value="Comportamento inseguro">Comportamento inseguro</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {canManageRelatos && selectedTypes[relato.id] && selectedTypes[relato.id] !== 'CLEAR_SELECTION' && (
+                    <Button
+                      onClick={() => handleSaveClassification(relato.id)}
+                      disabled={classifyingId === relato.id || selectedTypes[relato.id] === relato.tipo_relato}
+                      className="ml-2"
+                    >
+                      {classifyingId === relato.id ? 'Salvando...' : 'Salvar'}
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
           ))}
         </div>
       )}
