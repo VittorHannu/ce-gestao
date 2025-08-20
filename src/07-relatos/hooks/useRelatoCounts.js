@@ -62,9 +62,6 @@ const fetchRelatoCounts = async (user, startDate, endDate) => {
     .from('relatos')
     .select('id', { count: 'exact' })
     .eq('status', 'PENDENTE');
-  if (startDate && endDate) {
-    pendenteAprovacaoQuery = pendenteAprovacaoQuery.gte('data_ocorrencia', startDate).lte('data_ocorrencia', endDate);
-  }
   const { count: pendenteAprovacao, error: errorPendenteAprovacao } = await pendenteAprovacaoQuery;
 
   if (errorPendenteAprovacao) throw errorPendenteAprovacao;
@@ -74,12 +71,9 @@ const fetchRelatoCounts = async (user, startDate, endDate) => {
   if (user) {
     let assignedRelatosQuery = supabase
       .from('relato_responsaveis')
-      .select('relato_id!inner(id, data_conclusao_solucao, data_ocorrencia)', { count: 'exact' })
+      .select('relato_id!inner(id, data_conclusao_solucao)', { count: 'exact' })
       .eq('user_id', user.id)
       .is('relato_id.data_conclusao_solucao', null);
-    if (startDate && endDate) {
-      assignedRelatosQuery = assignedRelatosQuery.gte('relato_id.data_ocorrencia', startDate).lte('relato_id.data_ocorrencia', endDate);
-    }
     const { count, error } = await assignedRelatosQuery;
 
     if (error) {

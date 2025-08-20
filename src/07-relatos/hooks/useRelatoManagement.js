@@ -56,7 +56,19 @@ export const useRelatoManagement = (relatoId) => {
   const handleUpdateRelato = useCallback(async (formData, canManageRelatos) => {
     setIsSaving(true);
     try {
-      const { responsibles, ...relatoData } = formData;
+      const { responsibles } = formData;
+      const relatoData = {
+        is_anonymous: formData.is_anonymous,
+        local_ocorrencia: formData.local_ocorrencia,
+        data_ocorrencia: formData.data_ocorrencia,
+        hora_aproximada_ocorrencia: formData.hora_aproximada_ocorrencia || null,
+        descricao: formData.descricao,
+        riscos_identificados: formData.riscos_identificados,
+        danos_ocorridos: formData.danos_ocorridos,
+        planejamento_cronologia_solucao: formData.planejamento_cronologia_solucao,
+        data_conclusao_solucao: formData.data_conclusao_solucao,
+        tipo_relato: formData.tipo_relato
+      };
 
       const { error: updateError } = await supabase
         .from('relatos')

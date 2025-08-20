@@ -8,6 +8,7 @@ import { fetchRelatosCountByType } from '../services/relatoStatsService';
 import { Link } from 'react-router-dom';
 import { Button } from '@/01-shared/components/ui/button';
 import { AlignLeft, AlignCenterHorizontal } from 'lucide-react';
+import DateFilterCard from '../components/DateFilterCard';
 
 const RelatosByTypePage = () => {
   const { startDate, endDate } = useDateFilter();
@@ -87,7 +88,7 @@ const RelatosByTypePage = () => {
       </div>
 
       <div className="mb-8">
-        <DateFilter />
+        <DateFilterCard />
       </div>
 
       <div className="p-6 border rounded-lg bg-white shadow-md">
