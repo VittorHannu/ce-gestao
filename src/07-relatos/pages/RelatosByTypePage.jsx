@@ -142,14 +142,7 @@ const RelatosByTypePage = () => {
         )}
       </div>
 
-      <div className="flex justify-center mt-8">
-        <Link to="/relatos/nao-classificados" className="w-full max-w-xs">
-          <Button variant="default" size="lg" className="w-full flex items-center justify-center space-x-2 shadow-none">
-            <Tag className="h-5 w-5" />
-            <span>Classificar Relatos Pendentes</span>
-          </Button>
-        </Link>
-      </div>
+      
     </MainLayout>
   );
 };
