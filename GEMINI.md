@@ -94,15 +94,15 @@ Este plano visa melhorar a organização, modularidade, legibilidade e manutenib
 
 1.  **Mover Componentes de `src/core` para `src/01-shared`:
     *   **Ação:** Mover todos os arquivos de `src/core/components/ui` para `src/01-shared/components/ui`.
-    *   **Status:** **CONCLUÍDO**. (Já fizemos isso, e o diretório `src/core` foi removido).
+    *   **Status:** **CONCLUÍDO**.
 
 2.  **Renomear `src/01-common` para `src/01-shared`:
     *   **Ação:** Renomear a pasta `src/01-common` para `src/01-shared`.
-    *   **Status:** **CONCLUÍDO**. (Já fizemos isso).
+    *   **Status:** **CONCLUÍDO**.
 
 3.  **Atualizar Caminhos de Importação:
     *   **Ação:** Atualizar todas as referências no código que apontam para os caminhos antigos (`@/core/...` e `@/01-common/...`) para o novo caminho (`@/01-shared/...`).
-    *   **Status:** **QUASE CONCLUÍDO**. A maioria foi atualizada, mas ainda temos pendências de linting que indicam que algumas referências podem ter sido perdidas ou que há problemas de sintaxe introduzidos.
+    *   **Status:** **CONCLUÍDO**.
 
 ---
 
@@ -114,7 +114,7 @@ Este plano visa melhorar a organização, modularidade, legibilidade e manutenib
     *   **Ação:** Criar o custom hook `src/07-relatos/hooks/useRelatoManagement.js`.
     *   **Ação:** Mover estados (`relato`, `allUsers`, `currentResponsibles`, `loading`, `error`, `isSaving`, `isDeleting`, `isReproving`), funções de busca (`fetchRelato`, `fetchAllUsers`) e manipuladores de ação (`handleReproveRelato`, `handleReapproveRelato`, `handleUpdateRelato`, `handleDeleteRelato`) de `RelatoDetailsPage.jsx` para este novo hook.
     *   **Ação:** Atualizar `RelatoDetailsPage.jsx` para usar o `useRelatoManagement` e desestruturar os valores retornados.
-    *   **Status:** **PENDENTE**. (Esta foi a ação que foi cancelada anteriormente).
+    *   **Status:** **CONCLUÍDO**.
 
 2.  **Extrair Lógica de `CreateRelatoPage.jsx`:
     *   **Ação:** Analisar `CreateRelatoPage.jsx` para identificar lógica de formulário e submissão que possa ser extraída para um hook (ex: `useRelatoForm`).

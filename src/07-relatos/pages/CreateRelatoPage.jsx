@@ -53,43 +53,50 @@ const CreateRelatoPage = ({ showToast }) => {
         hora_aproximada_ocorrencia: formData.hora_aproximada_ocorrencia || null
       };
 
-      console.log('Dados que serão inseridos:', relatoData);
-      const { data: newRelato, error } = await supabase
-        .from('relatos')
-        .insert([relatoData])
-        .select('id')
-        .single(); // .single() para retornar um único objeto em vez de um array
-
-      if (error) throw error;
-
-      // Etapa 2: Se houver responsáveis, associá-los ao relato criado
-      if (responsaveis && responsaveis.length > 0) {
-        const newRelatoId = newRelato.id;
-        const responsaveisData = responsaveis.map(userId => ({
-          relato_id: newRelatoId,
-          user_id: userId
-        }));
-
-        const { error: responsaveisError } = await supabase
-          .from('relato_responsaveis')
-          .insert(responsaveisData);
-
-        if (responsaveisError) throw responsaveisError;
-      }
-
-      // Registrar log de criação do relato
-      const { error: logError } = await supabase
-        .from('relato_logs')
-        .insert({
-          relato_id: newRelato.id,
-          user_id: formData.is_anonymous ? null : (user ? user.id : null), // ID do usuário que criou, ou null se anônimo
-          action_type: 'CREATE',
-          details: { ...relatoData, responsaveis: responsaveis } // Fotografia completa dos dados do relato
+      if (formData.is_anonymous) {
+        const { error } = await supabase.functions.invoke('create-anonymous-relato', {
+          body: { relatoData },
         });
+        if (error) throw error;
+      } else {
+        console.log('Dados que serão inseridos:', relatoData);
+        const { data: newRelato, error } = await supabase
+          .from('relatos')
+          .insert([relatoData])
+          .select('id')
+          .single(); // .single() para retornar um único objeto em vez de um array
 
-      if (logError) {
-        console.error('Erro ao registrar log de criação:', logError);
-        // Não lançar erro fatal aqui, pois o relato já foi criado com sucesso
+        if (error) throw error;
+
+        // Etapa 2: Se houver responsáveis, associá-los ao relato criado
+        if (responsaveis && responsaveis.length > 0) {
+          const newRelatoId = newRelato.id;
+          const responsaveisData = responsaveis.map(userId => ({
+            relato_id: newRelatoId,
+            user_id: userId
+          }));
+
+          const { error: responsaveisError } = await supabase
+            .from('relato_responsaveis')
+            .insert(responsaveisData);
+
+          if (responsaveisError) throw responsaveisError;
+        }
+
+        // Registrar log de criação do relato
+        const { error: logError } = await supabase
+          .from('relato_logs')
+          .insert({
+            relato_id: newRelato.id,
+            user_id: user ? user.id : null, // ID do usuário que criou, ou null se anônimo
+            action_type: 'CREATE',
+            details: { ...relatoData, responsaveis: responsaveis } // Fotografia completa dos dados do relato
+          });
+
+        if (logError) {
+          console.error('Erro ao registrar log de criação:', logError);
+          // Não lançar erro fatal aqui, pois o relato já foi criado com sucesso
+        }
       }
 
       console.log('Attempting to show toast and navigate...'); // NEW LINE
