@@ -108,7 +108,17 @@ const RelatosByTypePage = () => {
           <div className="flex flex-col items-center space-y-2">
             {birdPyramidData.map((item, index) => {
               const barWidth = (item.value / maxPyramidCount) * 100; // Percentage width
-              const backgroundColor = index === 0 ? 'bg-red-500' : index === 1 ? 'bg-orange-500' : index === 2 ? 'bg-yellow-500' : 'bg-green-500';
+              const backgroundColor = item.name === 'Sem Classificação' ? 'bg-gray-400' : (
+                index === 0 ? 'bg-black' : // Fatal (changed to black)
+                index === 1 ? 'bg-red-600' : // Severo (less intense)
+                index === 2 ? 'bg-red-500' : // Acidente com afastamento
+                index === 3 ? 'bg-orange-500' : // Acidente sem afastamento
+                index === 4 ? 'bg-yellow-500' : // Primeiros socorros
+                index === 5 ? 'bg-yellow-500' : // Quase acidente (changed)
+                index === 6 ? 'bg-yellow-400' : // Condição insegura
+                index === 7 ? 'bg-yellow-400' : // Comportamento inseguro (changed)
+                'bg-green-500' // Default for others (should not be reached if all types are covered)
+              );
 
               return (
                 <Link
