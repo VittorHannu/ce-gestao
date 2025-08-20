@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 
 import BackButton from '@/01-shared/components/BackButton';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
-import DateFilter from '@/01-shared/components/DateFilter';
+
 import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
 import { fetchRelatosCountByType } from '../services/relatoStatsService';
 import { Link } from 'react-router-dom';
@@ -16,6 +16,7 @@ const RelatosByTypePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [barAlignment, setBarAlignment] = useState('left'); // New state for bar alignment
+  const [showZeroBars, setShowZeroBars] = useState(true); // New state for showing/hiding zero bars
 
   useEffect(() => {
     const getChartData = async () => {
@@ -53,7 +54,7 @@ const RelatosByTypePage = () => {
     const dataMap = new Map(chartData.map(item => [normalizeString(item.name), item.value]));
 
     // Create the final result array, ensuring all orderedTypes are present
-    const result = orderedTypes.map(type => ({
+    let result = orderedTypes.map(type => ({
       name: type, // Keep original casing for display
       value: dataMap.get(normalizeString(type)) || 0 // Get value from map using normalized key
     }));
@@ -67,8 +68,13 @@ const RelatosByTypePage = () => {
       });
     }
 
+    // Apply filtering based on showZeroBars state
+    if (!showZeroBars) {
+      result = result.filter(item => item.value > 0);
+    }
+
     return result;
-  }, [chartData]);
+  }, [chartData, showZeroBars]);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -111,23 +117,33 @@ const RelatosByTypePage = () => {
             >
               <AlignCenterHorizontal className="h-4 w-4" />
             </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowZeroBars(!showZeroBars)}
+              className={showZeroBars ? 'bg-gray-200' : ''}
+            >
+              {showZeroBars ? 'Esconder Zeros' : 'Mostrar Zeros'}
+            </Button>
           </div>
         </div>
         {birdPyramidData.length > 0 && maxPyramidCount > 0 ? (
           <div className="flex flex-col items-center space-y-2">
-            {birdPyramidData.map((item, index) => {
+            {birdPyramidData.map((item, _index) => {
               const barWidth = (item.value / maxPyramidCount) * 100; // Percentage width
-              const backgroundColor = item.name === 'Sem Classificação' ? 'bg-gray-400' : (
-                index === 0 ? 'bg-black' : // Fatal (changed to black)
-                  index === 1 ? 'bg-red-600' : // Severo (less intense)
-                    index === 2 ? 'bg-red-500' : // Acidente com afastamento
-                      index === 3 ? 'bg-orange-500' : // Acidente sem afastamento
-                        index === 4 ? 'bg-yellow-500' : // Primeiros socorros
-                          index === 5 ? 'bg-yellow-500' : // Quase acidente (changed)
-                            index === 6 ? 'bg-yellow-400' : // Condição insegura
-                              index === 7 ? 'bg-yellow-400' : // Comportamento inseguro (changed)
-                                'bg-green-500' // Default for others (should not be reached if all types are covered)
-              );
+              const colorMap = {
+                'Fatal': 'bg-black',
+                'Severo': 'bg-red-600',
+                'Acidente com afastamento': 'bg-red-500',
+                'Acidente sem afastamento': 'bg-orange-500',
+                'Primeiros socorros': 'bg-yellow-500',
+                'Quase acidente': 'bg-yellow-500',
+                'Condição insegura': 'bg-yellow-400',
+                'Comportamento inseguro': 'bg-yellow-400',
+                'Sem Classificação': 'bg-gray-400'
+              };
+
+              const backgroundColor = colorMap[item.name] || 'bg-green-500'; // Default if not found
 
               return (
                 <Link
