@@ -7,7 +7,7 @@ import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
 import { fetchRelatosCountByType } from '../services/relatoStatsService';
 import { Link } from 'react-router-dom';
 import { Button } from '@/01-shared/components/ui/button';
-import { AlignLeft, AlignCenterHorizontal } from 'lucide-react';
+import { AlignLeft, AlignCenter, Filter, FilterX } from 'lucide-react';
 import DateFilterCard from '../components/DateFilterCard';
 
 const RelatosByTypePage = () => {
@@ -16,7 +16,7 @@ const RelatosByTypePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [barAlignment, setBarAlignment] = useState('left'); // New state for bar alignment
-  const [showZeroBars, setShowZeroBars] = useState(true); // New state for showing/hiding zero bars
+  const [showZeroBars, setShowZeroBars] = useState(false); // New state for showing/hiding zero bars
 
   useEffect(() => {
     const getChartData = async () => {
@@ -115,7 +115,7 @@ const RelatosByTypePage = () => {
               onClick={() => setBarAlignment('center')}
               className={barAlignment === 'center' ? 'bg-gray-200' : ''}
             >
-              <AlignCenterHorizontal className="h-4 w-4" />
+              <AlignCenter className="h-4 w-4" />
             </Button>
             <Button
               variant="outline"
@@ -123,7 +123,7 @@ const RelatosByTypePage = () => {
               onClick={() => setShowZeroBars(!showZeroBars)}
               className={showZeroBars ? 'bg-gray-200' : ''}
             >
-              {showZeroBars ? 'Esconder Zeros' : 'Mostrar Zeros'}
+              {showZeroBars ? <FilterX className="h-4 w-4" /> : <Filter className="h-4 w-4" />}
             </Button>
           </div>
         </div>
