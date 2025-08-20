@@ -42,8 +42,7 @@ const RelatosByTypePage = () => {
       'Primeiros socorros',
       'Quase acidente',
       'Condição insegura',
-      'Comportamento inseguro',
-      'Sem Classificação'
+      'Comportamento inseguro'
     ];
 
     // Normalize function for comparison
@@ -57,6 +56,15 @@ const RelatosByTypePage = () => {
       name: type, // Keep original casing for display
       value: dataMap.get(normalizeString(type)) || 0 // Get value from map using normalized key
     }));
+
+    // Add 'Sem Classificação' only if its value is greater than 0
+    const semClassificacaoValue = dataMap.get(normalizeString('Sem Classificação')) || 0;
+    if (semClassificacaoValue > 0) {
+      result.push({
+        name: 'Sem Classificação',
+        value: semClassificacaoValue
+      });
+    }
 
     return result;
   }, [chartData]);

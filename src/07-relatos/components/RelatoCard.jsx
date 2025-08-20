@@ -26,7 +26,7 @@ const RelatoCard = ({ relato, disableLink }) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="p-0">
-        <p className="text-base text-gray-700 line-clamp-3 mb-4">{relato.descricao}</p>
+        <p className="text-base text-gray-700 mb-4">{relato.descricao}</p>
         {relato.data_conclusao_solucao && (
           <p className="text-sm text-gray-600 mt-1">Concluído em: {new Date(relato.data_conclusao_solucao).toLocaleDateString()}</p>
         )}
