@@ -93,7 +93,7 @@ const RelatosByTypePage = () => {
         <h1 className="text-2xl font-bold ml-4">Relatos por Tipo</h1>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-4">
         <DateFilterCard />
       </div>
 
