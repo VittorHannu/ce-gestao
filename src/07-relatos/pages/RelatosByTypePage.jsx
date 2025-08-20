@@ -121,7 +121,7 @@ const RelatosByTypePage = () => {
               variant="outline"
               size="sm"
               onClick={() => setShowZeroBars(!showZeroBars)}
-              className={showZeroBars ? 'bg-gray-200' : ''}
+              className={!showZeroBars ? 'bg-gray-200' : ''}
             >
               {showZeroBars ? <FilterX className="h-4 w-4" /> : <Filter className="h-4 w-4" />}
             </Button>
