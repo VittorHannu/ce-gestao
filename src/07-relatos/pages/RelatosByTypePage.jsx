@@ -15,8 +15,11 @@ const RelatosByTypePage = () => {
   const [chartData, setChartData] = useState([]); // Renamed from rawData for clarity
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [barAlignment, setBarAlignment] = useState('left'); // New state for bar alignment
-  const [showZeroBars, setShowZeroBars] = useState(false); // New state for showing/hiding zero bars
+  const [barAlignment, setBarAlignment] = useState(() => sessionStorage.getItem('relatosByTypePage_barAlignment') || 'left');
+  const [showZeroBars, setShowZeroBars] = useState(() => {
+    const storedValue = sessionStorage.getItem('relatosByTypePage_showZeroBars');
+    return storedValue !== null ? JSON.parse(storedValue) : false;
+  });
 
   useEffect(() => {
     const getChartData = async () => {
@@ -34,6 +37,14 @@ const RelatosByTypePage = () => {
 
     getChartData();
   }, [startDate, endDate]);
+
+  useEffect(() => {
+    sessionStorage.setItem('relatosByTypePage_barAlignment', barAlignment);
+  }, [barAlignment]);
+
+  useEffect(() => {
+    sessionStorage.setItem('relatosByTypePage_showZeroBars', JSON.stringify(showZeroBars));
+  }, [showZeroBars]);
 
   const birdPyramidData = useMemo(() => {
     const orderedTypes = [
