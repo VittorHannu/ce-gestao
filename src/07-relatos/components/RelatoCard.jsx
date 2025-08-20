@@ -21,7 +21,7 @@ const RelatoCard = ({ relato, disableLink }) => {
       <CardHeader className="p-0">
         <CardTitle className="text-lg font-semibold mb-1">{relato.relato_code}</CardTitle>
         <CardDescription className="text-sm text-gray-500">
-          Data: {new Date(relato.data_ocorrencia).toLocaleDateString()}
+          Data da Ocorrência: {new Date(relato.data_ocorrencia).toLocaleDateString()}
           {relato.hora_aproximada_ocorrencia && ` - ${relato.hora_aproximada_ocorrencia}`}
         </CardDescription>
       </CardHeader>

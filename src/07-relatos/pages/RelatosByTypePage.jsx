@@ -42,7 +42,8 @@ const RelatosByTypePage = () => {
       'Primeiros socorros',
       'Quase acidente',
       'Condição insegura',
-      'Comportamento inseguro'
+      'Comportamento inseguro',
+      'Sem Classificação'
     ];
 
     // Normalize function for comparison
