@@ -110,7 +110,11 @@ const RelatosByTypePage = () => {
               const backgroundColor = index === 0 ? 'bg-red-500' : index === 1 ? 'bg-orange-500' : index === 2 ? 'bg-yellow-500' : 'bg-green-500';
 
               return (
-                <div key={item.name} className={`w-full flex flex-col ${barAlignment === 'left' ? 'items-start' : 'items-center'}`}>
+                <Link
+                  key={item.name}
+                  to={`/relatos/lista?tipo_relato=${encodeURIComponent(item.name)}&startDate=${startDate}&endDate=${endDate}`}
+                  className={`w-full flex flex-col ${barAlignment === 'left' ? 'items-start' : 'items-center'} cursor-pointer`}
+                >
                   <p className="text-gray-700 font-medium mb-1">{item.name}</p>
                   <div className={`flex items-center ${barAlignment === 'left' ? 'justify-start' : 'justify-center'} w-full`}>
                     <div
@@ -118,7 +122,7 @@ const RelatosByTypePage = () => {
                       style={{ width: `${barWidth}%`, minWidth: '40px', maxWidth: '600px' }}
                     >{item.value}</div>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>

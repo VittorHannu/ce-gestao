@@ -18,9 +18,18 @@ const RelatosListaPage = () => {
   const { showToast } = useToast();
   const location = useLocation();
 
+  const queryParams = new URLSearchParams(location.search);
+  const tipoRelatoFilter = queryParams.get('tipo_relato');
+
   const getTitle = () => {
     const queryParams = new URLSearchParams(location.search);
     const statusFilter = queryParams.get('status');
+    const tipoRelatoFilter = queryParams.get('tipo_relato');
+
+    if (tipoRelatoFilter) {
+      return `Relatos de ${tipoRelatoFilter}`;
+    }
+
     switch (statusFilter) {
     case 'aprovado':
       return 'Todos os Relatos';
@@ -48,9 +57,10 @@ const RelatosListaPage = () => {
     const { data, error } = await supabase.rpc('search_relatos_unaccented', {
       p_search_term: searchTerm,
       p_status_filter: statusFilter ? statusFilter.toUpperCase() : null,
-      p_responsible_filter: responsibleFilter, // Re-added this line
+      p_responsible_filter: responsibleFilter,
       p_start_date: startDate,
-      p_end_date: endDate
+      p_end_date: endDate,
+      p_tipo_relato_filter: tipoRelatoFilter // New parameter
     });
 
     console.log('Supabase query result:');
@@ -76,7 +86,7 @@ const RelatosListaPage = () => {
 
   useEffect(() => {
     fetchRelatos();
-  }, [fetchRelatos]);
+  }, [fetchRelatos, tipoRelatoFilter]); // Added tipoRelatoFilter
 
   return (
     <div className="container mx-auto p-4">

@@ -40,7 +40,7 @@ O agente de IA é responsável por garantir a qualidade, a organização e a fun
 
 *   **Gestão de Refatoração e Imports**:
     *   **Cuidado Extremo com Imports**: Ao refatorar ou mover arquivos, garantir que todos os caminhos de importação sejam atualizados corretamente, utilizando aliases (ex: `@/`) sempre que possível. Priorizar a abordagem passo a passo, verificando a funcionalidade da aplicação a cada alteração para evitar quebras.
-    *   **Precisão da `old_string`**: A `old_string` utilizada na ferramenta `replace` é extremamente sensível e exige correspondência exata de espaços, quebras de linha e até comentários. **Sempre releia o arquivo alvo imediatamente antes de cada operação de `replace` para garantir que a `old_string` esteja atualizada e seja precisa.** Em caso de falha, considere substituir apenas a parte variável do caminho (ex: `'@/components/common/PageHeader'` para `'@/core/components/common/PageHeader'`) para maior robustez.
+    *   **Precisão da `old_string`**: A `old_string` utilizada na ferramenta `replace` é extremamente sensível e exige correspondência exata de espaços, quebras de linha e até comentários. **Sempre releia o arquivo alvo imediatamente antes de cada operação de `replace` para garantir que a `old_string` esteja atualizada e seja precisa.** Em caso de falha, considere substituir apenas a parte variável do caminho (ex: `'@/components/common/PageHeader'`) para maior robustez.
     *   **Verificação Contínua**: Após cada etapa de refatoração que envolva movimentação de arquivos ou alteração de imports, **solicitar ao usuário a verificação visual da aplicação** para garantir que tudo continua funcionando conforme o esperado. O feedback do usuário é a validação primária da funcionalidade.
     *   **Verificação Interna de Imports**: Antes de mover ou modificar um arquivo, sempre leia seu conteúdo para identificar todos os imports internos e planeje suas correções. Isso evita quebras em cascata.
     *   **Imports de Bibliotecas de Ícones**: Ao mover componentes que utilizam ícones de bibliotecas (ex: `lucide-react`), certificar-se de que os ícones necessários sejam explicitamente importados no novo local do componente. A ausência dessas importações pode causar `ReferenceError` em tempo de execução.
@@ -92,15 +92,15 @@ Este plano visa melhorar a organização, modularidade, legibilidade e manutenib
 
 **Objetivo:** Consolidar componentes de UI e padronizar a estrutura de pastas para recursos compartilhados.
 
-1.  **Mover Componentes de `src/core` para `src/01-shared`:
+1.  **Mover Componentes de `src/core` para `src/01-shared`:**
     *   **Ação:** Mover todos os arquivos de `src/core/components/ui` para `src/01-shared/components/ui`.
     *   **Status:** **CONCLUÍDO**.
 
-2.  **Renomear `src/01-common` para `src/01-shared`:
+2.  **Renomear `src/01-common` para `src/01-shared`:**
     *   **Ação:** Renomear a pasta `src/01-common` para `src/01-shared`.
     *   **Status:** **CONCLUÍDO**.
 
-3.  **Atualizar Caminhos de Importação:
+3.  **Atualizar Caminhos de Importação:**
     *   **Ação:** Atualizar todas as referências no código que apontam para os caminhos antigos (`@/core/...` e `@/01-common/...`) para o novo caminho (`@/01-shared/...`).
     *   **Status:** **CONCLUÍDO**.
 
@@ -110,17 +110,17 @@ Este plano visa melhorar a organização, modularidade, legibilidade e manutenib
 
 **Objetivo:** Reduzir a complexidade dos componentes de página e reutilizar a lógica comum através de Hooks personalizados.
 
-1.  **Extrair Lógica de `RelatoDetailsPage.jsx` para `useRelatoManagement`:
+1.  **Extrair Lógica de `RelatoDetailsPage.jsx` para `useRelatoManagement`:**
     *   **Ação:** Criar o custom hook `src/07-relatos/hooks/useRelatoManagement.js`.
     *   **Ação:** Mover estados (`relato`, `allUsers`, `currentResponsibles`, `loading`, `error`, `isSaving`, `isDeleting`, `isReproving`), funções de busca (`fetchRelato`, `fetchAllUsers`) e manipuladores de ação (`handleReproveRelato`, `handleReapproveRelato`, `handleUpdateRelato`, `handleDeleteRelato`) de `RelatoDetailsPage.jsx` para este novo hook.
     *   **Ação:** Atualizar `RelatoDetailsPage.jsx` para usar o `useRelatoManagement` e desestruturar os valores retornados.
     *   **Status:** **CONCLUÍDO**.
 
-2.  **Extrair Lógica de `CreateRelatoPage.jsx`:
+2.  **Extrair Lógica de `CreateRelatoPage.jsx`:**
     *   **Ação:** Analisar `CreateRelatoPage.jsx` para identificar lógica de formulário e submissão que possa ser extraída para um hook (ex: `useRelatoForm`).
     *   **Status:** **PENDENTE**.
 
-3.  **Extrair Lógica de `UserDetailsPage.jsx`:
+3.  **Extrair Lógica de `UserDetailsPage.jsx`:**
     *   **Ação:** Analisar `UserDetailsPage.jsx` para identificar lógica de gerenciamento de permissões e exclusão de usuário que possa ser extraída para hooks (ex: `useUserPermissions`, `useUserDeletion`).
     *   **Status:** **PENDENTE**.
 
@@ -130,13 +130,13 @@ Este plano visa melhorar a organização, modularidade, legibilidade e manutenib
 
 **Objetivo:** Padronizar a forma como as interações com o Supabase são realizadas e o tratamento de erros é gerenciado.
 
-1.  **Criar um Módulo Centralizado para Operações Supabase (CRUD):
+1.  **Criar um Módulo Centralizado para Operações Supabase (CRUD):**
     *   **Ação:** Analisar `src/01-shared/lib/supabase.js` e os arquivos de serviço existentes (ex: `userService.js`, `relatosService.js`).
     *   **Ação:** Criar funções utilitárias genéricas para operações comuns de Supabase (buscar, inserir, atualizar, deletar) com tratamento de erros padronizado.
     *   **Ação:** Refatorar os serviços existentes para usar essas funções utilitárias.
     *   **Status:** **PENDENTE**.
 
-2.  **Padronizar o Tratamento de Erros com `useToast`:
+2.  **Padronizar o Tratamento de Erros com `useToast`:**
     *   **Ação:** Garantir que todas as chamadas de API e operações críticas usem o `useToast` para feedback ao usuário, conforme as diretrizes do `GEMINI.md`.
     *   **Status:** **PENDENTE**.
 
@@ -146,15 +146,15 @@ Este plano visa melhorar a organização, modularidade, legibilidade e manutenib
 
 **Objetivo:** Melhorar a compreensão do código para facilitar a manutenção e futuras modificações.
 
-1.  **Revisão de Nomenclatura:
+1.  **Revisão de Nomenclatura:**
     *   **Ação:** Garantir que nomes de variáveis, funções e componentes sejam claros e descritivos.
     *   **Status:** **PENDENTE**.
 
-2.  **Simplificação de Lógica Complexa:
+2.  **Simplificação de Lógica Complexa:**
     *   **Ação:** Identificar blocos de código complexos e simplificá-los, possivelmente dividindo-os em funções menores.
     *   **Status:** **PENDENTE**.
 
-3.  **Comentários Estratégicos:
+3.  **Comentários Estratégicos:**
     *   **Ação:** Adicionar comentários *apenas* para explicar o 'porquê' de decisões complexas ou não óbvias, evitando comentários óbvios sobre o 'o quê'.
     *   **Status:** **PENDENTE**.
 
@@ -164,23 +164,41 @@ Este plano visa melhorar a organização, modularidade, legibilidade e manutenib
 
 **Objetivo:** Garantir que o projeto compile e passe no linter sem erros.
 
-1.  **Resolver Erros de Linting em `src/01-shared/components/ui/select.jsx`:
+1.  **Resolver Erros de Linting em `src/01-shared/components/ui/select.jsx`:**
     *   **Ação:** Corrigir os caracteres de escape desnecessários (`Unnecessary escape character: \]`) que estão impedindo o linter de passar. Isso pode exigir uma abordagem mais manual ou cuidadosa.
     *   **Status:** **PENDENTE**. (Este é o problema que nos travou).
 
-2.  **Resolver Aviso de Variável Não Utilizada em `src/05-adm/pages/UserDetailsPage.jsx`:
+2.  **Resolver Aviso de Variável Não Utilizada em `src/05-adm/pages/UserDetailsPage.jsx`:**
     *   **Ação:** Adicionar um prefixo `_` à variável `AlertDialogTrigger` ou remover a importação se não for utilizada.
     *   **Status:** **PENDENTE**.
 
-3.  **Verificação Pós-Refatoração:
+3.  **Verificação Pós-Refatoração:**
     *   **Ação:** Após cada fase de refatoração, executar `pnpm run lint` e `pnpm run build` para garantir que não haja novos erros.
     *   **Status:** **PENDENTE**.
 
 ---
 
-### **Próximos Passos Imediatos:**
+---
 
-Para sair do loop de erro e progredir, o próximo passo é **retomar a Fase 2.1: Extrair Lógica de `RelatoDetailsPage.jsx` para `useRelatoManagement`**.
+## Histórico de Tarefas Concluídas (Sessão Atual)
 
-Vou começar criando o arquivo `src/07-relatos/hooks/useRelatoManagement.js` e movendo a lógica inicial para ele, conforme o plano detalhado na Fase 2.1.
+### **1. Funcionalidade de Criação de Relatos Anônimos**
+*   **Propósito:** Permitir que usuários não autenticados criem relatos, superando a restrição de RLS.
+*   **Ações Realizadas:**
+    *   **Criação de Role e Políticas RLS:** Definido o novo role `anon_relator` no banco de dados. Criadas e aplicadas políticas de Row-Level Security (RLS) na tabela `public.relatos` para permitir `INSERT` e `SELECT` por este role. (Via migração `20250820000002_create_anon_relator_role.sql`).
+    *   **Implementação de Edge Function:** Criada a Supabase Edge Function `create-anonymous-relato` (`supabase/functions/create-anonymous-relato/index.ts`). Esta função é responsável por receber os dados do relato e inseri-los no banco de dados com as permissões adequadas, utilizando o `service_role_key` para bypassar RLS e garantir a inserção, mesmo para usuários anônimos.
+    *   **Modificação da Aplicação (Frontend):** Atualizado `src/07-relatos/pages/CreateRelatoPage.jsx` para que, quando um relato for marcado como anônimo (`formData.is_anonymous`), ele chame a nova Edge Function `create-anonymous-relato` em vez de tentar a inserção direta via `supabase.from('relatos').insert()`.
 
+### **2. Correção e Interatividade da Pirâmide de Bird**
+*   **Propósito:** Assegurar a contagem correta dos relatos na Pirâmide de Bird e adicionar funcionalidade de clique para filtrar listas de relatos.
+*   **Ações Realizadas:**
+    *   **Correção de Discrepâncias de Classificação:** Identificadas e corrigidas inconsistências de grafia e capitalização entre os tipos de relato definidos no componente `RelatosByTypePage.jsx` (`orderedTypes` array) e os valores utilizados no dropdown de classificação em `RelatosUnclassifiedPage.jsx`. Isso garante que a contagem na pirâmide seja precisa.
+    *   **Tornar Barras Clicáveis:** Implementada a funcionalidade de clique nas barras da Pirâmide de Bird em `RelatosByTypePage.jsx`. Ao clicar em uma barra, o usuário é redirecionado para a página de listagem de relatos (`/relatos`).
+    *   **Passagem de Parâmetros de Filtro:** Ao redirecionar, o `tipo_relato` (classificação da barra clicada) e o `startDate`/`endDate` (período selecionado na página da pirâmide) são passados como parâmetros na URL.
+    *   **Filtragem na Página de Listagem:** Modificado `src/07-relatos/pages/RelatosListaPage.jsx` para ler os parâmetros `tipo_relato`, `startDate` e `endDate` da URL. Esses parâmetros são então utilizados para filtrar a lista de relatos exibida, garantindo que apenas os relatos da classificação e período selecionados sejam mostrados.
+    *   **Atualização da Função RPC `search_relatos_unaccented`:** Criada uma migração (`20250820000003_update_search_relatos_unaccented_function.sql`) para atualizar a função `search_relatos_unaccented` no banco de dados. Esta atualização adiciona um novo parâmetro `p_tipo_relato_filter` e modifica a lógica interna da função para aplicar este filtro na consulta SQL, permitindo a filtragem de relatos por tipo diretamente no banco de dados.
+
+### **Próximos Passos Pendentes (para a Próxima Sessão)**
+*   **Aplicação de Migrações no Banco de Dados:** As migrações `20250820000001_delete_relatos_pendentes_table.sql`, `20250820000002_create_anon_relator_role.sql` e `20250820000003_update_search_relatos_unaccented_function.sql` precisam ser aplicadas manualmente no painel do Supabase. A última tentativa de aplicar a migração `20250820000003_update_search_relatos_unaccented_function.sql` resultou em um erro de sintaxe, que foi corrigido no arquivo.
+*   **Verificação da Funcionalidade:** Após a aplicação das migrações, é crucial verificar se a criação de relatos anônimos e a filtragem da Pirâmide de Bird estão funcionando conforme o esperado.
+*   **Continuação do Plano de Refatoração:** Retomar as fases pendentes do plano de refatoração detalhado acima.
