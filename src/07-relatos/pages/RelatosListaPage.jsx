@@ -159,44 +159,40 @@ const RelatosListaPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {relatos.map((relato) => (
-            tipoRelatoFilter === 'Sem Classificação' ? (
-              <div key={relato.id} className="p-4 border rounded-lg bg-white shadow-md">
-                <RelatoCard relato={relato} />
-                <div className="flex items-center gap-2 mt-4">
-                  <Select
-                    onValueChange={(value) => setSelectedTypes(prev => ({ ...prev, [relato.id]: value }))}
-                    value={selectedTypes[relato.id]}
-                    disabled={classifyingId === relato.id || !canManageRelatos}
+            <div key={relato.id} className="p-4 border rounded-lg bg-white shadow-md">
+              <RelatoCard relato={relato} />
+              <div className="flex items-center gap-2 mt-4">
+                <Select
+                  onValueChange={(value) => setSelectedTypes(prev => ({ ...prev, [relato.id]: value }))}
+                  value={selectedTypes[relato.id]}
+                  disabled={classifyingId === relato.id || !canManageRelatos}
+                >
+                  <SelectTrigger className="w-[180px] bg-gray-100">
+                    <SelectValue placeholder={tipoRelatoFilter === 'Sem Classificação' ? "Classificar Tipo" : "Mudar Classificação"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="CLEAR_SELECTION">Nenhum</SelectItem>
+                    <SelectItem value="Fatal">Fatal</SelectItem>
+                    <SelectItem value="Severo">Severo</SelectItem>
+                    <SelectItem value="Acidente com afastamento">Acidente com afastamento</SelectItem>
+                    <SelectItem value="Acidente sem afastamento">Acidente sem afastamento</SelectItem>
+                    <SelectItem value="Primeiros socorros">Primeiros socorros</SelectItem>
+                    <SelectItem value="Quase acidente">Quase acidente</SelectItem>
+                    <SelectItem value="Condição insegura">Condição insegura</SelectItem>
+                    <SelectItem value="Comportamento inseguro">Comportamento inseguro</SelectItem>
+                  </SelectContent>
+                </Select>
+                {canManageRelatos && selectedTypes[relato.id] && selectedTypes[relato.id] !== 'CLEAR_SELECTION' && (
+                  <Button
+                    onClick={() => handleSaveClassification(relato.id)}
+                    disabled={classifyingId === relato.id || selectedTypes[relato.id] === relato.tipo_relato}
+                    className="ml-2"
                   >
-                    <SelectTrigger className="w-[180px] bg-gray-100">
-                      <SelectValue placeholder="Classificar Tipo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="CLEAR_SELECTION">Nenhum</SelectItem>
-                      <SelectItem value="Fatal">Fatal</SelectItem>
-                      <SelectItem value="Severo">Severo</SelectItem>
-                      <SelectItem value="Acidente com afastamento">Acidente com afastamento</SelectItem>
-                      <SelectItem value="Acidente sem afastamento">Acidente sem afastamento</SelectItem>
-                      <SelectItem value="Primeiros socorros">Primeiros socorros</SelectItem>
-                      <SelectItem value="Quase acidente">Quase acidente</SelectItem>
-                      <SelectItem value="Condição insegura">Condição insegura</SelectItem>
-                      <SelectItem value="Comportamento inseguro">Comportamento inseguro</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {canManageRelatos && selectedTypes[relato.id] && selectedTypes[relato.id] !== 'CLEAR_SELECTION' && (
-                    <Button
-                      onClick={() => handleSaveClassification(relato.id)}
-                      disabled={classifyingId === relato.id || selectedTypes[relato.id] === relato.tipo_relato}
-                      className="ml-2"
-                    >
-                      {classifyingId === relato.id ? 'Salvando...' : 'Salvar'}
-                    </Button>
-                  )}
-                </div>
+                    {classifyingId === relato.id ? 'Salvando...' : 'Salvar'}
+                  </Button>
+                )}
               </div>
-            ) : (
-              <RelatoCard key={relato.id} relato={relato} />
-            )
+            </div>
           ))}
         </div>
       )}
