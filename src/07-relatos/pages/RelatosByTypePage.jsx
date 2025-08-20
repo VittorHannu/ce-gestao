@@ -153,10 +153,20 @@ const RelatosByTypePage = () => {
                 >
                   <p className="text-gray-700 font-medium mb-1">{item.name}</p>
                   <div className={`flex items-center ${barAlignment === 'left' ? 'justify-start' : 'justify-center'} w-full`}>
-                    <div
-                      className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
-                      style={{ width: `${barWidth}%`, minWidth: '40px', maxWidth: '600px' }}
-                    >{item.value}</div>
+                    {item.value === 0 ? (
+                      <>
+                        <div
+                          className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center`}
+                          style={{ width: '5px', minWidth: '5px', maxWidth: '5px' }}
+                        ></div>
+                        <span className="ml-2 text-gray-700 font-bold">0</span>
+                      </>
+                    ) : (
+                      <div
+                        className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
+                        style={{ width: `${barWidth}%`, minWidth: '40px', maxWidth: '600px' }}
+                      >{item.value}</div>
+                    )}
                   </div>
                 </Link>
               );
