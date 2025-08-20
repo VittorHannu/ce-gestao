@@ -159,9 +159,10 @@ const RelatosListaPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {relatos.map((relato) => (
-            <div key={relato.id} className="p-4 border rounded-lg bg-white shadow-md">
+            <div key={relato.id} className="p-4 border rounded-lg bg-white">
               <RelatoCard relato={relato} />
-              <div className="flex items-center gap-2 mt-4">
+              {tipoRelatoFilter && ( // Render classification UI only if tipoRelatoFilter is present
+                <div className="flex items-center gap-2 mt-4">
                 <Select
                   onValueChange={(value) => setSelectedTypes(prev => ({ ...prev, [relato.id]: value }))}
                   value={selectedTypes[relato.id]}
@@ -192,7 +193,8 @@ const RelatosListaPage = () => {
                   </Button>
                 )}
               </div>
-            </div>
+            )}
+              </div>
           ))}
         </div>
       )}

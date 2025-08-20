@@ -17,7 +17,7 @@ const RelatoCard = ({ relato, disableLink }) => {
   const { text: statusText, icon: StatusIcon, color: statusColor } = getTreatmentStatusDisplay();
 
   const cardContent = (
-    <Card className="hover:shadow-lg transition-shadow duration-200 p-3">
+    <Card className="transition-shadow duration-200 p-3" style={{ boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)' }}>
       <CardHeader className="p-0">
         <CardTitle className="text-lg font-semibold mb-1">{relato.relato_code}</CardTitle>
         <CardDescription className="text-sm text-gray-500">
