@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import MainLayout from '@/01-shared/components/MainLayout';
+
 import BackButton from '@/01-shared/components/BackButton';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import DateFilter from '@/01-shared/components/DateFilter';
@@ -72,7 +72,7 @@ const RelatosByTypePage = () => {
   const maxPyramidCount = Math.max(...birdPyramidData.map(d => d.value));
 
   return (
-    <MainLayout>
+    <div className="container mx-auto p-4">
       <div className="flex items-center mb-4">
         <BackButton />
         <h1 className="text-2xl font-bold ml-4">Relatos por Tipo</h1>
@@ -143,7 +143,7 @@ const RelatosByTypePage = () => {
       </div>
 
       
-    </MainLayout>
+    </div>
   );
 };
 
