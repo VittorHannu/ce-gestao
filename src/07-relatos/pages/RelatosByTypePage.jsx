@@ -278,6 +278,23 @@ const RelatosByTypePage = () => {
         ) : (
           <p className="text-center text-gray-500">Nenhum dado disponível para a Pirâmide de Bird.</p>
         )}
+          {showDetailedView && (
+            <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-600">
+              <p className="font-semibold mb-2">Legenda de Status:</p>
+              <div className="flex items-center mb-1">
+                <span className="w-4 h-4 bg-green-500 rounded-full mr-2"></span>
+                <span>Concluído</span>
+              </div>
+              <div className="flex items-center mb-1">
+                <span className="w-4 h-4 bg-amber-500 rounded-full mr-2"></span>
+                <span>Em Andamento</span>
+              </div>
+              <div className="flex items-center mb-1">
+                <span className="w-4 h-4 bg-red-500 rounded-full mr-2"></span>
+                <span>Sem Tratativa</span>
+              </div>
+            </div>
+          )}
       </div>
 
       
