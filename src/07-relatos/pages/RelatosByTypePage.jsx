@@ -8,6 +8,7 @@ import { fetchRelatosCountByType } from '../services/relatoStatsService';
 import { Link } from 'react-router-dom';
 import { Button } from '@/01-shared/components/ui/button';
 import { AlignLeft, AlignCenter, Filter, FilterX, Layers } from 'lucide-react';
+import * as Tooltip from '@radix-ui/react-tooltip';
 import DateFilterCard from '../components/DateFilterCard';
 
 const RelatosByTypePage = () => {
@@ -190,50 +191,83 @@ const RelatosByTypePage = () => {
                   <p className="text-gray-700 font-medium mb-1">{item.name}</p>
                   <div className={`flex items-center ${barAlignment === 'left' ? 'justify-start' : 'justify-center'} w-full`}>
                     {item.value === 0 ? (
-                      <>
-                        <div
-                          className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center`}
-                          style={{ width: '5px', minWidth: '5px', maxWidth: '5px' }}
-                        ></div>
-                        <span className="ml-2 text-gray-700 font-bold">0</span>
-                      </>
+                      <span className="ml-2 text-gray-700 font-bold">0</span>
                     ) : (
                       showDetailedView ? (
-                        <div
-                          className={'h-8 rounded-sm flex items-center justify-center text-white font-bold overflow-hidden'}
-                          style={{ width: `${barWidth}%`, minWidth: '40px', maxWidth: '600px' }}
-                        >
-                          {/* Segmented Bar */}
-                          {item.concluido > 0 && (
-                            <div
-                              className="bg-green-500 h-full flex items-center justify-center"
-                              style={{ width: `${(item.concluido / item.value) * 100}%` }}
-                            >
-                              {item.concluido}
-                            </div>
-                          )}
-                          {item.emAndamento > 0 && (
-                            <div
-                              className="bg-yellow-500 h-full flex items-center justify-center"
-                              style={{ width: `${(item.emAndamento / item.value) * 100}%` }}
-                            >
-                              {item.emAndamento}
-                            </div>
-                          )}
-                          {item.semTratativa > 0 && (
-                            <div
-                              className="bg-red-500 h-full flex items-center justify-center"
-                              style={{ width: `${(item.semTratativa / item.value) * 100}%` }}
-                            >
-                              {item.semTratativa}
-                            </div>
-                          )}
+                        <div className="flex items-center w-full"> {/* Wrapper div for detailed view */}
+                          <div
+                            className={'h-8 rounded-sm flex items-center justify-center text-white font-bold overflow-hidden'}
+                            style={{ width: `${barWidth}%`, maxWidth: '600px' }}
+                          >
+                            {/* Segmented Bar */}
+                            {item.concluido > 0 && (
+                              <Tooltip.Root delayDuration={300}>
+                                <Tooltip.Trigger asChild>
+                                  <div
+                                    className="bg-green-500 h-full flex items-center justify-center"
+                                    style={{ width: `${(item.concluido / item.value) * 100}%` }}
+                                  >
+                                    {((item.concluido / maxPyramidCount) * 600) > 20 && item.concluido}
+                                  </div>
+                                </Tooltip.Trigger>
+                                <Tooltip.Portal>
+                                  <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
+                                    Concluídos: {item.concluido}
+                                    <Tooltip.Arrow className="fill-current text-gray-800" />
+                                  </Tooltip.Content>
+                                </Tooltip.Portal>
+                              </Tooltip.Root>
+                            )}
+                            {item.emAndamento > 0 && (
+                              <Tooltip.Root delayDuration={300}>
+                                <Tooltip.Trigger asChild>
+                                  <div
+                                    className="bg-amber-500 h-full flex items-center justify-center"
+                                    style={{ width: `${(item.emAndamento / item.value) * 100}%` }}
+                                  >
+                                    {((item.emAndamento / maxPyramidCount) * 600) > 20 && item.emAndamento}
+                                  </div>
+                                </Tooltip.Trigger>
+                                <Tooltip.Portal>
+                                  <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
+                                    Em Andamento: {item.emAndamento}
+                                    <Tooltip.Arrow className="fill-current text-gray-800" />
+                                  </Tooltip.Content>
+                                </Tooltip.Portal>
+                              </Tooltip.Root>
+                            )}
+                            {item.semTratativa > 0 && (
+                              <Tooltip.Root delayDuration={300}>
+                                <Tooltip.Trigger asChild>
+                                  <div
+                                    className="bg-red-500 h-full flex items-center justify-center"
+                                    style={{ width: `${(item.semTratativa / item.value) * 100}%` }}
+                                  >
+                                    {((item.semTratativa / maxPyramidCount) * 600) > 20 && item.semTratativa}
+                                  </div>
+                                </Tooltip.Trigger>
+                                <Tooltip.Portal>
+                                  <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
+                                    Sem Tratativa: {item.semTratativa}
+                                    <Tooltip.Arrow className="fill-current text-gray-800" />
+                                  </Tooltip.Content>
+                                </Tooltip.Portal>
+                              </Tooltip.Root>
+                            )}
+                          </div>
                         </div>
                       ) : (
-                        <div
-                          className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
-                          style={{ width: `${barWidth}%`, minWidth: '40px', maxWidth: '600px' }}
-                        >{item.value}</div>
+                        <div className="flex items-center w-full"> {/* Wrapper div for single bar view */}
+                          <div
+                            className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
+                            style={{ width: `${barWidth}%`, maxWidth: '600px' }}
+                          >
+                            {((item.value / maxPyramidCount) * 600) > 20 && item.value}
+                          </div>
+                          {((item.value / maxPyramidCount) * 600) <= 20 && (
+                            <span className="ml-2 text-gray-700 font-bold">{item.value}</span>
+                          )}
+                        </div>
                       )
                     )}
                   </div>
