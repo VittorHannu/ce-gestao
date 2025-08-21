@@ -194,7 +194,7 @@ const RelatosByTypePage = () => {
                       <span className="ml-2 text-gray-700 font-bold">0</span>
                     ) : (
                       showDetailedView ? (
-                        <div className="flex items-center w-full"> {/* Wrapper div for detailed view */}
+                        <div className={`flex items-center w-full ${barAlignment === 'center' ? 'justify-center' : ''}`}> {/* Wrapper div for detailed view */}
                           <div
                             className={'h-8 rounded-sm flex items-center justify-center text-white font-bold overflow-hidden'}
                             style={{ width: `${barWidth}%`, maxWidth: '600px' }}
