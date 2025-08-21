@@ -16,6 +16,8 @@ import _RelatoDisplayDetails from '../components/RelatoDisplayDetails';
 const RelatosListaPage = () => {
   const [relatos, setRelatos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showReloadButtonOnTimeout, setShowReloadButtonOnTimeout] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [responsibleFilter, setResponsibleFilter] = useState('all'); // 'all', 'with_responsibles', 'without_responsibles'
   const { startDate, endDate } = useDateFilter();
@@ -55,6 +57,8 @@ const RelatosListaPage = () => {
 
   const fetchRelatos = useCallback(async () => {
     setLoading(true);
+    // Clear previous error when retrying
+    // setError(null); // This is handled by showToast, but good to explicitly clear
     const queryParams = new URLSearchParams(location.search);
     const statusFilter = queryParams.get('status');
 
@@ -79,6 +83,8 @@ const RelatosListaPage = () => {
     if (error) {
       console.error('Erro ao buscar relatos:', error);
       showToast('Erro ao carregar relatos.', 'error');
+      // Set error state to display reload button
+      setError(error);
     } else {
       let filteredData = data;
       // Only apply this filter if no specific status (like 'reprovado' or 'pendente') is requested
@@ -89,6 +95,8 @@ const RelatosListaPage = () => {
       }
       setRelatos(filteredData);
       console.log('Relatos state after setRelatos:', filteredData);
+      // Clear error state if data loaded successfully
+      setError(null);
     }
     setLoading(false);
   }, [location.search, searchTerm, responsibleFilter, showToast, startDate, endDate, tipoRelatoFilter]);
@@ -121,8 +129,27 @@ const RelatosListaPage = () => {
     fetchRelatos();
   }, [fetchRelatos, tipoRelatoFilter]);
 
+  useEffect(() => {
+    let timeoutId;
+    if (loading) {
+      timeoutId = setTimeout(() => {
+        setShowReloadButtonOnTimeout(true);
+      }, 5000); // 5 seconds
+    } else {
+      setShowReloadButtonOnTimeout(false); // Reset when loading finishes
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    }
+    return () => { // Cleanup on unmount or dependency change
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [loading]);
+
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 min-h-screen">
       <div className="flex items-center mb-4">
         <BackButton />
         <h1 className="text-2xl font-bold ml-4">{getTitle()}</h1>
@@ -153,7 +180,20 @@ const RelatosListaPage = () => {
       </div>
       
       {loading ? (
-        <LoadingSpinner />
+        <>
+          <LoadingSpinner />
+          {showReloadButtonOnTimeout && (
+            <div className="text-center mt-4">
+              <p className="mb-2">O carregamento está demorando mais que o esperado.</p>
+              <Button onClick={fetchRelatos}>Tentar Novamente</Button>
+            </div>
+          )}
+        </>
+      ) : error ? ( // Display error message and reload button
+        <div className="container mx-auto p-4 text-red-500 flex flex-col items-center justify-center">
+          <p className="mb-4">Erro ao carregar dados: {error.message}</p>
+          <Button onClick={fetchRelatos}>Tentar Novamente</Button>
+        </div>
       ) : relatos.length === 0 ? (
         <p>Nenhum relato encontrado para esta categoria.</p>
       ) : (

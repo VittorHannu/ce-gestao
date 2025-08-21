@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 import BackButton from '@/01-shared/components/BackButton';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
@@ -26,22 +26,22 @@ const RelatosByTypePage = () => {
     return storedValue !== null ? JSON.parse(storedValue) : false;
   });
 
-  useEffect(() => {
-    const getChartData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await fetchRelatosCountByType(startDate, endDate);
-        setChartData(data); // Set the directly formatted data
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getChartData();
+  const getChartData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchRelatosCountByType(startDate, endDate);
+      setChartData(data); // Set the directly formatted data
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
   }, [startDate, endDate]);
+
+  useEffect(() => {
+    getChartData();
+  }, [getChartData]);
 
   useEffect(() => {
     sessionStorage.setItem('relatosByTypePage_barAlignment', barAlignment);
@@ -110,7 +110,12 @@ const RelatosByTypePage = () => {
   }
 
   if (error) {
-    return <div className="container mx-auto p-4 text-red-500">Erro ao carregar dados: {error.message}</div>;
+    return (
+      <div className="container mx-auto p-4 text-red-500 flex flex-col items-center justify-center">
+        <p className="mb-4">Erro ao carregar dados: {error.message}</p>
+        <Button onClick={getChartData}>Tentar Novamente</Button>
+      </div>
+    );
   }
 
   const maxPyramidCount = Math.max(...birdPyramidData.map(d => d.value));
