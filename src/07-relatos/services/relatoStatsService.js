@@ -15,7 +15,10 @@ export async function fetchRelatosCountByType(startDate, endDate) {
   // We need to transform it to: [{ name: 'TypeA', value: 10 }, { name: 'TypeB', value: 5 }] for the chart
   const formattedData = data.map(item => ({
     name: item.tipo_relato,
-    value: item.count
+    value: item.total_count, // 'value' for the total count, as used by the existing chart
+    concluido: item.concluido_count,
+    emAndamento: item.em_andamento_count,
+    semTratativa: item.sem_tratativa_count
   }));
 
   return formattedData;

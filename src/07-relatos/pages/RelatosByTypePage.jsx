@@ -20,6 +20,7 @@ const RelatosByTypePage = () => {
     const storedValue = sessionStorage.getItem('relatosByTypePage_showZeroBars');
     return storedValue !== null ? JSON.parse(storedValue) : false;
   });
+  const [showDetailedView, setShowDetailedView] = useState(false); // New state for detailed view
 
   useEffect(() => {
     const getChartData = async () => {
@@ -62,20 +63,29 @@ const RelatosByTypePage = () => {
     const normalizeString = (str) => str.toLowerCase().trim();
 
     // Map the fetched data to a temporary object for easy lookup, normalizing keys
-    const dataMap = new Map(chartData.map(item => [normalizeString(item.name), item.value]));
+    const dataMap = new Map(chartData.map(item => [normalizeString(item.name), item])); // Store the whole item
 
     // Create the final result array, ensuring all orderedTypes are present
-    let result = orderedTypes.map(type => ({
-      name: type, // Keep original casing for display
-      value: dataMap.get(normalizeString(type)) || 0 // Get value from map using normalized key
-    }));
+    let result = orderedTypes.map(type => {
+      const item = dataMap.get(normalizeString(type));
+      return {
+        name: type, // Keep original casing for display
+        value: item ? item.value : 0,
+        concluido: item ? item.concluido : 0,
+        emAndamento: item ? item.emAndamento : 0,
+        semTratativa: item ? item.semTratativa : 0
+      };
+    });
 
     // Add 'Sem Classificação' only if its value is greater than 0
-    const semClassificacaoValue = dataMap.get(normalizeString('Sem Classificação')) || 0;
-    if (semClassificacaoValue > 0) {
+    const semClassificacaoItem = dataMap.get(normalizeString('Sem Classificação'));
+    if (semClassificacaoItem && semClassificacaoItem.value > 0) {
       result.push({
         name: 'Sem Classificação',
-        value: semClassificacaoValue
+        value: semClassificacaoItem.value,
+        concluido: semClassificacaoItem.concluido,
+        emAndamento: semClassificacaoItem.emAndamento,
+        semTratativa: semClassificacaoItem.semTratativa
       });
     }
 
@@ -136,6 +146,14 @@ const RelatosByTypePage = () => {
             >
               {showZeroBars ? <FilterX className="h-4 w-4" /> : <Filter className="h-4 w-4" />}
             </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowDetailedView(!showDetailedView)}
+              className={showDetailedView ? 'bg-gray-200' : ''}
+            >
+              {showDetailedView ? 'Visão Simples' : 'Visão Detalhada'}
+            </Button>
           </div>
         </div>
         {birdPyramidData.length > 0 && maxPyramidCount > 0 ? (
@@ -173,10 +191,43 @@ const RelatosByTypePage = () => {
                         <span className="ml-2 text-gray-700 font-bold">0</span>
                       </>
                     ) : (
-                      <div
-                        className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
-                        style={{ width: `${barWidth}%`, minWidth: '40px', maxWidth: '600px' }}
-                      >{item.value}</div>
+                      showDetailedView ? (
+                        <div
+                          className={`h-8 rounded-sm flex items-center justify-center text-white font-bold overflow-hidden`}
+                          style={{ width: `${barWidth}%`, minWidth: '40px', maxWidth: '600px' }}
+                        >
+                          {/* Segmented Bar */}
+                          {item.concluido > 0 && (
+                            <div
+                              className="bg-green-500 h-full flex items-center justify-center"
+                              style={{ width: `${(item.concluido / item.value) * 100}%` }}
+                            >
+                              {item.concluido}
+                            </div>
+                          )}
+                          {item.emAndamento > 0 && (
+                            <div
+                              className="bg-yellow-500 h-full flex items-center justify-center"
+                              style={{ width: `${(item.emAndamento / item.value) * 100}%` }}
+                            >
+                              {item.emAndamento}
+                            </div>
+                          )}
+                          {item.semTratativa > 0 && (
+                            <div
+                              className="bg-red-500 h-full flex items-center justify-center"
+                              style={{ width: `${(item.semTratativa / item.value) * 100}%` }}
+                            >
+                              {item.semTratativa}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div
+                          className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
+                          style={{ width: `${barWidth}%`, minWidth: '40px', maxWidth: '600px' }}
+                        >{item.value}</div>
+                      )
                     )}
                   </div>
                 </Link>
