@@ -7,7 +7,7 @@ import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
 import { fetchRelatosCountByType } from '../services/relatoStatsService';
 import { Link } from 'react-router-dom';
 import { Button } from '@/01-shared/components/ui/button';
-import { AlignLeft, AlignCenter, Filter, FilterX } from 'lucide-react';
+import { AlignLeft, AlignCenter, Filter, FilterX, Layers } from 'lucide-react';
 import DateFilterCard from '../components/DateFilterCard';
 
 const RelatosByTypePage = () => {
@@ -20,7 +20,10 @@ const RelatosByTypePage = () => {
     const storedValue = sessionStorage.getItem('relatosByTypePage_showZeroBars');
     return storedValue !== null ? JSON.parse(storedValue) : false;
   });
-  const [showDetailedView, setShowDetailedView] = useState(false); // New state for detailed view
+  const [showDetailedView, setShowDetailedView] = useState(() => {
+    const storedValue = sessionStorage.getItem('relatosByTypePage_showDetailedView');
+    return storedValue !== null ? JSON.parse(storedValue) : false;
+  });
 
   useEffect(() => {
     const getChartData = async () => {
@@ -46,6 +49,10 @@ const RelatosByTypePage = () => {
   useEffect(() => {
     sessionStorage.setItem('relatosByTypePage_showZeroBars', JSON.stringify(showZeroBars));
   }, [showZeroBars]);
+
+  useEffect(() => {
+    sessionStorage.setItem('relatosByTypePage_showDetailedView', JSON.stringify(showDetailedView));
+  }, [showDetailedView]);
 
   const birdPyramidData = useMemo(() => {
     const orderedTypes = [
@@ -119,8 +126,8 @@ const RelatosByTypePage = () => {
       </div>
 
       <div className="p-6 border rounded-lg bg-white shadow-md">
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">Pirâmide de Bird</h2>
+        <div className="pb-4 mb-4 border-b border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Pirâmide de Bird</h2>
           <div className="flex space-x-2">
             <Button
               variant="outline"
@@ -152,7 +159,7 @@ const RelatosByTypePage = () => {
               onClick={() => setShowDetailedView(!showDetailedView)}
               className={showDetailedView ? 'bg-gray-200' : ''}
             >
-              {showDetailedView ? 'Visão Simples' : 'Visão Detalhada'}
+              <Layers className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -193,7 +200,7 @@ const RelatosByTypePage = () => {
                     ) : (
                       showDetailedView ? (
                         <div
-                          className={`h-8 rounded-sm flex items-center justify-center text-white font-bold overflow-hidden`}
+                          className={'h-8 rounded-sm flex items-center justify-center text-white font-bold overflow-hidden'}
                           style={{ width: `${barWidth}%`, minWidth: '40px', maxWidth: '600px' }}
                         >
                           {/* Segmented Bar */}
