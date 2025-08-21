@@ -257,7 +257,7 @@ const RelatosByTypePage = () => {
                           </div>
                         </div>
                       ) : (
-                        <div className="flex items-center w-full"> {/* Wrapper div for single bar view */}
+                        <div className={`flex items-center w-full ${barAlignment === 'center' ? 'justify-center' : ''}`}> {/* Wrapper div for single bar view */}
                           <div
                             className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
                             style={{ width: `${barWidth}%`, maxWidth: '600px' }}
