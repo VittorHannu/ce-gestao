@@ -129,39 +129,43 @@ const RelatosByTypePage = () => {
       <div className="p-6 border rounded-lg bg-white shadow-md">
         <div className="pb-4 mb-4 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Pirâmide de Bird</h2>
-          <div className="flex space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setBarAlignment('left')}
-              className={barAlignment === 'left' ? 'bg-gray-200' : ''}
-            >
-              <AlignLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setBarAlignment('center')}
-              className={barAlignment === 'center' ? 'bg-gray-200' : ''}
-            >
-              <AlignCenter className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowZeroBars(!showZeroBars)}
-              className={!showZeroBars ? 'bg-gray-200' : ''}
-            >
-              {showZeroBars ? <FilterX className="h-4 w-4" /> : <Filter className="h-4 w-4" />}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowDetailedView(!showDetailedView)}
-              className={showDetailedView ? 'bg-gray-200' : ''}
-            >
-              <Layers className="h-4 w-4" />
-            </Button>
+          <div className="flex justify-between w-full">
+            <div className="flex space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowZeroBars(!showZeroBars)}
+                className={!showZeroBars ? 'bg-gray-200' : ''}
+              >
+                {showZeroBars ? <FilterX className="h-4 w-4" /> : <Filter className="h-4 w-4" />}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowDetailedView(!showDetailedView)}
+                className={showDetailedView ? 'bg-gray-200' : ''}
+              >
+                <Layers className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setBarAlignment('left')}
+                className={barAlignment === 'left' ? 'bg-gray-200' : ''}
+              >
+                <AlignLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setBarAlignment('center')}
+                className={barAlignment === 'center' ? 'bg-gray-200' : ''}
+              >
+                <AlignCenter className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
         {birdPyramidData.length > 0 && maxPyramidCount > 0 ? (
@@ -278,23 +282,23 @@ const RelatosByTypePage = () => {
         ) : (
           <p className="text-center text-gray-500">Nenhum dado disponível para a Pirâmide de Bird.</p>
         )}
-          {showDetailedView && (
-            <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-600">
-              <p className="font-semibold mb-2">Legenda de Status:</p>
-              <div className="flex items-center mb-1">
-                <span className="w-4 h-4 bg-green-500 rounded-full mr-2"></span>
-                <span>Concluído</span>
-              </div>
-              <div className="flex items-center mb-1">
-                <span className="w-4 h-4 bg-amber-500 rounded-full mr-2"></span>
-                <span>Em Andamento</span>
-              </div>
-              <div className="flex items-center mb-1">
-                <span className="w-4 h-4 bg-red-500 rounded-full mr-2"></span>
-                <span>Sem Tratativa</span>
-              </div>
+        {showDetailedView && (
+          <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-600">
+            <p className="font-semibold mb-2">Legenda de Status:</p>
+            <div className="flex items-center mb-1">
+              <span className="w-4 h-4 bg-green-500 rounded-full mr-2"></span>
+              <span>Concluído</span>
             </div>
-          )}
+            <div className="flex items-center mb-1">
+              <span className="w-4 h-4 bg-amber-500 rounded-full mr-2"></span>
+              <span>Em Andamento</span>
+            </div>
+            <div className="flex items-center mb-1">
+              <span className="w-4 h-4 bg-red-500 rounded-full mr-2"></span>
+              <span>Sem Tratativa</span>
+            </div>
+          </div>
+        )}
       </div>
 
       
