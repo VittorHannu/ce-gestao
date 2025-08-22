@@ -153,6 +153,9 @@ const RelatosListaPage = () => {
         <BackButton />
         <h1 className="text-2xl font-bold ml-4">{getTitle()}</h1>
       </div>
+
+      
+
       <div className="mb-4">
         <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Pesquisar relatos..." />
       </div>
@@ -194,7 +197,15 @@ const RelatosListaPage = () => {
           <Button onClick={fetchRelatos}>Tentar Novamente</Button>
         </div>
       ) : relatos.length === 0 ? (
-        <p>Nenhum relato encontrado para esta categoria.</p>
+        <div className="text-center py-10">
+          {userProfile && !userProfile.can_view_all_relatos ? (
+            <p className="text-gray-600 bg-gray-100 p-4 rounded-md">
+              Nota: Sua lista mostra apenas os relatos que você criou ou pelos quais é responsável.
+            </p>
+          ) : (
+            <p>Nenhum relato encontrado para esta categoria.</p>
+          )}
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {relatos.map((relato) => (
