@@ -8,14 +8,14 @@ ON public.relatos
 FOR UPDATE
 USING (
   -- Users with the 'can_manage_relatos' permission can update any report
-  (public.has_permission('can_manage_relatos'))
+  ( (SELECT profiles.can_manage_relatos FROM public.profiles WHERE profiles.id = auth.uid()) )
   OR
   -- Users whose ID is in the 'responsaveis' array of the report can update it
   (EXISTS (SELECT 1 FROM public.relato_responsaveis rr WHERE rr.relato_id = relatos.id AND rr.user_id = auth.uid()))
 )
 WITH CHECK (
   -- The same logic applies for the WITH CHECK clause
-  (public.has_permission('can_manage_relatos'))
+  ( (SELECT profiles.can_manage_relatos FROM public.profiles WHERE profiles.id = auth.uid()) )
   OR
   (EXISTS (SELECT 1 FROM public.relato_responsaveis rr WHERE rr.relato_id = relatos.id AND rr.user_id = auth.uid()))
 );
