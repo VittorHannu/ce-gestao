@@ -24,6 +24,7 @@ import { useToast } from '@/01-shared/hooks/useToast';
 
 import ProtectedRoute from '@/01-shared/components/protected-route/ProtectedRoute';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
+import { Button } from '@/01-shared/components/ui/button';
 
 import MainLayout from '@/01-shared/components/MainLayout';
 import PublicLayout from '@/01-shared/components/PublicLayout';
@@ -70,6 +71,7 @@ function AppWrapper({ showToast }) {
   const [session, setSession] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [profileLoadError, setProfileLoadError] = useState(null); // New state
   const [isReadyForRender, setIsReadyForRender] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -84,11 +86,13 @@ function AppWrapper({ showToast }) {
 
       if (error) throw error;
       setUser(data);
+      setProfileLoadError(null); // Clear error on success
       console.log('DEBUG: Perfil do usuário buscado:', data);
       console.log('DEBUG: can_view_users no App.jsx:', data?.can_view_users);
     } catch (error) {
       console.error('Erro ao buscar perfil:', error);
       showToast('Erro ao carregar dados do perfil.', 'error');
+      setProfileLoadError(error); // Set error state
     }
   }, [showToast]);
 
@@ -145,7 +149,14 @@ function AppWrapper({ showToast }) {
   if (loading || !isReadyForRender || (session && !user)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-blue-500 mx-auto"></div>
+        {profileLoadError ? (
+          <div className="text-center text-red-500">
+            <p className="mb-4">Erro ao carregar dados do perfil: {profileLoadError.message}</p>
+            <Button onClick={() => fetchUserProfile(session.user.id)}>Tentar Novamente</Button>
+          </div>
+        ) : (
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-blue-500 mx-auto"></div>
+        )}
       </div>
     );
   }

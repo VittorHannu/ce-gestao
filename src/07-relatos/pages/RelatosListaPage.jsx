@@ -135,18 +135,17 @@ const RelatosListaPage = () => {
       timeoutId = setTimeout(() => {
         setShowReloadButtonOnTimeout(true);
       }, 5000); // 5 seconds
-    } else {
-      setShowReloadButtonOnTimeout(false); // Reset when loading finishes
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
     }
-    return () => { // Cleanup on unmount or dependency change
+
+    // Cleanup function: This runs when the component unmounts or when 'loading' changes
+    return () => {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
+      // Also reset the state when loading finishes or component unmounts
+      setShowReloadButtonOnTimeout(false);
     };
-  }, [loading]);
+  }, [loading]); // Dependency array: runs when 'loading' changes
 
   return (
     <div className="container mx-auto p-4 min-h-screen">

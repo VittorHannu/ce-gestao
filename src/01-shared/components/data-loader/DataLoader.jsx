@@ -20,7 +20,7 @@
 
 import React from 'react';
 
-const DataLoader = ({ children, isLoading, error, _loadingMessage = 'Carregando...', _emptyMessage = 'Nenhum dado encontrado.' }) => {
+const DataLoader = ({ children, isLoading, error, onRetry, _loadingMessage = 'Carregando...', _emptyMessage = 'Nenhum dado encontrado.' }) => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -34,6 +34,14 @@ const DataLoader = ({ children, isLoading, error, _loadingMessage = 'Carregando.
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center text-red-500">
           <p>Erro ao carregar dados: {error.message}</p>
+          {onRetry && ( // Conditionally render retry button
+            <button
+              onClick={onRetry}
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Tentar Novamente
+            </button>
+          )}
         </div>
       </div>
     );

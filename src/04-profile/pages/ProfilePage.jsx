@@ -19,7 +19,7 @@ const ProfilePage = () => {
   
 
   // Fetch user profile using React Query
-  const { data: userProfile, isLoading: isProfileLoading, error: profileError } = useUserProfile();
+  const { data: userProfile, isLoading: isProfileLoading, error: profileError, refetch } = useUserProfile();
 
   // Mutation for updating user avatar
   const { mutate: updateAvatar, isLoading: isUploading } = useMutation({
@@ -80,7 +80,7 @@ const ProfilePage = () => {
   return (
     <MainLayout>
       
-      <DataLoader loading={isProfileLoading} error={profileError} loadingMessage="Carregando perfil...">
+      <DataLoader loading={isProfileLoading} error={profileError} onRetry={refetch} loadingMessage="Carregando perfil...">
         {userProfile && (
           <>
             {/* Seção de Informações Básicas do Usuário */}
