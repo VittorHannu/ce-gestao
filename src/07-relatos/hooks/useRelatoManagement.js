@@ -56,20 +56,14 @@ export const useRelatoManagement = (relatoId) => {
   const handleUpdateRelato = useCallback(async (formData, canManageRelatos) => {
     setIsSaving(true);
     try {
-      const { responsibles } = formData;
-      const relatoData = {
-        is_anonymous: formData.is_anonymous,
-        local_ocorrencia: formData.local_ocorrencia,
-        data_ocorrencia: formData.data_ocorrencia,
-        hora_aproximada_ocorrencia: formData.hora_aproximada_ocorrencia || null,
-        descricao: formData.descricao,
-        riscos_identificados: formData.riscos_identificados,
-        danos_ocorridos: formData.danos_ocorridos,
-        planejamento_cronologia_solucao: formData.planejamento_cronologia_solucao,
-        data_conclusao_solucao: formData.data_conclusao_solucao,
-        tipo_relato: formData.tipo_relato
-      };
+      const { responsaveis, ...relatoData } = formData;
 
+      // FIX: O banco de dados não aceita string vazia para campos de tempo, converte para null.
+      if (relatoData.hora_aproximada_ocorrencia === '') {
+        relatoData.hora_aproximada_ocorrencia = null;
+      }
+
+      // 1. Atualiza os campos de texto na tabela principal 'relatos'
       const { error: updateError } = await supabase
         .from('relatos')
         .update(relatoData)
@@ -77,32 +71,18 @@ export const useRelatoManagement = (relatoId) => {
 
       if (updateError) throw updateError;
 
-      // Update responsibles if user has permission
-      if (canManageRelatos) {
-        // Delete existing responsibles
-        const { error: deleteError } = await supabase
-          .from('relato_responsaveis')
-          .delete()
-          .eq('relato_id', relatoId);
+      // 2. Se o usuário pode gerenciar e a lista de responsáveis existe, chama a função RPC
+      if (canManageRelatos && responsaveis) {
+        const { error: rpcError } = await supabase.rpc('update_relato_responsaveis', {
+          p_relato_id: relatoId,
+          p_user_ids: responsaveis
+        });
 
-        if (deleteError) throw deleteError;
-
-        // Insert new responsibles
-        if (responsibles && responsibles.length > 0) {
-          const newResponsibles = responsibles.map(userId => ({
-            relato_id: relatoId,
-            user_id: userId
-          }));
-          const { error: insertError } = await supabase
-            .from('relato_responsaveis')
-            .insert(newResponsibles);
-
-          if (insertError) throw insertError;
-        }
+        if (rpcError) throw rpcError;
       }
 
       showToast('Relato atualizado com sucesso!', 'success');
-      fetchRelato(); // Re-fetch relato to get updated data
+      fetchRelato(); // Recarrega os dados para mostrar o estado atualizado
       return true;
     } catch (err) {
       handleServiceError('handleUpdateRelato', err, showToast);
