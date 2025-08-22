@@ -75,6 +75,10 @@ Deno.serve(async (req) => {
           messageTitle = 'Novo Relato Atribuído!'
           messageBody = `O relato ${task.payload.relato_id} foi atribuído a você.`
           wantsNotification = profile.notification_preferences?.new_report_assigned ?? true
+        } else if (task.notification_type === 'NEW_COMMENT') {
+          messageTitle = 'Novo Comentário no Relato!'
+          messageBody = `Um novo comentário foi adicionado ao relato ${task.payload.relato_id}: "${task.payload.comment_text}"`
+          wantsNotification = profile.notification_preferences?.new_comment_on_report ?? true
         }
         // Adicionar outros `if` para outros tipos de notificação aqui no futuro
 

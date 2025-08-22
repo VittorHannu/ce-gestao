@@ -53,6 +53,7 @@ const UserDetailsPage = React.lazy(() => import('@/05-adm/pages/UserDetailsPage'
 const FeedbackReportsPage = React.lazy(() => import('@/07-relatos/pages/FeedbackReportsPage'));
 const RelatosReprovadosPage = React.lazy(() => import('@/07-relatos/pages/RelatosReprovadosPage'));
 const RelatoLogsPage = React.lazy(() => import('@/07-relatos/pages/RelatoLogsPage'));
+const NotificationsPage = React.lazy(() => import('@/08-notifications/pages/NotificationsPage'));
 
 
 import '@/00-global/styles/App.css';
@@ -190,6 +191,7 @@ function AppWrapper({ showToast }) {
         <Route path="/perfil" element={<Suspense fallback={<LoadingSpinner />}><ProfilePage /></Suspense>} />
         <Route path="/perfil/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordProfilePage /></Suspense>} />
         <Route path="/perfil/update-email" element={<Suspense fallback={<LoadingSpinner />}><UpdateEmailPage /></Suspense>} />
+        <Route path="/notifications" element={<Suspense fallback={<LoadingSpinner />}><NotificationsPage /></Suspense>} />
         <Route path="/relatos" element={<Suspense fallback={<LoadingSpinner />}><RelatosPage /></Suspense>} />
         <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage showToast={showToast} /></Suspense>} />
         <Route path="/relatos/aprovacao" element={<ProtectedRoute user={user} requiredPermission="can_manage_relatos"><Suspense fallback={<LoadingSpinner />}><RelatosAprovacaoPage /></Suspense></ProtectedRoute>} />
