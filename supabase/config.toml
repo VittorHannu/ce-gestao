@@ -1,0 +1,51 @@
+# supabase/config.toml
+project_id = "vqeetamykdsjajrurtoo"
+
+[api]
+port = 8000
+schemas = ["public", "storage", "graphql"]
+extra_search_path = ["public"]
+max_rows = 1000
+
+[db]
+port = 5432
+major_version = 15
+
+[studio]
+port = 54321
+
+[auth]
+enabled = true
+site_url = "https://ce-gestao.vercel.app"
+additional_redirect_urls = ["https://ce-gestao.vercel.app/update-password", "https://ce-gestao.vercel.app", "https://ce-gestao.vercel.app/auth/confirm"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+enable_manual_linking = false
+enable_signup = false
+enable_anonymous_sign_ins = false
+minimum_password_length = 6
+password_requirements = "letters_digits"
+
+[auth.mfa]
+max_enrolled_factors = 10
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[auth.mfa.phone]
+enroll_enabled = false
+verify_enabled = false
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = false
+enable_confirmations = true
+secure_password_change = true
+max_frequency = "1m0s"
+otp_length = 6
+otp_expiry = 3600
+
+[storage]
+file_size_limit = "50MiB"

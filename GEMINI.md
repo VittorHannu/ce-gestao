@@ -1,3 +1,10 @@
+
+gemini access token: sbp_07eb284585a7a4ba2164492ac686bed4a34fc090
+project password: jywfib-qyvsap-1fiTdi
+project id: vqeetamykdsjajrurtoo
+
+
+
 # GEMINI.md - Guia Operacional para o Agente de IA (O "Dono" do Projeto)
 
 Este documento serve como o guia principal e a memória persistente para o agente de IA que trabalha no projeto `relatos-supabase`. Ele define o papel do agente como um mantenedor proativo e responsável pela saúde e evolução contínua do aplicativo.
