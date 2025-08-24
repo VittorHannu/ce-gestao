@@ -8,9 +8,9 @@ DROP TYPE IF EXISTS "public"."CEFGRFG";
 --    Reason: An identical function "set_updated_at_timestamp" already exists.
 DROP FUNCTION IF EXISTS "public"."update_updated_at_column"();
 
--- 3. Drop redundant user creation function
---    Reason: "handle_new_user_or_update_profile" is more comprehensive and is used by the system.
-DROP FUNCTION IF EXISTS "public"."handle_new_user"();
+-- 3. Drop redundant user creation function (REMOVED FROM MIGRATION)
+--    Reason: This function is actively used by the on_auth_user_created trigger in production.
+-- DROP FUNCTION IF EXISTS "public"."handle_new_user"();
 
 -- 4. Drop obsolete admin promotion function
 --    Reason: It targets a non-existent "is_admin" column. Permissions are now granular.
