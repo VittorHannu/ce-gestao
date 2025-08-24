@@ -87,24 +87,39 @@ Este projeto é uma aplicação web de Sistema de Gestão Integrada (SGI) desenv
 *   `pnpm lint`: Executa o linter (ESLint) para verificar e corrigir o código.
 *   `pnpm test`: Executa os testes unitários com Vitest.
 
-## 🗄️ Migrações do Banco de Dados
+## 🗄️ Migrações e Povoamento do Banco (Seeding)
 
-As alterações na estrutura do banco de dados são gerenciadas através de arquivos de migração. O fluxo de trabalho é o seguinte:
+As alterações na estrutura do banco de dados e seu povoamento com dados de teste são processos separados.
 
-1.  **Criar um novo arquivo de migração:**
-    ```bash
-    supabase migration new <nome_descritivo_da_mudanca>
-    ```
-2.  **Escrever o SQL:** Adicione seu código SQL (`CREATE TABLE`, `ALTER TABLE`, etc.) no arquivo gerado dentro da pasta `supabase/migrations`.
+### 1. Migrações (Estrutura do Banco)
 
-3.  **Aplicar localmente (para testar):**
-    Este comando irá apagar e recriar seu banco de dados local, aplicando todas as migrações em ordem.
+Para alterar a ESTRUTURA do banco (criar tabelas, adicionar colunas, etc.), use as migrações.
+
+- **Crie um novo arquivo de migração:**
+  ```bash
+  supabase migration new <nome_descritivo_da_mudanca>
+  ```
+- **Escreva o SQL:** Adicione seu código SQL (`CREATE TABLE`, etc.) no arquivo gerado na pasta `supabase/migrations`.
+
+### 2. Povoamento/Seed (Dados de Teste)
+
+Para limpar o banco de dados local e populá-lo com dados de teste (usuários, etc.), siga este fluxo de 2 passos:
+
+1.  **Resetar o Banco de Dados:**
+    Este comando apaga o banco local e o recria com a estrutura definida nas suas migrações.
     ```bash
     supabase db reset
     ```
-
-4.  **Aplicar em produção:**
-    Após validar as alterações localmente, envie as migrações para o projeto Supabase na nuvem.
+2.  **Executar o Script de Seed:**
+    Este comando executa o script `seed.ts` para criar os usuários de teste e outros dados iniciais.
     ```bash
-    supabase db push
+    pnpm run db:seed
     ```
+
+### Aplicando em Produção
+
+Para aplicar as alterações de **estrutura** (migrações) no ambiente de produção, use:
+```bash
+supabase db push
+```
+**Atenção:** O comando `db:seed` é destinado **apenas para o ambiente de desenvolvimento local** e não deve ser executado em produção.
