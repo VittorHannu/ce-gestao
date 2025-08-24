@@ -182,6 +182,13 @@ function AppWrapper({ showToast }) {
           <div className="text-center text-red-500">
             <p className="mb-4">Erro ao carregar dados do perfil: {profileLoadError.message}</p>
             <Button onClick={() => fetchUserProfile(session.user.id)}>Tentar Novamente</Button>
+            {/* New Logout Button */}
+            <Button
+              onClick={handleLogout} // Use the existing handleLogout
+              className="mt-4 ml-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Sair (Logout)
+            </Button>
           </div>
         ) : (
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-blue-500 mx-auto"></div>
