@@ -11,6 +11,8 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+CREATE ROLE anon_relator;
+
 
 CREATE EXTENSION IF NOT EXISTS "pg_cron" WITH SCHEMA "pg_catalog";
 
@@ -1768,7 +1770,6 @@ GRANT ALL ON SEQUENCE "public"."relato_seq" TO "service_role";
 GRANT ALL ON TABLE "public"."relatos" TO "anon";
 GRANT ALL ON TABLE "public"."relatos" TO "authenticated";
 GRANT ALL ON TABLE "public"."relatos" TO "service_role";
-GRANT INSERT ON TABLE "public"."relatos" TO PUBLIC;
 GRANT SELECT,INSERT ON TABLE "public"."relatos" TO "anon_relator";
 
 
