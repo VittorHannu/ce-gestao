@@ -1193,6 +1193,10 @@ CREATE POLICY "Allow users to delete their own comments or if they can delete " 
 
 
 
+CREATE POLICY "Allow users to insert their own profile" ON "public"."profiles" FOR INSERT TO "authenticated" WITH CHECK (("auth"."uid"() = "id"));
+
+
+
 CREATE POLICY "Allow users to manage their own push subscriptions" ON "public"."push_subscriptions" USING (("auth"."uid"() = "user_id")) WITH CHECK (("auth"."uid"() = "user_id"));
 
 

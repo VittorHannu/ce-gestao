@@ -10,3 +10,4 @@ dist/
 
 # Arquivos de debug pessoal
 debug-console.mjs
+supabase/migrations_backup/

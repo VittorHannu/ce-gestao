@@ -83,16 +83,44 @@ function AppWrapper({ showToast }) {
         .from('profiles')
         .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks')
         .eq('id', userId)
-        .single();
+        .limit(1); // Use limit(1) instead of single() for graceful handling of no results
 
       if (error) throw error;
-      setUser(data);
+
+      let userProfile = data && data.length > 0 ? data[0] : null;
+
+      if (!userProfile) {
+        // If no profile found, create one
+        console.warn('No profile found for user, creating a new one.');
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            id: userId,
+            email: authUser?.email || '', // Use authenticated user's email
+            full_name: authUser?.user_metadata?.full_name || authUser?.email || 'Novo Usuário',
+            is_active: true,
+            can_manage_relatos: false,
+            can_view_users: false,
+            can_create_users: false,
+            can_delete_users: false,
+            can_view_feedbacks: false,
+          })
+          .select()
+          .single(); // Use single() here as we expect exactly one new record
+
+        if (createError) throw createError;
+        userProfile = newProfile;
+        showToast('Perfil criado com sucesso!', 'success');
+      }
+
+      setUser(userProfile);
       setProfileLoadError(null); // Clear error on success
-      console.log('DEBUG: Perfil do usuário buscado:', data);
-      console.log('DEBUG: can_view_users no App.jsx:', data?.can_view_users);
+      console.log('DEBUG: Perfil do usuário buscado:', userProfile);
+      console.log('DEBUG: can_view_users no App.jsx:', userProfile?.can_view_users);
     } catch (error) {
-      console.error('Erro ao buscar perfil:', error);
-      showToast('Erro ao carregar dados do perfil.', 'error');
+      console.error('Erro ao buscar ou criar perfil:', error);
+      showToast('Erro ao carregar ou criar dados do perfil.', 'error');
       setProfileLoadError(error); // Set error state
     }
   }, [showToast]);
