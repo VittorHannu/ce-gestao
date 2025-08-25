@@ -130,7 +130,6 @@ function AppWrapper({ showToast }) {
     await supabase.auth.signOut();
     setSession(null);
     setUser(null);
-    localStorage.removeItem('lastPath'); // Limpa o path salvo ao deslogar
     showToast('Você foi desconectado.', 'info');
   };
 
@@ -142,12 +141,6 @@ function AppWrapper({ showToast }) {
         await fetchUserProfile(session.user.id);
       }
       setLoading(false);
-
-      // Lógica de redirecionamento do localStorage
-      const lastPath = localStorage.getItem('lastPath');
-      if (lastPath && lastPath !== location.pathname && lastPath !== '/auth' && lastPath !== '/update-password') {
-        navigate(lastPath);
-      }
       setIsReadyForRender(true); // Marca que a aplicação está pronta para renderizar as rotas
     };
 
@@ -162,19 +155,11 @@ function AppWrapper({ showToast }) {
         fetchUserProfile(session.user.id); // Garante que o perfil seja buscado/atualizado
       } else {
         setUser(null);
-        localStorage.removeItem('lastPath'); // Limpa o path salvo ao deslogar
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [fetchUserProfile, location.pathname, navigate]);
-
-  // Salva a última rota visitada no localStorage
-  useEffect(() => {
-    if (location.pathname !== '/auth' && location.pathname !== '/update-password' && location.pathname !== '/force-password-change') {
-      localStorage.setItem('lastPath', location.pathname);
-    }
-  }, [location.pathname]);
+  }, [fetchUserProfile]);
 
   if (loading || !isReadyForRender || (session && !user)) {
     return (
