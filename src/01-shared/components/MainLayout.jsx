@@ -19,6 +19,7 @@
 
 
 import React, { useEffect, useRef, useMemo } from 'react';
+import { usePresence } from '../hooks/usePresence';
 import { useLocation } from 'react-router-dom';
 import * as Tooltip from '@radix-ui/react-tooltip'; // Added import
 
@@ -26,6 +27,7 @@ import BottomNavBar from './bottom-nav-bar/BottomNavBar';
 
 
 const MainLayout = ({ children, _user }) => {
+  usePresence(); // Initialize presence tracking
   const scrollContainerRef = useRef(null);
   const mainRef = useRef(null);
   const location = useLocation();

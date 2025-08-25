@@ -3,6 +3,7 @@ import MainLayout from '@/01-shared/components/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import SearchInput from '@/01-shared/components/SearchInput';
 import { useUsers } from '@/05-adm/hooks/useUsers';
+import { usePresence } from '@/01-shared/hooks/usePresence';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/01-shared/components/ui/button';
@@ -10,7 +11,7 @@ import { Button } from '@/01-shared/components/ui/button';
 
 function UsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  
+  const { onlineUsers } = usePresence();
   const navigate = useNavigate();
 
   const { data: users, isLoading: loading, isError, error } = useUsers(searchTerm);
@@ -52,17 +53,23 @@ function UsersPage() {
         <p>Nenhum usuário encontrado.</p>
       ) : (
         <ul className="space-y-2">
-          {users.map((user) => (
-            <li
-              key={user.id}
-              className="p-2 rounded-md cursor-pointer bg-white hover:bg-gray-100 transition-colors shadow-sm"
-              onClick={() => handleUserClick(user.id)}
-            >
-              <p className="font-semibold">{user.full_name}</p>
-              <p className="text-sm text-gray-600">{user.email}</p>
-              <p className="text-xs text-gray-500">Status: {user.is_active ? 'Ativo' : 'Inativo'}</p>
-            </li>
-          ))}
+          {users.map((user) => {
+            const isOnline = onlineUsers.some(onlineUser => onlineUser.user_id === user.id);
+            return (
+              <li
+                key={user.id}
+                className="p-2 rounded-md cursor-pointer bg-white hover:bg-gray-100 transition-colors shadow-sm"
+                onClick={() => handleUserClick(user.id)}
+              >
+                <div className="flex items-center justify-between">
+                  <p className="font-semibold">{user.full_name}</p>
+                  <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                </div>
+                <p className="text-sm text-gray-600">{user.email}</p>
+                <p className="text-xs text-gray-500">Status: {user.is_active ? 'Ativo' : 'Inativo'}</p>
+              </li>
+            );
+          })}
         </ul>
       )}
     </MainLayout>
