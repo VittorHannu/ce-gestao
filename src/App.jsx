@@ -212,10 +212,10 @@ function AppWrapper({ showToast }) {
           {/* Rota para criar relato, acessível sem autenticação */}
           <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage showToast={showToast} /></Suspense>} />
           {/* Added for anonymous access */}
-          {/* Redireciona a rota raiz para a página de apresentação */}
-          <Route path="/" element={<Navigate to="/apresentacao" />} />
-          {/* Qualquer outra rota sem sessão vai para a apresentação */}
-          <Route path="*" element={<Navigate to="/apresentacao" />} />
+          {/* Redireciona a rota raiz para a página de login */}
+          <Route path="/" element={<Navigate to="/auth" />} />
+          {/* Qualquer outra rota sem sessão vai para a página de login */}
+          <Route path="*" element={<Navigate to="/auth" />} />
         </Route>
       </Routes>
     );
