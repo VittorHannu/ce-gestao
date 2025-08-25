@@ -20,6 +20,7 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom
 import { supabase } from '@/01-shared/lib/supabase';
 import Toast from '@/01-shared/components/ui/Toast';
 import { useToast } from '@/01-shared/hooks/useToast';
+import { usePresence } from '@/01-shared/hooks/usePresence';
 
 
 import ProtectedRoute from '@/01-shared/components/protected-route/ProtectedRoute';
@@ -77,6 +78,10 @@ function AppWrapper({ showToast }) {
   const [isReadyForRender, setIsReadyForRender] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Ativa o hook de presença se houver uma sessão
+  const hasSession = !!session;
+  usePresence(hasSession);
 
   const fetchUserProfile = useCallback(async (userId) => {
     try {
