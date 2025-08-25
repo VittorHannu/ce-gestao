@@ -115,13 +115,10 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    port: 5173,
-    allowedHosts: [
-      'all',
-      '5173-i9m2xve7rf5alxsrpggsl-ead0671e.manusvm.computer',
-      '.manusvm.computer'
-    ]
+    port: 5174,
+    allowedHosts: ['.*']
   },
+  
   assetsInclude: ['**/*.svg'],
   css: {
     postcss: {

@@ -1,219 +1,129 @@
-import { createClient } from '@supabase/supabase-js';
-import { config } from 'dotenv';
-import path from 'path';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-// Carrega as variáveis de ambiente do arquivo .env na raiz do projeto
-config({ path: path.resolve(process.cwd(), '.env') });
+// --- Configuration ---
+const supabaseUrl = process.env.VITE_SUPABASE_URL ?? 'http://127.0.0.1:54321';
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? 'your_service_role_key';
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-if (!supabaseUrl || !supabaseServiceRoleKey) {
-  throw new Error('Supabase URL or Service Role Key is missing from .env file');
+if (!supabaseServiceRoleKey) {
+  throw new Error('SUPABASE_SERVICE_ROLE_KEY is required.');
 }
 
-const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
-});
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
 
-const usersToCreate = [
-  {
-    email: 'admin@local.com',
-    password: '123456',
-    metaData: { full_name: 'Administrador Local' },
-    permissions: {
-      is_active: true,
-      can_manage_relatos: true,
-      can_view_users: true,
-      can_create_users: true,
-      can_delete_users: true,
-      can_view_feedbacks: true,
-      can_delete_relatos: true,
-      can_manage_users: true,
-      can_delete_any_comment: true,
-      can_view_all_relatos: true
-    }
-  },
-  {
-    email: 'user@local.com',
-    password: '123456',
-    metaData: { full_name: 'Usuário Padrão Local' },
-    permissions: { is_active: true } // Apenas ativo, sem permissões especiais
-  }
+// --- Data Definitions ---
+
+const profilesData = [
+  { id: '13146c68-63fd-437c-89c8-36c03f56c196', full_name: 'Fernando', role: 'admin', email: 'vhnonfix@mail.com', setor: 'TI' },
+  { id: 'c6d7b0a7-365e-4459-bdf2-af2dcbf19829', full_name: 'Meire Pereira De Almeida', role: 'admin', email: 'meire.almeida@copaenergia.com.br', setor: 'OPERAÇÃO' },
+  { id: 'dfc45ffc-42fe-4d61-8ebb-033b7b43da3d', full_name: 'Vanusa Alves Da Mota', role: 'admin', email: 'vanusa.mota@copaenergia.com.br', setor: 'OPERAÇÃO' },
+  { id: '5330757b-a1e7-4534-bf58-c3070fcc31ad', full_name: 'SEGURANÇA DO TRABALHO', role: 'admin', email: 'segurancadotrabalho.maq@copaenergia.com.br', setor: 'SESMT' },
+  { id: 'df62a5d2-dd80-4a32-b99c-22fd6b2905f2', full_name: 'Nathele Lopes Regino', role: 'admin', email: 'nathele.regino@copaenergia.com.br', setor: 'OPERAÇÃO' },
+  { id: 'c114ad1f-973c-4c79-b45a-395294d6025f', full_name: 'RegularUser', role: 'user', email: 'regularuser@mail.com', setor: 'N/A' }
 ];
 
-async function main() {
-  console.log('Iniciando script de seed...');
+const relatosData = [
+    // ... (All your relatos data as JS objects)
+];
 
-  let regular_user_id: string | null = null; // Declare aqui para ser acessível fora do loop
+const relatoCommentsData = [
+    // ... (All your comments data as JS objects)
+];
 
-  for (const userData of usersToCreate) {
-    console.log(`Criando usuário: ${userData.email}...`);
+const relatoLogsData = [
+    // ... (All your logs data as JS objects)
+];
 
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-      email: userData.email,
-      password: userData.password,
-      email_confirm: true,
-      user_metadata: userData.metaData
-    });
+const relatoResponsaveisData = [
+    // ... (All your responsaveis data as JS objects)
+];
 
-    if (authError) {
-      console.error(`Erro ao criar usuário ${userData.email} na autenticação:`, authError.message);
-      continue;
-    }
 
-    const userId = authData.user.id;
-    console.log(`Usuário ${userData.email} criado com ID: ${userId}`);
+// --- Utility Functions ---
 
-    // Lógica para inserir o perfil com permissões (para admin) ou apenas capturar o ID (para usuário padrão)
-    if (userData.email === 'admin@local.com') {
-      const { error: insertProfileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: userId,
-          full_name: userData.metaData.full_name,
-          email: userData.email,
-          ...userData.permissions
-        });
-
-      if (insertProfileError) {
-        console.error(`Erro ao inserir perfil para ${userData.email}:`, insertProfileError.message);
-      } else {
-        console.log(`Perfil e permissões inseridos para ${userData.email}.`);
-      }
-    } else { // Para o usuário padrão
-      regular_user_id = userId; // Captura o ID do usuário padrão
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update(userData.permissions)
-        .eq('id', userId);
-
-      if (profileError) {
-        console.error(`Erro ao definir permissões para ${userData.email}:`, profileError.message);
-      } else {
-        console.log(`Permissões definidas para ${userData.email}.`);
-      }
-    }
+async function clearDatabase() {
+  console.log('🧹 Clearing database...');
+  const tables = ['relato_responsaveis', 'relato_comments', 'relato_logs', 'relatos', 'profiles'];
+  for (const table of tables) {
+    const { error } = await supabaseAdmin.from(table).delete().gt('id', 0); // Delete all rows
+    if (error) throw new Error(`Failed to clear ${table}: ${error.message}`);
   }
-
-  // --- INÍCIO: Geração e Inserção de Relatos --- 
-  if (regular_user_id) {
-    console.log('Gerando e inserindo relatos de exemplo...');
-
-    const locaisOcorrencia = [
-      'Área de Carga e Descarga',
-      'Escritório Administrativo - 3º Andar',
-      'Linha de Produção B - Máquina 05',
-      'Refeitório - Cozinha',
-      'Portaria Principal',
-      'Almoxarifado Central',
-      'Setor de Manutenção',
-      'Pátio de Manobras',
-      'Sala de Reuniões',
-      'Laboratório de Qualidade',
-    ];
-
-    const tiposRelato = [
-      'Ato Inseguro',
-      'Condição Insegura',
-      'Quase Acidente',
-      'Acidente',
-      'Ideia de Melhoria',
-      'Desvio',
-    ];
-
-    const statusRelato = [
-      'PENDENTE',
-      'APROVADO',
-      'REPROVADO',
-      'ATRIBUIDO',
-    ];
-
-    const descricoesBase = [
-      'Equipamento com ruído excessivo.',
-      'Piso escorregadio devido a vazamento.',
-      'Fiação exposta em área de passagem.',
-      'Funcionário não utilizando EPI adequado.',
-      'Quase colisão de empilhadeira com pedestre.',
-      'Sugestão para melhoria de iluminação.',
-      'Descarte incorreto de resíduos.',
-      'Porta de emergência obstruída.',
-      'Ferramenta danificada em uso.',
-      'Cheiro forte de produto químico.',
-    ];
-
-    const riscosBase = [
-      'Risco de queda.',
-      'Risco de choque elétrico.',
-      'Risco de lesão por impacto.',
-      'Risco de contaminação.',
-      'Risco de incêndio.',
-      'Risco de atropelamento.',
-      'Risco de intoxicação.',
-      'Risco de corte.',
-      'Risco de esmagamento.',
-      'Risco de explosão.',
-    ];
-
-    const danosBase = [
-      'Nenhum.',
-      'Leve (pequenos arranhões).',
-      'Moderado (necessitou de primeiros socorros).',
-      'Grave (necessitou de atendimento médico).',
-      'Pequeno dano material.',
-      'Dano material significativo.',
-    ];
-
-    function getRandomElement<T>(arr: T[]): T {
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    function getRandomDate(start: Date, end: Date): string {
-      const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-      return date.toISOString().split('T')[0];
-    }
-
-    const startDate = new Date('2025-01-01');
-    const endDate = new Date('2025-08-26');
-
-    const numberOfRelatosToGenerate = 150;
-
-    for (let i = 0; i < numberOfRelatosToGenerate; i++) {
-      const local = getRandomElement(locaisOcorrencia);
-      const tipo = getRandomElement(tiposRelato);
-      const status = getRandomElement(statusRelato);
-      const descricao = getRandomElement(descricoesBase);
-      const riscos = getRandomElement(riscosBase);
-      const danos = getRandomElement(danosBase);
-      const data = getRandomDate(startDate, endDate);
-
-      const { error: relatoError } = await supabase
-        .from('relatos')
-        .insert({
-          user_id: regular_user_id,
-          local_ocorrencia: local,
-          data_ocorrencia: data,
-          descricao: `${descricao} (Relato #${i + 1})`,
-          riscos_identificados: riscos,
-          danos_ocorridos: danos,
-          status: status,
-          tipo_relato: tipo,
-        });
-
-      if (relatoError) {
-        console.error('Erro ao inserir relato:', relatoError.message);
-      }
-    }
-    console.log(`${numberOfRelatosToGenerate} relatos de exemplo inseridos.`);
-  } else {
-    console.warn('ID do usuário padrão não encontrado. Relatos de exemplo não serão inseridos.');
-  }
-  // --- FIM: Geração e Inserção de Relatos ---
-
-  console.log('Script de seed concluído.');
+  console.log('🗑️ Database cleared.');
 }
 
-main().catch(console.error);
+async function clearAuthUsers() {
+    console.log('🔥 Deleting all auth users...');
+    const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers();
+    if (error) {
+        throw new Error(`Failed to list users for deletion: ${error.message}`);
+    }
+
+    const deletePromises = users.map(user => supabaseAdmin.auth.admin.deleteUser(user.id));
+    const results = await Promise.allSettled(deletePromises);
+
+    results.forEach((result, index) => {
+        if (result.status === 'rejected') {
+            console.error(`Failed to delete user ${users[index].email}:`, result.reason);
+        }
+    });
+    console.log('👤 Auth users cleared.');
+}
+
+
+async function seedAuthUsers() {
+  console.log('🌱 Seeding auth users...');
+  const password = '123456';
+  for (const profile of profilesData) {
+    const { data, error } = await supabaseAdmin.auth.admin.createUser({
+      user_id: profile.id,
+      email: profile.email,
+      password: password,
+      email_confirm: true, // Auto-confirm user
+    });
+    if (error) {
+      // Check if user already exists, which is fine
+      if (error.message.includes('User already exists')) {
+        console.log(`User ${profile.email} already exists, skipping creation.`);
+      } else {
+        throw new Error(`Failed to create auth user ${profile.email}: ${error.message}`);
+      }
+    } else {
+      console.log(`Auth user ${data.user.email} created.`);
+    }
+  }
+}
+
+async function seedTable(tableName: string, data: any[]) {
+    if (data.length === 0) {
+        console.log(`No data to seed for ${tableName}, skipping.`);
+        return;
+    }
+    console.log(`🌱 Seeding ${tableName}...`);
+    const { error } = await supabaseAdmin.from(tableName).insert(data);
+    if (error) {
+        throw new Error(`Failed to seed ${tableName}: ${error.message}`);
+    }
+}
+
+
+// --- Main Seeding Script ---
+
+async function main() {
+  try {
+    await clearDatabase();
+    await clearAuthUsers();
+    await seedAuthUsers();
+
+    await seedTable('profiles', profilesData);
+    await seedTable('relatos', relatosData);
+    await seedTable('relato_comments', relatoCommentsData);
+    await seedTable('relato_logs', relatoLogsData);
+    await seedTable('relato_responsaveis', relatoResponsaveisData);
+
+    console.log('✅ Database seeding completed successfully!');
+  } catch (error) {
+    console.error('❌ An error occurred during seeding:', error);
+    process.exit(1);
+  }
+}
+
+main();

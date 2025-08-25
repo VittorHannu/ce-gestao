@@ -31,6 +31,7 @@ import PublicLayout from '@/01-shared/components/PublicLayout';
 import { DateFilterProvider } from './01-shared/hooks/useDateFilter.jsx';
 
 
+const ApresentacaoPage = React.lazy(() => import('@/09-presentation/pages/ApresentacaoPage'));
 const LoginPage = React.lazy(() => import('@/03-auth/pages/LoginPage'));
 const HomePage = React.lazy(() => import('@/06-home/pages/HomePage'));
 const ProfilePage = React.lazy(() => import('@/04-profile/pages/ProfilePage'));
@@ -104,7 +105,7 @@ function AppWrapper({ showToast }) {
             can_view_users: false,
             can_create_users: false,
             can_delete_users: false,
-            can_view_feedbacks: false,
+            can_view_feedbacks: false
           })
           .select()
           .single(); // Use single() here as we expect exactly one new record
@@ -204,14 +205,17 @@ function AppWrapper({ showToast }) {
     return (
       <Routes>
         <Route element={<PublicLayout />}>
+          <Route path="/apresentacao" element={<Suspense fallback={<LoadingSpinner />}><ApresentacaoPage /></Suspense>} />
           <Route path="/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordPage showToast={showToast} /></Suspense>} />
           <Route path="/auth" element={<Suspense fallback={<LoadingSpinner />}><LoginPage showToast={showToast} /></Suspense>} />
           <Route path="/auth/confirm" element={<Suspense fallback={<LoadingSpinner />}><ConfirmEmailChangePage showToast={showToast} /></Suspense>} />
           {/* Rota para criar relato, acessível sem autenticação */}
           <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage showToast={showToast} /></Suspense>} />
           {/* Added for anonymous access */}
-          {/* Qualquer outra rota sem sessão vai para /auth */}
-          <Route path="*" element={<Navigate to="/auth" />} />
+          {/* Redireciona a rota raiz para a página de apresentação */}
+          <Route path="/" element={<Navigate to="/apresentacao" />} />
+          {/* Qualquer outra rota sem sessão vai para a apresentação */}
+          <Route path="*" element={<Navigate to="/apresentacao" />} />
         </Route>
       </Routes>
     );

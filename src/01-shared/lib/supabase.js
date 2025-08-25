@@ -1,7 +1,3 @@
-
-
-
-
 /*
  * Este arquivo é responsável por inicializar e configurar o cliente Supabase.
  * Ele estabelece a conexão entre o seu aplicativo frontend e o backend do Supabase,
