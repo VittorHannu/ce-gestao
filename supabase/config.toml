@@ -17,7 +17,7 @@ port = 54321
 [auth]
 enabled = true
 site_url = "https://ce-gestao.vercel.app"
-additional_redirect_urls = ["https://ce-gestao.vercel.app/update-password", "https://ce-gestao.vercel.app", "https://ce-gestao.vercel.app/auth/confirm"]
+additional_redirect_urls = ["https://ce-gestao.vercel.app/update-password", "https://ce-gestao.vercel.app", "https://ce-gestao.vercel.app/auth/confirm", "https://*.ngrok-free.app/**"]
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
 refresh_token_reuse_interval = 10

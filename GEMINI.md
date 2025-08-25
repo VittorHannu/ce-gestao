@@ -54,3 +54,27 @@ O fluxo de trabalho obrigatório é:
 *   **Hooks Customizados**: A lógica de negócio e o acesso a dados são encapsulados em hooks customizados (ex: `useUsers`, `useRelatoManagement`) para manter os componentes limpos.
 *   **Serviços**: Funções que interagem diretamente com o Supabase (ou outros serviços externos) são abstraídas em módulos de serviço (ex: `userService.js`).
 *   **Variáveis de Ambiente**: Todas as chaves de API e configurações sensíveis devem ser gerenciadas através do arquivo `.env`.
+
+## 🌐 Gerenciamento de Acesso Remoto (ngrok)
+
+O agente de IA é responsável por gerenciar o acesso remoto ao ambiente de desenvolvimento local via `ngrok`. Isso inclui:
+
+1.  **Configuração do `ngrok`**: O agente manterá o arquivo `ngrok.yml` dentro do diretório do projeto (`ce-gestao/ngrok.yml`) com as configurações necessárias para os túneis `frontend` (porta 3000) e `backend` (porta 8000).
+2.  **Início dos Túneis**: O agente iniciará os túneis `ngrok` usando o comando `ngrok start --all --config ./ngrok.yml`.
+3.  **Atualização de Variáveis de Ambiente**: Devido à natureza dinâmica das URLs do `ngrok` no plano gratuito, o agente irá:
+    *   Obter as URLs públicas geradas pelo `ngrok` (para frontend e backend).
+    *   Atualizar automaticamente a variável `VITE_SUPABASE_URL` no arquivo `.env` do projeto com a URL pública do túnel do `backend` (porta 8000).
+    *   Informar ao usuário a URL pública do túnel do `frontend` (porta 3000) para acesso.
+4.  **Gerenciamento de Processos**: O agente garantirá que os processos `supabase start` e `pnpm dev` estejam rodando e serão reiniciados conforme necessário para aplicar as configurações atualizadas.
+
+**Fluxo de Trabalho do Agente para Acesso Remoto:**
+
+Quando solicitado a habilitar o acesso remoto, o agente seguirá estes passos:
+
+1.  Garantir que `supabase start` esteja rodando.
+2.  Garantir que `pnpm dev` esteja rodando.
+3.  Iniciar `ngrok start --all --config ./ngrok.yml`.
+4.  Extrair as URLs geradas pelo `ngrok`.
+5.  Atualizar `VITE_SUPABASE_URL` no `.env` com a URL do túnel do backend.
+6.  Reiniciar `pnpm dev` para aplicar a nova variável de ambiente.
+7.  Fornecer a URL do túnel do frontend ao usuário para acesso.

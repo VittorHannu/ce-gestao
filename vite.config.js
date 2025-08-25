@@ -114,9 +114,9 @@ export default defineConfig({
     }
   },
   server: {
-    host: '0.0.0.0',
-    port: 5174,
-    allowedHosts: ['.*']
+    port: 3000,
+    host: true,
+    allowedHosts: ['.ngrok-free.app']
   },
   
   assetsInclude: ['**/*.svg'],
