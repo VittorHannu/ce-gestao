@@ -245,9 +245,25 @@ async function seedTable(tableName: string, data: any[]) {
         return;
     }
     console.log(`🌱 Seeding ${tableName}...`);
-    const { error } = await supabaseAdmin.from(tableName).insert(data);
-    if (error) {
-        throw new Error(`Failed to seed ${tableName}: ${error.message}`);
+
+    // Special handling for 'profiles' table to use upsert
+    if (tableName === 'profiles') {
+        console.log('Custom logic for profiles: updating with permissions instead of inserting.');
+        for (const profile of data) {
+            const { error } = await supabaseAdmin
+                .from('profiles')
+                .update(profile) // Update the profile with new data
+                .eq('id', profile.id); // Match by ID
+
+            if (error) {
+                throw new Error(`Failed to update profile ${profile.email}: ${error.message}`);
+            }
+        }
+    } else {
+        const { error } = await supabaseAdmin.from(tableName).insert(data);
+        if (error) {
+            throw new Error(`Failed to seed ${tableName}: ${error.message}`);
+        }
     }
 }
 
