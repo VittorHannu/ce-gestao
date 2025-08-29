@@ -31,17 +31,14 @@ const CreateRelatoPage = ({ showToast }) => {
 
   const handleCreateRelato = async (formData) => {
     setIsLoading(true);
-    console.log('Iniciando envio do relato...');
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      console.log('Usuário obtido:', user);
 
-      // Validação crucial: se não for anônimo, precisa de um usuário.
       if (!formData.is_anonymous && !user) {
         showToast('Você precisa estar logado para criar um relato identificado.', 'error');
         setIsLoading(false);
-        return; // Para a execução aqui.
+        return;
       }
 
       const { responsaveis, ...relatoDetails } = formData;
@@ -49,26 +46,20 @@ const CreateRelatoPage = ({ showToast }) => {
       const relatoData = {
         ...relatoDetails,
         user_id: formData.is_anonymous ? null : user.id,
-        // Converte a hora para null se estiver vazia, para evitar erro no banco de dados
         hora_aproximada_ocorrencia: formData.hora_aproximada_ocorrencia || null
       };
 
-      if (formData.is_anonymous) {
-        const { error } = await supabase.functions.invoke('create-anonymous-relato', {
-          body: { relatoData }
-        });
-        if (error) throw error;
-      } else {
-        console.log('Dados que serão inseridos:', relatoData);
-        const { data: newRelato, error } = await supabase
-          .from('relatos')
-          .insert([relatoData])
-          .select('id')
-          .single(); // .single() para retornar um único objeto em vez de um array
+      // Etapa 1: Inserir o relato principal (funciona para anônimos e autenticados)
+      const { data: newRelato, error } = await supabase
+        .from('relatos')
+        .insert([relatoData])
+        .select('id')
+        .single();
 
-        if (error) throw error;
+      if (error) throw error;
 
-        // Etapa 2: Se houver responsáveis, associá-los ao relato criado
+      // Etapa 2: Associar responsáveis e registrar log (apenas para usuários autenticados)
+      if (!formData.is_anonymous && user) {
         if (responsaveis && responsaveis.length > 0) {
           const newRelatoId = newRelato.id;
           const responsaveisData = responsaveis.map(userId => ({
@@ -83,29 +74,25 @@ const CreateRelatoPage = ({ showToast }) => {
           if (responsaveisError) throw responsaveisError;
         }
 
-        // Registrar log de criação do relato
         const { error: logError } = await supabase
           .from('relato_logs')
           .insert({
             relato_id: newRelato.id,
-            user_id: user ? user.id : null, // ID do usuário que criou, ou null se anônimo
+            user_id: user.id,
             action_type: 'CREATE',
-            details: { ...relatoData, responsaveis: responsaveis } // Fotografia completa dos dados do relato
+            details: { ...relatoData, responsaveis: responsaveis }
           });
 
         if (logError) {
           console.error('Erro ao registrar log de criação:', logError);
-          // Não lançar erro fatal aqui, pois o relato já foi criado com sucesso
         }
       }
 
-      console.log('Attempting to show toast and navigate...'); // NEW LINE
       showToast('Relato enviado com sucesso!', 'success');
-      // Conditional navigation based on user authentication status
-      if (user) { // If user is logged in
-        navigate('/relatos'); // Navigate to the main relatos page
-      } else { // If user is anonymous
-        navigate('/auth'); // Navigate to the login page
+      if (user) {
+        navigate('/relatos');
+      } else {
+        navigate('/auth');
       }
     } catch (error) {
       console.error('Erro detalhado ao criar relato:', error);
