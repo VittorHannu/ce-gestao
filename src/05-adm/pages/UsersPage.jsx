@@ -25,8 +25,9 @@ function UsersPage() {
   };
 
   return (
-    <MainLayout>
-      <div className="pt-safe-top"></div>
+    <MainLayout
+      header={<h1 className="text-2xl font-bold">Usuários</h1>}
+    >
       <div className="mb-4 flex items-center gap-2">
         <div className="flex-grow">
           <SearchInput

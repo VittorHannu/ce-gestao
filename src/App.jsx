@@ -34,7 +34,6 @@ import { DateFilterProvider } from './01-shared/hooks/useDateFilter.jsx';
 
 const ApresentacaoPage = React.lazy(() => import('@/09-presentation/pages/ApresentacaoPage'));
 const LoginPage = React.lazy(() => import('@/03-auth/pages/LoginPage'));
-const HomePage = React.lazy(() => import('@/06-home/pages/HomePage'));
 const ProfilePage = React.lazy(() => import('@/04-profile/pages/ProfilePage'));
 const UpdatePasswordPage = React.lazy(() => import('@/03-auth/pages/UpdatePasswordPage'));
 
@@ -216,7 +215,7 @@ function AppWrapper({ showToast }) {
     <Routes>
       {/* Rotas SEM cabeçalho */}
       <Route element={<LayoutWithoutHeader user={user} onLogout={handleLogout} showToast={showToast} />}>
-        <Route path="/" element={<Suspense fallback={<LoadingSpinner />}><HomePage /></Suspense>} />
+        <Route path="/" element={<Navigate to="/relatos" />} />
         <Route path="/perfil" element={<Suspense fallback={<LoadingSpinner />}><ProfilePage /></Suspense>} />
         <Route path="/perfil/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordProfilePage /></Suspense>} />
         <Route path="/perfil/update-email" element={<Suspense fallback={<LoadingSpinner />}><UpdateEmailPage /></Suspense>} />
