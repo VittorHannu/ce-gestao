@@ -6,7 +6,9 @@ import { cn } from '@/01-shared/utils/utils';
 import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
 import { Button } from '@/01-shared/components/ui/button';
 
-const months = [
+const periods = [
+  { value: 13, label: '1º Sem' },
+  { value: 14, label: '2º Sem' },
   { value: 1, label: 'Jan' },
   { value: 2, label: 'Fev' },
   { value: 3, label: 'Mar' },
@@ -24,7 +26,7 @@ const months = [
 export default function CompactDateSelector({ children }) {
   const { year, periodType, setYear, setPeriodType } = useDateFilter();
   const scrollContainerRef = useRef(null);
-  const activeMonthRef = useRef(null);
+  const activePeriodRef = useRef(null);
 
   const selectedMonthDate = useMemo(() => {
     if (periodType >= 1 && periodType <= 12) {
@@ -34,8 +36,8 @@ export default function CompactDateSelector({ children }) {
   }, [year, periodType]);
 
   useEffect(() => {
-    if (activeMonthRef.current) {
-      activeMonthRef.current.scrollIntoView({
+    if (activePeriodRef.current) {
+      activePeriodRef.current.scrollIntoView({
         behavior: 'smooth',
         inline: 'center',
         block: 'nearest'
@@ -48,8 +50,8 @@ export default function CompactDateSelector({ children }) {
     setYear(newYear);
   };
 
-  const handleMonthClick = (monthValue) => {
-    setPeriodType(monthValue);
+  const handlePeriodClick = (periodValue) => {
+    setPeriodType(periodValue);
   };
 
   return (
@@ -72,23 +74,35 @@ export default function CompactDateSelector({ children }) {
       </div>
       <div ref={scrollContainerRef} className="w-full overflow-x-auto no-scrollbar">
         <div className="flex justify-around">
-          {months.map((month) => {
-            const monthDate = new Date(year, month.value - 1, 1);
-            const isSelected = selectedMonthDate && isSameMonth(monthDate, selectedMonthDate);
+          {periods.map((period) => {
+            const isMonth = period.value >= 1 && period.value <= 12;
+            const monthDate = isMonth ? new Date(year, period.value - 1, 1) : null;
+            
+            let isSelected = false;
+            if (isMonth) {
+              isSelected = selectedMonthDate && isSameMonth(monthDate, selectedMonthDate);
+            } else {
+              isSelected = periodType === period.value;
+            }
+
+            const isSemester = period.value === 13 || period.value === 14;
+
             return (
               <div
-                key={month.value}
-                ref={isSelected ? activeMonthRef : null}
-                onClick={() => handleMonthClick(month.value)}
+                key={period.value}
+                ref={isSelected ? activePeriodRef : null}
+                onClick={() => handlePeriodClick(period.value)}
                 className={cn(
-                  'snap-center flex-shrink-0 flex flex-col items-center justify-center w-14 h-12 rounded-lg cursor-pointer transition-all duration-200 ease-in-out mx-1',
+                  'snap-center flex-shrink-0 flex flex-col items-center justify-center h-12 rounded-lg cursor-pointer transition-all duration-200 ease-in-out mx-1',
                   {
+                    'w-20': isSemester, // Wider for semester labels
+                    'w-14': !isSemester,
                     'bg-primary text-primary-foreground font-bold shadow-md': isSelected,
                     'bg-muted/50 text-muted-foreground hover:bg-muted': !isSelected
                   }
                 )}
               >
-                <div className="text-sm font-medium uppercase tracking-wider">{month.label}</div>
+                <div className="text-sm font-medium uppercase tracking-wider">{period.label}</div>
               </div>
             );
           })}

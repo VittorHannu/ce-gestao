@@ -13,7 +13,16 @@ export const DateFilterProvider = ({ children }) => {
   // NEW: Add periodType state
   const [periodType, setPeriodTypeState] = useState(() => {
     const storedPeriodType = localStorage.getItem('dateFilterPeriodType');
-    return storedPeriodType ? parseInt(storedPeriodType, 10) : 0; // 0 for 'Ano Todo'
+    if (storedPeriodType) {
+      return parseInt(storedPeriodType, 10);
+    }
+    // If no period is stored, default to the current semester
+    const currentMonth = new Date().getMonth(); // 0-11
+    if (currentMonth <= 5) { // Jan-Jun (0-5)
+      return 13; // 1º Semestre
+    } else { // Jul-Dec (6-11)
+      return 14; // 2º Semestre
+    }
   });
 
   // Funções para atualizar o estado e o localStorage
