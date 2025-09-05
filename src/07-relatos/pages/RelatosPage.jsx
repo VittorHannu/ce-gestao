@@ -96,8 +96,9 @@ const RelatosPage = () => {
 
   return (
     <MainLayout
+      headerClassName="bg-gray-800 border-gray-800"
       header={(
-        <CompactDateSelector>
+        <CompactDateSelector className="text-white">
           <div className="flex items-center space-x-2">
             <Link to="/notifications">
               <Button variant="ghost" size="icon">

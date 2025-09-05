@@ -23,7 +23,7 @@ const periods = [
   { value: 12, label: 'Dez' }
 ];
 
-export default function CompactDateSelector({ children }) {
+export default function CompactDateSelector({ children, className }) {
   const { year, periodType, setYear, setPeriodType } = useDateFilter();
   const scrollContainerRef = useRef(null);
   const activePeriodRef = useRef(null);
@@ -59,7 +59,7 @@ export default function CompactDateSelector({ children }) {
   };
 
   return (
-    <div className="w-full flex flex-col space-y-4">
+    <div className={cn("w-full flex flex-col space-y-4", className)}>
       <div className="relative w-full flex items-center justify-center">
         <div className="flex items-center">
           <Button variant="ghost" size="icon" onClick={() => handleYearChange('prev')}>
@@ -101,8 +101,8 @@ export default function CompactDateSelector({ children }) {
                   {
                     'w-20': isSemester, // Wider for semester labels
                     'w-14': !isSemester,
-                    'bg-primary text-primary-foreground font-bold shadow-md': isSelected,
-                    'bg-muted/50 text-muted-foreground hover:bg-muted': !isSelected
+                    'bg-gray-600 font-bold shadow-md': isSelected,
+                    'bg-gray-700 hover:bg-gray-600': !isSelected
                   }
                 )}
               >
