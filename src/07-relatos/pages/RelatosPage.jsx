@@ -105,7 +105,13 @@ const RelatosPage = () => {
       header={(
         <div className="flex items-center justify-between w-full">
           <h1 className="text-2xl font-bold">Relatos</h1>
-          <div className="flex items-center">
+          <div className="flex items-center space-x-2">
+            <Link to="/relatos/novo">
+              <Button variant="warning">
+                <Plus className="h-4 w-4 mr-2" />
+                Relato
+              </Button>
+            </Link>
             <Link to="/notifications">
               <Button variant="ghost" size="icon">
                 <Bell className="h-6 w-6" />
@@ -169,19 +175,8 @@ const RelatosPage = () => {
           <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
         </div>
       </Link>
-      <Link to="/relatos/novo">
-        <Button
-          variant="warning"
-          className="fixed right-4 rounded-full shadow-lg h-12 px-6 flex items-center justify-center"
-          style={{ bottom: 'calc(60px + env(safe-area-inset-bottom) + 16px)' }}
-        >
-          <Plus className="h-6 w-6 mr-2" />
-          <span>Novo Relato</span>
-        </Button>
-      </Link>
     </MainLayout>
   );
 };
 
 export default RelatosPage;
-
