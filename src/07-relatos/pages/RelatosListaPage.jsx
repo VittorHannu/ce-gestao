@@ -36,6 +36,11 @@ const RelatosListaPage = () => {
     const queryParams = new URLSearchParams(location.search);
     const statusFilter = queryParams.get('status');
     const tipoRelatoFilter = queryParams.get('tipo_relato');
+    const onlyMineFilter = queryParams.get('only_mine');
+
+    if (onlyMineFilter) {
+      return 'Relatos Criados por Você';
+    }
 
     if (tipoRelatoFilter) {
       return `Relatos de ${tipoRelatoFilter}`;
@@ -61,11 +66,13 @@ const RelatosListaPage = () => {
     // setError(null); // This is handled by showToast, but good to explicitly clear
     const queryParams = new URLSearchParams(location.search);
     const statusFilter = queryParams.get('status');
+    const onlyMineFilter = queryParams.get('only_mine') === 'true';
 
     console.log('Fetching relatos with:');
     console.log('  statusFilter:', statusFilter);
     console.log('  searchTerm:', searchTerm);
     console.log('  responsibleFilter:', responsibleFilter);
+    console.log('  onlyMineFilter:', onlyMineFilter);
 
     const { data, error } = await supabase.rpc('search_relatos_unaccented', {
       p_search_term: searchTerm,
@@ -73,7 +80,8 @@ const RelatosListaPage = () => {
       p_responsible_filter: responsibleFilter,
       p_start_date: startDate,
       p_end_date: endDate,
-      p_tipo_relato_filter: tipoRelatoFilter // New parameter
+      p_tipo_relato_filter: tipoRelatoFilter, // New parameter
+      p_only_mine: onlyMineFilter
     });
 
     console.log('Supabase query result:');

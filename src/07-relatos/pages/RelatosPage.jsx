@@ -4,7 +4,7 @@ import { Button } from '@/01-shared/components/ui/button';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { useRelatoCounts } from '../hooks/useRelatoCounts';
 
-import { CheckCircle, Clock, XCircle, BarChart, Plus, User, AlertTriangle } from 'lucide-react';
+import { CheckCircle, Clock, XCircle, BarChart, Plus, User, AlertTriangle, List } from 'lucide-react';
 import RelatoStatsCard from '../components/RelatoStatsCard';
 import TotalReportsCard from '../components/TotalReportsCard';
 import DateFilterCard from '../components/DateFilterCard';
@@ -67,6 +67,22 @@ const RelatosPage = () => {
 
   const managementItems = [
     {
+      label: 'Lista Total de Relatos',
+      value: relatoCounts?.totalAprovados || 0,
+      icon: List,
+      iconColor: 'bg-gray-500',
+      path: '/relatos/lista',
+      show: true
+    },
+    {
+      label: 'Relatos que você fez',
+      value: relatoCounts?.myRelatosCount || 0,
+      icon: List,
+      iconColor: 'bg-blue-500',
+      path: '/relatos/lista?only_mine=true',
+      show: true
+    },
+    {
       label: 'Pendentes',
       value: relatoCounts?.pendenteAprovacao || 0,
       icon: AlertTriangle,
@@ -94,7 +110,7 @@ const RelatosPage = () => {
                 {card.component}
               </Link>
             ) : (
-              <div key={index} className="w-full block">
+              <div key={index} className={`w-full block ${index === 0 ? 'col-span-2' : ''}`}>
                 {card.component}
               </div>
             )
@@ -114,7 +130,7 @@ const RelatosPage = () => {
         ))}
       </div>
 
-      <div className="mt-6">
+      <div className="mt-8">
         <SettingsGroup>
           {managementItems.filter(item => item.show).map((item, index) => (
             <SettingsItem
@@ -129,7 +145,7 @@ const RelatosPage = () => {
         </SettingsGroup>
       </div>
 
-      <Link to="/relatos/estatisticas" className="w-full block mt-6">
+      <Link to="/relatos/estatisticas" className="w-full block mt-8">
         <div className="bg-yellow-500 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center">
           <BarChart className="h-12 w-12 text-white mb-4" />
           <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
