@@ -49,3 +49,14 @@ export async function updateRelatoType(relatoId, newType) {
   }
   return data;
 }
+
+export async function getLastLostTimeAccidentDate() {
+  const { data, error } = await supabase.rpc('get_last_lost_time_accident_date');
+
+  if (error) {
+    console.error('Error fetching last lost time accident date:', error);
+    throw error;
+  }
+
+  return data;
+}

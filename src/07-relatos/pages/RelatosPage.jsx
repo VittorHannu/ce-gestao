@@ -15,10 +15,14 @@ import MainLayout from '@/01-shared/components/MainLayout';
 import SettingsGroup from '@/01-shared/components/settings/SettingsGroup';
 import SettingsItem from '@/01-shared/components/settings/SettingsItem';
 import CompactDateSelector from '@/01-shared/components/CompactDateSelector';
+import { useLastAccidentDate } from '../hooks/useLastAccidentDate';
+import DaysWithoutAccidentsCard from '../components/DaysWithoutAccidentsCard';
 
 const RelatosPage = () => {
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
   const { data: relatoCounts, isLoading: isLoadingCounts, isFetching } = useRelatoCounts();
+  const { data: lastAccidentDate, isLoading: isLoadingLastAccident } = useLastAccidentDate();
+  console.log('Debug Last Accident Date:', lastAccidentDate);
 
   const cardData = [
     {
@@ -180,6 +184,11 @@ const RelatosPage = () => {
                 <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
               </div>
             </Link>
+
+            <DaysWithoutAccidentsCard 
+              isLoading={isLoadingLastAccident}
+              lastAccidentDate={lastAccidentDate}
+            />
           </>
         )}
       </div>

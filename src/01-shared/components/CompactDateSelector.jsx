@@ -59,7 +59,7 @@ export default function CompactDateSelector({ children, className }) {
   };
 
   return (
-    <div className={cn("full-bleed w-full", className)}>
+    <div className={cn('full-bleed w-full', className)}>
       <div className="w-full flex flex-col space-y-4">
         <div className="relative w-full flex items-center justify-center px-2">
           <div className="flex items-center">
@@ -78,7 +78,7 @@ export default function CompactDateSelector({ children, className }) {
           </div>
         </div>
         <div ref={scrollContainerRef} className="w-full overflow-x-auto no-scrollbar">
-          <div className="flex items-center justify-start px-2">
+          <div className="flex items-center justify-start px-2 border-b-4 border-transparent">
             {periods.map((period) => {
               const isMonth = period.value >= 1 && period.value <= 12;
               const monthDate = isMonth ? new Date(year, period.value - 1, 1) : null;
