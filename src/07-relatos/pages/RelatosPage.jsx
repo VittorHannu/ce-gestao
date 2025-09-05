@@ -5,9 +5,11 @@ import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { useRelatoCounts } from '../hooks/useRelatoCounts';
 
 import { CheckCircle, Clock, XCircle, BarChart, Plus, User, AlertTriangle, List, Bell, Settings } from 'lucide-react';
+
 import RelatoStatsCard from '../components/RelatoStatsCard';
 import TotalReportsCard from '../components/TotalReportsCard';
-import DateFilterCard from '../components/DateFilterCard';
+import RelatoStatsCardSkeleton from '../components/RelatoStatsCardSkeleton';
+import TotalReportsCardSkeleton from '../components/TotalReportsCardSkeleton';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import MainLayout from '@/01-shared/components/MainLayout';
 import SettingsGroup from '@/01-shared/components/settings/SettingsGroup';
@@ -16,11 +18,7 @@ import CompactDateSelector from '@/01-shared/components/CompactDateSelector';
 
 const RelatosPage = () => {
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
-  const { data: relatoCounts, isLoading: isLoadingCounts } = useRelatoCounts();
-
-  if (isLoadingProfile || isLoadingCounts) {
-    return <LoadingSpinner />;
-  }
+  const { data: relatoCounts, isLoading: isLoadingCounts, isFetching } = useRelatoCounts();
 
   const cardData = [
     {
@@ -122,55 +120,73 @@ const RelatosPage = () => {
       )}
     >
       <div className="space-y-8" style={{ marginTop: '1.75rem' }}>
-        <div className="grid grid-cols-2 gap-4">
-          {cardData.map((card, index) => (
-            card.component ? (
-              card.isLink ? (
-                <Link to={card.path} key={index} className="w-full block">
-                  {card.component}
-                </Link>
+        {isLoadingCounts || isLoadingProfile ? (
+          <LoadingSpinner />
+        ) : (
+          <>
+            <div className="grid grid-cols-2 gap-4">
+              {isFetching ? (
+                <>
+                  <div className="col-span-2">
+                    <TotalReportsCardSkeleton />
+                  </div>
+                  <RelatoStatsCardSkeleton />
+                  <RelatoStatsCardSkeleton />
+                  <RelatoStatsCardSkeleton />
+                  <RelatoStatsCardSkeleton />
+                </>
               ) : (
-                <div key={index} className={`w-full block ${index === 0 ? 'col-span-2' : ''}`}>
-                  {card.component}
-                </div>
-              )
-            ) : (
-              <RelatoStatsCard
-                key={index}
-                label={card.label}
-                count={card.count}
-                icon={card.icon}
-                path={card.path}
-                iconTextColor={card.iconTextColor}
-                iconBgColor={card.iconBgColor}
-                progressBarColor={card.progressBarColor}
-                totalRelatos={relatoCounts?.totalAprovados || 0}
-              />
-            )
-          ))}
-        </div>
+                cardData.map((card, index) => (
+                  card.component ? (
+                    card.isLink ? (
+                      <Link to={card.path} key={index} className="w-full block">
+                        {card.component}
+                      </Link>
+                    ) : (
+                      <div key={index} className={`w-full block ${index === 0 ? 'col-span-2' : ''}`}>
+                        {card.component}
+                      </div>
+                    )
+                  ) : (
+                    <RelatoStatsCard
+                      key={index}
+                      label={card.label}
+                      count={card.count}
+                      icon={card.icon}
+                      path={card.path}
+                      iconTextColor={card.iconTextColor}
+                      iconBgColor={card.iconBgColor}
+                      progressBarColor={card.progressBarColor}
+                      totalRelatos={relatoCounts?.totalAprovados || 0}
+                    />
+                  )
+                ))
+              )}
+            </div>
 
-        <div>
-          <SettingsGroup>
-            {managementItems.filter(item => item.show).map((item, index) => (
-              <SettingsItem
-                key={index}
-                label={item.label}
-                value={item.value}
-                icon={item.icon}
-                iconColor={item.iconColor}
-                path={item.path}
-              />
-            ))}
-          </SettingsGroup>
-        </div>
+            <div>
+              <SettingsGroup>
+                {managementItems.filter(item => item.show).map((item, index) => (
+                  <SettingsItem
+                    key={index}
+                    label={item.label}
+                    value={item.value}
+                    icon={item.icon}
+                    iconColor={item.iconColor}
+                    path={item.path}
+                  />
+                ))}
+              </SettingsGroup>
+            </div>
 
-        <Link to="/relatos/estatisticas" className="w-full block">
-          <div className="bg-yellow-500 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center">
-            <BarChart className="h-12 w-12 text-white mb-4" />
-            <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
-          </div>
-        </Link>
+            <Link to="/relatos/estatisticas" className="w-full block">
+              <div className="bg-yellow-500 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center">
+                <BarChart className="h-12 w-12 text-white mb-4" />
+                <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
+              </div>
+            </Link>
+          </>
+        )}
       </div>
     </MainLayout>
   );

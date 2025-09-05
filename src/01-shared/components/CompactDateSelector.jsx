@@ -1,6 +1,5 @@
 import { useRef, useEffect, useMemo } from 'react';
-import { format, addYears, subYears, getYear, isSameMonth, getMonth } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { isSameMonth } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { cn } from '@/01-shared/utils/utils';
@@ -19,7 +18,7 @@ const months = [
   { value: 9, label: 'Set' },
   { value: 10, label: 'Out' },
   { value: 11, label: 'Nov' },
-  { value: 12, label: 'Dez' },
+  { value: 12, label: 'Dez' }
 ];
 
 export default function CompactDateSelector({ children }) {
@@ -39,7 +38,7 @@ export default function CompactDateSelector({ children }) {
       activeMonthRef.current.scrollIntoView({
         behavior: 'smooth',
         inline: 'center',
-        block: 'nearest',
+        block: 'nearest'
       });
     }
   }, [periodType, year]);
@@ -85,7 +84,7 @@ export default function CompactDateSelector({ children }) {
                   'snap-center flex-shrink-0 flex flex-col items-center justify-center w-14 h-12 rounded-lg cursor-pointer transition-all duration-200 ease-in-out mx-1',
                   {
                     'bg-primary text-primary-foreground font-bold shadow-md': isSelected,
-                    'bg-muted/50 text-muted-foreground hover:bg-muted': !isSelected,
+                    'bg-muted/50 text-muted-foreground hover:bg-muted': !isSelected
                   }
                 )}
               >
