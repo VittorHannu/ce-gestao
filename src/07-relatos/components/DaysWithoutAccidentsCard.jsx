@@ -1,6 +1,6 @@
 import React from 'react';
 import { differenceInCalendarDays, format } from 'date-fns';
-import { ShieldCheck } from 'lucide-react';
+
 
 const DaysWithoutAccidentsCard = ({ lastAccidentDate, isLoading }) => {
   if (isLoading) {
@@ -27,13 +27,14 @@ const DaysWithoutAccidentsCard = ({ lastAccidentDate, isLoading }) => {
   }
 
   return (
-    <div className="bg-teal-600 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center text-white">
-      <ShieldCheck className="h-12 w-12 text-white mb-4" />
-      <h2 className="text-5xl font-bold">
-        {daysSinceLastAccident}
-      </h2>
-      <p className="text-lg font-semibold mt-2">dias sem acidentes com afastamento</p>
-      <p className="text-sm text-teal-100 mt-4">{footerText}</p>
+    <div className="bg-teal-600 p-6 rounded-lg shadow-none flex flex-col justify-center text-white">
+      <div className="flex items-center justify-center gap-4">
+        <h2 className="text-5xl font-bold">
+          {daysSinceLastAccident}
+        </h2>
+        <p className="text-lg font-semibold text-left">dias sem acidentes com afastamento</p>
+      </div>
+      <p className="text-sm text-teal-100 mt-4 text-center">{footerText}</p>
     </div>
   );
 };
