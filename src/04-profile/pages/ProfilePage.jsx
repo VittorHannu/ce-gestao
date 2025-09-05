@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { User, Camera, Shield, LogOut, Mail, Key } from 'lucide-react';
@@ -9,12 +9,15 @@ import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import DataLoader from '@/01-shared/components/data-loader/DataLoader';
 import { Button } from '@/01-shared/components/ui/button';
 import MainLayout from '@/01-shared/components/MainLayout';
+import FeedbackForm from '@/01-shared/components/FeedbackForm';
+import { MessageSquare, List } from 'lucide-react';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { onLogout, showToast } = useOutletContext();
   const queryClient = useQueryClient();
   const fileInputRef = useRef(null);
+  const [isFeedbackFormOpen, setIsFeedbackFormOpen] = useState(false);
 
   
 
@@ -135,6 +138,24 @@ const ProfilePage = () => {
                 </div>
               </div>
             </div>
+
+            <div className="flex flex-col items-center space-y-4 mt-8">
+              <Button onClick={() => setIsFeedbackFormOpen(true)} className="w-full max-w-xs">
+                <MessageSquare className="w-5 h-5 mr-2" />
+                Enviar Feedback / Relatar Erro
+              </Button>
+              {userProfile?.can_view_feedbacks && (
+                <Button onClick={() => navigate('/feedback-reports')} className="w-full max-w-xs">
+                  <List className="w-5 h-5 mr-2" />
+                  Ver Relatórios de Feedback
+                </Button>
+              )}
+            </div>
+
+            <FeedbackForm
+              isOpen={isFeedbackFormOpen}
+              onClose={() => setIsFeedbackFormOpen(false)}
+            />
           </>
         )}
       </DataLoader>

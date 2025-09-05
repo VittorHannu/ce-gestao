@@ -16,27 +16,11 @@
 
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import MainLayout from '@/01-shared/components/MainLayout';
 import FeedbackForm from '@/01-shared/components/FeedbackForm';
-import { Button } from '@/01-shared/components/ui/button';
-import { MessageSquare, List, Bell } from 'lucide-react';
-import { useOutletContext } from 'react-router-dom';
-import { requestNotificationPermission, subscribeUserToPush } from '@/01-shared/lib/pushNotifications';
 
 const HomePage = () => {
-  const navigate = useNavigate();
-  const { user } = useOutletContext();
   const [isFeedbackFormOpen, setIsFeedbackFormOpen] = useState(false);
-
-  const handleSubscribeToPush = async () => {
-    const permission = await requestNotificationPermission();
-    if (permission === 'granted') {
-      await subscribeUserToPush();
-    } else {
-      alert('Permissão para notificações negada. Por favor, habilite nas configurações do navegador.');
-    }
-  };
 
   
 
@@ -49,27 +33,6 @@ const HomePage = () => {
 
       <div className="flex justify-center">
         {/* O card de Gerenciar Usuários foi movido para a barra de navegação */}
-      </div>
-
-      <div className="flex flex-col items-center space-y-4 mt-8">
-        <Button onClick={() => setIsFeedbackFormOpen(true)} className="w-full max-w-xs">
-          <MessageSquare className="w-5 h-5 mr-2" />
-          Enviar Feedback / Relatar Erro
-        </Button>
-        {user?.can_view_feedbacks && (
-          <Button onClick={() => navigate('/feedback-reports')} className="w-full max-w-xs">
-            <List className="w-5 h-5 mr-2" />
-            Ver Relatórios de Feedback
-          </Button>
-        )}
-        <Button onClick={handleSubscribeToPush} className="w-full max-w-xs">
-          <Bell className="w-5 h-5 mr-2" />
-          Ativar Notificações
-        </Button>
-        <Button onClick={() => navigate('/notifications')} className="w-full max-w-xs">
-          <Bell className="w-5 h-5 mr-2" />
-          Ver Minhas Notificações
-        </Button>
       </div>
 
       <FeedbackForm
