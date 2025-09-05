@@ -1,7 +1,3 @@
-
-
-
-
 /*
  * Este arquivo CSS contém estilos globais e específicos do tema para o aplicativo.
  * Ele define a aparência geral do site, incluindo cores, fontes, espaçamentos e transições.
@@ -162,9 +158,9 @@ textarea:focus-visible {
   padding-top: env(safe-area-inset-top);
 }
 
-
-
-
-
-
-
+.full-bleed {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}

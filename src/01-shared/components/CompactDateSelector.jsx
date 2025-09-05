@@ -59,57 +59,59 @@ export default function CompactDateSelector({ children, className }) {
   };
 
   return (
-    <div className={cn("w-full flex flex-col space-y-4", className)}>
-      <div className="relative w-full flex items-center justify-center">
-        <div className="flex items-center">
-          <Button variant="ghost" size="icon" onClick={() => handleYearChange('prev')}>
-            <ChevronLeft className="h-5 w-5" />
-          </Button>
-          <div className="text-lg font-semibold tabular-nums w-20 text-center">
-            {year}
+    <div className={cn("full-bleed w-full", className)}>
+      <div className="w-full flex flex-col space-y-4">
+        <div className="relative w-full flex items-center justify-center px-2">
+          <div className="flex items-center">
+            <Button variant="ghost" size="icon" onClick={() => handleYearChange('prev')}>
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+            <div className="text-lg font-semibold tabular-nums w-20 text-center">
+              {year}
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => handleYearChange('next')}>
+              <ChevronRight className="h-5 w-5" />
+            </Button>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => handleYearChange('next')}>
-            <ChevronRight className="h-5 w-5" />
-          </Button>
+          <div className="absolute right-0 pr-2">
+            {children}
+          </div>
         </div>
-        <div className="absolute right-0">
-          {children}
-        </div>
-      </div>
-      <div ref={scrollContainerRef} className="w-full overflow-x-auto no-scrollbar">
-        <div className="flex justify-around">
-          {periods.map((period) => {
-            const isMonth = period.value >= 1 && period.value <= 12;
-            const monthDate = isMonth ? new Date(year, period.value - 1, 1) : null;
-            
-            let isSelected = false;
-            if (isMonth) {
-              isSelected = selectedMonthDate && isSameMonth(monthDate, selectedMonthDate);
-            } else {
-              isSelected = periodType === period.value;
-            }
+        <div ref={scrollContainerRef} className="w-full overflow-x-auto no-scrollbar">
+          <div className="flex items-center justify-start px-2">
+            {periods.map((period) => {
+              const isMonth = period.value >= 1 && period.value <= 12;
+              const monthDate = isMonth ? new Date(year, period.value - 1, 1) : null;
+              
+              let isSelected = false;
+              if (isMonth) {
+                isSelected = selectedMonthDate && isSameMonth(monthDate, selectedMonthDate);
+              } else {
+                isSelected = periodType === period.value;
+              }
 
-            const isSemester = period.value === 13 || period.value === 14;
+              const isSemester = period.value === 13 || period.value === 14;
 
-            return (
-              <div
-                key={period.value}
-                ref={isSelected ? activePeriodRef : null}
-                onClick={() => handlePeriodClick(period.value)}
-                className={cn(
-                  'snap-center flex-shrink-0 flex flex-col items-center justify-center h-12 rounded-lg cursor-pointer transition-all duration-200 ease-in-out m-1',
-                  {
-                    'w-20': isSemester, // Wider for semester labels
-                    'w-14': !isSemester,
-                    'bg-gray-600 text-white font-bold shadow-md ring-1 ring-white': isSelected,
-                    'bg-gray-700 text-white hover:bg-gray-600': !isSelected
-                  }
-                )}
-              >
-                <div className="text-sm font-medium uppercase tracking-wider">{period.label}</div>
-              </div>
-            );
-          })}
+              return (
+                <div
+                  key={period.value}
+                  ref={isSelected ? activePeriodRef : null}
+                  onClick={() => handlePeriodClick(period.value)}
+                  className={cn(
+                    'snap-center flex-shrink-0 flex flex-col items-center justify-center h-12 rounded-lg cursor-pointer transition-all duration-200 ease-in-out m-1',
+                    {
+                      'w-20': isSemester, // Wider for semester labels
+                      'w-14': !isSemester,
+                      'bg-gray-600 text-white font-bold shadow-md ring-1 ring-white': isSelected,
+                      'bg-gray-700 text-white hover:bg-gray-600': !isSelected
+                    }
+                  )}
+                >
+                  <div className="text-sm font-medium uppercase tracking-wider">{period.label}</div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
