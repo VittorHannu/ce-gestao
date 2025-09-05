@@ -1,17 +1,15 @@
 import React from 'react';
-import DateFilter from '@/01-shared/components/DateFilter';
-import { Card, CardContent } from '@/01-shared/components/ui/card';
+import CompactDateSelector from '@/01-shared/components/CompactDateSelector';
+import { Card, CardContent, CardHeader, CardTitle } from '@/01-shared/components/ui/card';
 
 const DateFilterCard = () => {
   return (
-    <Card className="p-4 shadow-sm">
-      <CardContent className="p-0 flex items-center justify-center w-full">
-        <div className="flex flex-row items-center gap-4 w-full">
-          <span className="font-bold">Período</span>
-          <div className="flex-grow">
-            <DateFilter />
-          </div>
-        </div>
+    <Card className="shadow-sm w-full">
+      <CardHeader>
+        <CardTitle>Filtrar por Período</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <CompactDateSelector />
       </CardContent>
     </Card>
   );

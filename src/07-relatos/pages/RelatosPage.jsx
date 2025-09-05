@@ -12,6 +12,7 @@ import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import MainLayout from '@/01-shared/components/MainLayout';
 import SettingsGroup from '@/01-shared/components/settings/SettingsGroup';
 import SettingsItem from '@/01-shared/components/settings/SettingsItem';
+import CompactDateSelector from '@/01-shared/components/CompactDateSelector';
 
 const RelatosPage = () => {
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
@@ -22,11 +23,6 @@ const RelatosPage = () => {
   }
 
   const cardData = [
-    {
-      label: 'Filtrar por Período',
-      component: <DateFilterCard />,
-      isLink: false
-    },
     {
       label: 'Total de Relatos',
       component: <TotalReportsCard totalReports={relatoCounts?.totalAprovados || 0} />,
@@ -103,8 +99,7 @@ const RelatosPage = () => {
   return (
     <MainLayout
       header={(
-        <div className="flex items-center justify-between w-full">
-          <h1 className="text-2xl font-bold">Relatos</h1>
+        <CompactDateSelector>
           <div className="flex items-center space-x-2">
             <Link to="/relatos/novo">
               <Button variant="warning">
@@ -123,58 +118,60 @@ const RelatosPage = () => {
               </Button>
             </Link>
           </div>
-        </div>
+        </CompactDateSelector>
       )}
     >
-      <div className="grid grid-cols-2 gap-4">
-        {cardData.map((card, index) => (
-          card.component ? (
-            card.isLink ? (
-              <Link to={card.path} key={index} className="w-full block">
-                {card.component}
-              </Link>
+      <div className="space-y-8" style={{ marginTop: '1.75rem' }}>
+        <div className="grid grid-cols-2 gap-4">
+          {cardData.map((card, index) => (
+            card.component ? (
+              card.isLink ? (
+                <Link to={card.path} key={index} className="w-full block">
+                  {card.component}
+                </Link>
+              ) : (
+                <div key={index} className={`w-full block ${index === 0 ? 'col-span-2' : ''}`}>
+                  {card.component}
+                </div>
+              )
             ) : (
-              <div key={index} className={`w-full block ${index === 0 ? 'col-span-2' : ''}`}>
-                {card.component}
-              </div>
+              <RelatoStatsCard
+                key={index}
+                label={card.label}
+                count={card.count}
+                icon={card.icon}
+                path={card.path}
+                iconTextColor={card.iconTextColor}
+                iconBgColor={card.iconBgColor}
+                progressBarColor={card.progressBarColor}
+                totalRelatos={relatoCounts?.totalAprovados || 0}
+              />
             )
-          ) : (
-            <RelatoStatsCard
-              key={index}
-              label={card.label}
-              count={card.count}
-              icon={card.icon}
-              path={card.path}
-              iconTextColor={card.iconTextColor}
-              iconBgColor={card.iconBgColor}
-              progressBarColor={card.progressBarColor}
-              totalRelatos={relatoCounts?.totalAprovados || 0}
-            />
-          )
-        ))}
-      </div>
-
-      <div className="mt-8">
-        <SettingsGroup>
-          {managementItems.filter(item => item.show).map((item, index) => (
-            <SettingsItem
-              key={index}
-              label={item.label}
-              value={item.value}
-              icon={item.icon}
-              iconColor={item.iconColor}
-              path={item.path}
-            />
           ))}
-        </SettingsGroup>
-      </div>
-
-      <Link to="/relatos/estatisticas" className="w-full block mt-8">
-        <div className="bg-yellow-500 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center">
-          <BarChart className="h-12 w-12 text-white mb-4" />
-          <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
         </div>
-      </Link>
+
+        <div>
+          <SettingsGroup>
+            {managementItems.filter(item => item.show).map((item, index) => (
+              <SettingsItem
+                key={index}
+                label={item.label}
+                value={item.value}
+                icon={item.icon}
+                iconColor={item.iconColor}
+                path={item.path}
+              />
+            ))}
+          </SettingsGroup>
+        </div>
+
+        <Link to="/relatos/estatisticas" className="w-full block">
+          <div className="bg-yellow-500 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center">
+            <BarChart className="h-12 w-12 text-white mb-4" />
+            <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
+          </div>
+        </Link>
+      </div>
     </MainLayout>
   );
 };
