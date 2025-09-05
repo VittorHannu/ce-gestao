@@ -13,15 +13,15 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/01-shared/components/ui/Select';
+  SelectValue
+} from '@/01-shared/components/ui/select';
 
 const filterOptions = [
   { value: 'all', label: 'Todos' },
   { value: 'online', label: 'Online' },
   { value: 'offline', label: 'Offline' },
   { value: 'active', label: 'Ativos' },
-  { value: 'inactive', label: 'Inativos' },
+  { value: 'inactive', label: 'Inativos' }
 ];
 
 function UsersPage() {
