@@ -30,7 +30,7 @@ const MainLayout = ({ children, header, _user }) => {
             className="flex-grow px-2 overflow-y-visible max-w-screen-md mx-auto w-full"
             style={{
               paddingTop: header ? 'calc(70px + env(safe-area-inset-top))' : '10px',
-              paddingBottom: '15px'
+              paddingBottom: '60px'
             }}
           >
             {children}
