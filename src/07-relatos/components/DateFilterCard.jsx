@@ -7,7 +7,7 @@ const DateFilterCard = () => {
     <Card className="p-4 shadow-sm">
       <CardContent className="p-0 flex items-center justify-center w-full">
         <div className="flex flex-row items-center gap-4 w-full">
-          <span className="font-bold">Selecionar período:</span>
+          <span className="font-bold">Período</span>
           <div className="flex-grow">
             <DateFilter />
           </div>

@@ -27,11 +27,11 @@ const DateFilter = () => {
   ];
 
   return (
-    <div className="flex flex-row items-center gap-2 w-full">
+    <div className="grid grid-cols-2 gap-2 w-full">
 
-      {/* Year Selector (always visible) */}
+      {/* Year Selector */}
       <Select value={year.toString()} onValueChange={(value) => setYear(parseInt(value, 10))}>
-        <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
+        <SelectTrigger className="hover:bg-accent hover:text-accent-foreground">
           <SelectValue placeholder="Ano" />
         </SelectTrigger>
         <SelectContent>
@@ -41,9 +41,9 @@ const DateFilter = () => {
         </SelectContent>
       </Select>
 
-      {/* NEW: Combined Month/Semester/Year Selector */}
+      {/* Month/Semester/Year Selector */}
       <Select value={periodType.toString()} onValueChange={(value) => setPeriodType(parseInt(value, 10))}>
-        <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
+        <SelectTrigger className="hover:bg-accent hover:text-accent-foreground">
           <SelectValue placeholder="Período" />
         </SelectTrigger>
         <SelectContent>
@@ -51,7 +51,7 @@ const DateFilter = () => {
             <SelectItem
               key={option.value}
               value={option.value.toString()}
-              className={option.isBold ? 'font-bold' : ''} // Apply font-bold class
+              className={option.isBold ? 'font-bold' : ''}
             >
               {option.label}
             </SelectItem>

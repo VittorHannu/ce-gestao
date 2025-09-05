@@ -70,9 +70,9 @@ function UsersPage() {
           onChange={handleSearchChange}
           placeholder="Pesquisar por nome ou email..."
         />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-2">
           <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="w-auto">
+            <SelectTrigger className="w-[fit-content]">
               <SelectValue placeholder="Filtro" />
             </SelectTrigger>
             <SelectContent>
@@ -86,7 +86,7 @@ function UsersPage() {
           <Button
             onClick={() => navigate('/users-management/create')}
             title="Criar novo usuário"
-            className="flex-shrink-0 ml-auto"
+            className="flex-shrink-0"
           >
             <FontAwesomeIcon icon={faPlus} />
             <span className="ml-2">Adicionar Usuário</span>
