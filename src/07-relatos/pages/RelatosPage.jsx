@@ -99,12 +99,6 @@ const RelatosPage = () => {
       header={(
         <CompactDateSelector>
           <div className="flex items-center space-x-2">
-            <Link to="/relatos/novo">
-              <Button variant="warning">
-                <Plus className="h-4 w-4 mr-2" />
-                Relato
-              </Button>
-            </Link>
             <Link to="/notifications">
               <Button variant="ghost" size="icon">
                 <Bell className="h-6 w-6" />
@@ -188,6 +182,11 @@ const RelatosPage = () => {
           </>
         )}
       </div>
+      <Link to="/relatos/novo" className="fixed bottom-24 right-4 z-50">
+        <Button variant="warning" size="icon" className="rounded-full w-14 h-14 shadow-lg">
+          <Plus className="h-6 w-6" />
+        </Button>
+      </Link>
     </MainLayout>
   );
 };

@@ -51,24 +51,28 @@ export default function CompactDateSelector({ children }) {
   };
 
   const handlePeriodClick = (periodValue) => {
-    setPeriodType(periodValue);
+    if (periodType === periodValue) {
+      setPeriodType(0); // Deselect if the same period is clicked again
+    } else {
+      setPeriodType(periodValue); // Select the new period
+    }
   };
 
   return (
     <div className="w-full flex flex-col space-y-4">
-      <div className="flex items-center justify-between w-full">
-        <div className="flex items-center justify-center">
+      <div className="relative w-full flex items-center justify-center">
+        <div className="flex items-center">
           <Button variant="ghost" size="icon" onClick={() => handleYearChange('prev')}>
             <ChevronLeft className="h-5 w-5" />
           </Button>
-          <div className="text-lg font-semibold tabular-nums w-24 text-center">
+          <div className="text-lg font-semibold tabular-nums w-20 text-center">
             {year}
           </div>
           <Button variant="ghost" size="icon" onClick={() => handleYearChange('next')}>
             <ChevronRight className="h-5 w-5" />
           </Button>
         </div>
-        <div>
+        <div className="absolute right-0">
           {children}
         </div>
       </div>
