@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/01-shared/components
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom'; // New import
+import BackButton from '@/01-shared/components/BackButton';
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState([]);
@@ -115,34 +116,43 @@ const NotificationsPage = () => {
   };
 
   return (
-    <MainLayout title="Minhas Notificações">
-      <div className="space-y-4">
-        {loading ? (
-          <p>Carregando notificações...</p>
-        ) : notifications.length === 0 ? (
-          <p>Você não tem notificações.</p>
-        ) : (
-          notifications.map((notification) => (
-            <Card
-              key={notification.id}
-              className={`cursor-pointer ${notification.is_read ? 'opacity-70' : 'border-l-4 border-blue-500'}`}
-              onClick={() => handleNotificationClick(notification)} // Added onClick
-            >
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {notification.is_read ? 'Lida' : 'Não Lida'}
-                </CardTitle>
-                <span className="text-xs text-gray-500">
-                  {format(new Date(notification.created_at), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
-                </span>
-              </CardHeader>
-              <CardContent>
-                <p className="text-lg font-bold">{getNotificationMessage(notification)}</p>
-                {/* Removed "Marcar como Lida" button as click handles it */}
-              </CardContent>
-            </Card>
-          ))
-        )}
+    <MainLayout
+      header={(
+        <>
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">Minhas Notificações</h1>
+        </>
+      )}
+    >
+      <div className="p-4">
+        <div className="space-y-4">
+          {loading ? (
+            <p>Carregando notificações...</p>
+          ) : notifications.length === 0 ? (
+            <p>Você não tem notificações.</p>
+          ) : (
+            notifications.map((notification) => (
+              <Card
+                key={notification.id}
+                className={`cursor-pointer ${notification.is_read ? 'opacity-70' : 'border-l-4 border-blue-500'}`}
+                onClick={() => handleNotificationClick(notification)} // Added onClick
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    {notification.is_read ? 'Lida' : 'Não Lida'}
+                  </CardTitle>
+                  <span className="text-xs text-gray-500">
+                    {format(new Date(notification.created_at), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
+                  </span>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-lg font-bold">{getNotificationMessage(notification)}</p>
+                  {/* Removed "Marcar como Lida" button as click handles it */}
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
       </div>
     </MainLayout>
   );

@@ -78,8 +78,18 @@ const ProfilePage = () => {
   const isLoading = isUploading;
 
   return (
-    <MainLayout>
-      
+    <MainLayout
+      header={(
+        <>
+          <h1 className="text-2xl font-bold">Meu Perfil</h1>
+          <div className="flex-grow" />
+          <Button onClick={handleLogoutClick} variant="destructive">
+            <LogOut className="w-4 h-4 mr-2" />
+            Sair
+          </Button>
+        </>
+      )}
+    >
       <DataLoader loading={isProfileLoading} error={profileError} onRetry={refetch} loadingMessage="Carregando perfil...">
         {userProfile && (
           <>
@@ -124,20 +134,6 @@ const ProfilePage = () => {
                   </Link>
                 </div>
               </div>
-            </div>
-
-            
-
-            {/* Botão de Sair */}
-            <div className="flex justify-center">
-              <Button
-                onClick={handleLogoutClick}
-                variant="destructive"
-                disabled={isLoading}
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Sair
-              </Button>
             </div>
           </>
         )}

@@ -4,6 +4,7 @@ import RelatoForm from '../components/RelatoForm';
 
 import { supabase } from '@/01-shared/lib/supabase';
 import BackButton from '@/01-shared/components/BackButton';
+import MainLayout from '@/01-shared/components/MainLayout';
 
 const CreateRelatoPage = ({ showToast }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -103,21 +104,26 @@ const CreateRelatoPage = ({ showToast }) => {
   };
 
   return (
-    <div className="container mx-auto p-4"> {/* Re-added p-4 */}
-      <div className="flex items-center gap-4 mb-4">
-        <BackButton />
-        <h1 className="text-2xl font-bold">Criar Novo Relato</h1>
+    <MainLayout
+      header={(
+        <>
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">Criar Novo Relato</h1>
+        </>
+      )}
+    >
+      <div className="p-4">
+        <p className="mb-6 text-gray-600">
+          Preencha o formulário abaixo com o máximo de detalhes possível. Sua contribuição é fundamental para a segurança de todos.
+        </p>
+        <RelatoForm
+          onSubmit={handleCreateRelato}
+          isLoading={isLoading}
+          submitButtonText="Enviar Relato"
+          isUserLoggedIn={isUserLoggedIn} // Pass the new prop
+        />
       </div>
-      <p className="mb-6 text-gray-600">
-        Preencha o formulário abaixo com o máximo de detalhes possível. Sua contribuição é fundamental para a segurança de todos.
-      </p>
-      <RelatoForm
-        onSubmit={handleCreateRelato}
-        isLoading={isLoading}
-        submitButtonText="Enviar Relato"
-        isUserLoggedIn={isUserLoggedIn} // Pass the new prop
-      />
-    </div>
+    </MainLayout>
   );
 };
 

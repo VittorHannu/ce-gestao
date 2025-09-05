@@ -4,6 +4,7 @@ import { useToast } from '@/01-shared/hooks/useToast';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import RelatoCard from '../components/RelatoCard';
 import BackButton from '@/01-shared/components/BackButton';
+import MainLayout from '@/01-shared/components/MainLayout';
 
 const RelatosReprovadosPage = () => {
   const [reprovadosRelatos, setReprovadosRelatos] = useState([]);
@@ -36,22 +37,26 @@ const RelatosReprovadosPage = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex items-center mb-4">
-        <BackButton />
-        <h1 className="text-2xl font-bold ml-4">Relatos Reprovados</h1>
-      </div>
-      
-      {reprovadosRelatos.length === 0 ? (
-        <p>Não há relatos reprovados no momento.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {reprovadosRelatos.map((relato) => (
-            <RelatoCard key={relato.id} relato={relato} />
-          ))}
-        </div>
+    <MainLayout
+      header={(
+        <>
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">Relatos Reprovados</h1>
+        </>
       )}
-    </div>
+    >
+      <div className="p-4">
+        {reprovadosRelatos.length === 0 ? (
+          <p>Não há relatos reprovados no momento.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {reprovadosRelatos.map((relato) => (
+              <RelatoCard key={relato.id} relato={relato} />
+            ))}
+          </div>
+        )}
+      </div>
+    </MainLayout>
   );
 };
 

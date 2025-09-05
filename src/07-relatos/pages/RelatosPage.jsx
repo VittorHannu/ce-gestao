@@ -101,7 +101,9 @@ const RelatosPage = () => {
   ];
 
   return (
-    <MainLayout>
+    <MainLayout
+      header={<h1 className="text-2xl font-bold">Relatos</h1>}
+    >
       <div className="grid grid-cols-2 gap-4">
         {cardData.map((card, index) => (
           card.component ? (

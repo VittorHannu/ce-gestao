@@ -6,6 +6,7 @@ import { Checkbox } from '@/01-shared/components/ui/checkbox';
 import { Button } from '@/01-shared/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/01-shared/components/ui/alert-dialog';
 import MainLayout from '@/01-shared/components/MainLayout';
+import BackButton from '@/01-shared/components/BackButton';
 
 const UserDetailsPage = () => {
   const { userId } = useParams();
@@ -156,7 +157,14 @@ const UserDetailsPage = () => {
   }
 
   return (
-    <MainLayout>
+    <MainLayout
+      header={(
+        <>
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">Detalhes do Usuário</h1>
+        </>
+      )}
+    >
       <div className="bg-white rounded-lg shadow-md p-4 flex flex-col">
         <div className="flex-grow">
           <h4 className="font-bold text-lg mb-2">{user.full_name || 'N/A'}</h4>
@@ -183,7 +191,6 @@ const UserDetailsPage = () => {
         </div>
         <div className="mt-4 flex gap-2 self-end">
           <Button size="sm" onClick={handleSavePermissions}>Salvar</Button>
-          <Button size="sm" variant="outline" onClick={() => navigate('/users-management')}>Cancelar</Button>
           <Button size="sm" variant="destructive" onClick={openDeleteDialog}>Deletar</Button>
         </div>
       </div>

@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { updateRelatoType } from '../services/relatoStatsService';
 import _RelatoDisplayDetails from '../components/RelatoDisplayDetails';
+import MainLayout from '@/01-shared/components/MainLayout';
 
 const RelatosListaPage = () => {
   const [relatos, setRelatos] = useState([]);
@@ -156,107 +157,109 @@ const RelatosListaPage = () => {
   }, [loading]); // Dependency array: runs when 'loading' changes
 
   return (
-    <div className="container mx-auto p-4 min-h-screen">
-      <div className="flex items-center mb-4">
-        <BackButton />
-        <h1 className="text-2xl font-bold ml-4">{getTitle()}</h1>
-      </div>
-
-      
-
-      <div className="mb-4">
-        <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Pesquisar relatos..." />
-      </div>
-
-      <div className="mb-4 flex flex-wrap space-x-2 gap-y-2">
-        <Button
-          variant={responsibleFilter === 'all' ? 'default' : 'outline'}
-          onClick={() => setResponsibleFilter('all')}
-        >
-          Todos
-        </Button>
-        <Button
-          variant={responsibleFilter === 'with_responsibles' ? 'default' : 'outline'}
-          onClick={() => setResponsibleFilter('with_responsibles')}
-        >
-          Com Responsáveis
-        </Button>
-        <Button
-          variant={responsibleFilter === 'without_responsibles' ? 'default' : 'outline'}
-          onClick={() => setResponsibleFilter('without_responsibles')}
-        >
-          Sem Responsáveis
-        </Button>
-      </div>
-      
-      {loading ? (
+    <MainLayout
+      header={(
         <>
-          <LoadingSpinner />
-          {showReloadButtonOnTimeout && (
-            <div className="text-center mt-4">
-              <p className="mb-2">O carregamento está demorando mais que o esperado.</p>
-              <Button onClick={fetchRelatos}>Tentar Novamente</Button>
-            </div>
-          )}
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">{getTitle()}</h1>
         </>
-      ) : error ? ( // Display error message and reload button
-        <div className="container mx-auto p-4 text-red-500 flex flex-col items-center justify-center">
-          <p className="mb-4">Erro ao carregar dados: {error.message}</p>
-          <Button onClick={fetchRelatos}>Tentar Novamente</Button>
-        </div>
-      ) : relatos.length === 0 ? (
-        <div className="text-center py-10">
-          {userProfile && !userProfile.can_view_all_relatos ? (
-            <p className="text-gray-600 bg-gray-100 p-4 rounded-md">
-              Nota: Sua lista mostra apenas os relatos que você criou ou pelos quais é responsável.
-            </p>
-          ) : (
-            <p>Nenhum relato encontrado para esta categoria.</p>
-          )}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {relatos.map((relato) => (
-            <div key={relato.id} className="p-4 border rounded-lg bg-white">
-              <RelatoCard relato={relato} />
-              {tipoRelatoFilter && ( // Render classification UI only if tipoRelatoFilter is present
-                <div className="flex items-center gap-2 mt-4">
-                  <Select
-                    onValueChange={(value) => setSelectedTypes(prev => ({ ...prev, [relato.id]: value }))}
-                    value={selectedTypes[relato.id]}
-                    disabled={classifyingId === relato.id || !canManageRelatos}
-                  >
-                    <SelectTrigger className="w-[180px] bg-gray-100">
-                      <SelectValue placeholder={tipoRelatoFilter === 'Sem Classificação' ? 'Classificar Tipo' : 'Mudar Classificação'} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="CLEAR_SELECTION">Nenhum</SelectItem>
-                      <SelectItem value="Fatal">Fatal</SelectItem>
-                      <SelectItem value="Severo">Severo</SelectItem>
-                      <SelectItem value="Acidente com afastamento">Acidente com afastamento</SelectItem>
-                      <SelectItem value="Acidente sem afastamento">Acidente sem afastamento</SelectItem>
-                      <SelectItem value="Primeiros socorros">Primeiros socorros</SelectItem>
-                      <SelectItem value="Quase acidente">Quase acidente</SelectItem>
-                      <SelectItem value="Condição insegura">Condição insegura</SelectItem>
-                      <SelectItem value="Comportamento inseguro">Comportamento inseguro</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {canManageRelatos && selectedTypes[relato.id] && selectedTypes[relato.id] !== 'CLEAR_SELECTION' && (
-                    <Button
-                      onClick={() => handleSaveClassification(relato.id)}
-                      disabled={classifyingId === relato.id || selectedTypes[relato.id] === relato.tipo_relato}
-                      className="ml-2"
-                    >
-                      {classifyingId === relato.id ? 'Salvando...' : 'Salvar'}
-                    </Button>
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
       )}
-    </div>
+    >
+      <div className="p-4">
+        <div className="mb-4">
+          <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Pesquisar relatos..." />
+        </div>
+
+        <div className="mb-4 flex flex-wrap space-x-2 gap-y-2">
+          <Button
+            variant={responsibleFilter === 'all' ? 'default' : 'outline'}
+            onClick={() => setResponsibleFilter('all')}
+          >
+            Todos
+          </Button>
+          <Button
+            variant={responsibleFilter === 'with_responsibles' ? 'default' : 'outline'}
+            onClick={() => setResponsibleFilter('with_responsibles')}
+          >
+            Com Responsáveis
+          </Button>
+          <Button
+            variant={responsibleFilter === 'without_responsibles' ? 'default' : 'outline'}
+            onClick={() => setResponsibleFilter('without_responsibles')}
+          >
+            Sem Responsáveis
+          </Button>
+        </div>
+        
+        {loading ? (
+          <>
+            <LoadingSpinner />
+            {showReloadButtonOnTimeout && (
+              <div className="text-center mt-4">
+                <p className="mb-2">O carregamento está demorando mais que o esperado.</p>
+                <Button onClick={fetchRelatos}>Tentar Novamente</Button>
+              </div>
+            )}
+          </>
+        ) : error ? ( // Display error message and reload button
+          <div className="container mx-auto p-4 text-red-500 flex flex-col items-center justify-center">
+            <p className="mb-4">Erro ao carregar dados: {error.message}</p>
+            <Button onClick={fetchRelatos}>Tentar Novamente</Button>
+          </div>
+        ) : relatos.length === 0 ? (
+          <div className="text-center py-10">
+            {userProfile && !userProfile.can_view_all_relatos ? (
+              <p className="text-gray-600 bg-gray-100 p-4 rounded-md">
+                Nota: Sua lista mostra apenas os relatos que você criou ou pelos quais é responsável.
+              </p>
+            ) : (
+              <p>Nenhum relato encontrado para esta categoria.</p>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {relatos.map((relato) => (
+              <div key={relato.id} className="p-4 border rounded-lg bg-white">
+                <RelatoCard relato={relato} />
+                {tipoRelatoFilter && ( // Render classification UI only if tipoRelatoFilter is present
+                  <div className="flex items-center gap-2 mt-4">
+                    <Select
+                      onValueChange={(value) => setSelectedTypes(prev => ({ ...prev, [relato.id]: value }))}
+                      value={selectedTypes[relato.id]}
+                      disabled={classifyingId === relato.id || !canManageRelatos}
+                    >
+                      <SelectTrigger className="w-[180px] bg-gray-100">
+                        <SelectValue placeholder={tipoRelatoFilter === 'Sem Classificação' ? 'Classificar Tipo' : 'Mudar Classificação'} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="CLEAR_SELECTION">Nenhum</SelectItem>
+                        <SelectItem value="Fatal">Fatal</SelectItem>
+                        <SelectItem value="Severo">Severo</SelectItem>
+                        <SelectItem value="Acidente com afastamento">Acidente com afastamento</SelectItem>
+                        <SelectItem value="Acidente sem afastamento">Acidente sem afastamento</SelectItem>
+                        <SelectItem value="Primeiros socorros">Primeiros socorros</SelectItem>
+                        <SelectItem value="Quase acidente">Quase acidente</SelectItem>
+                        <SelectItem value="Condição insegura">Condição insegura</SelectItem>
+                        <SelectItem value="Comportamento inseguro">Comportamento inseguro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {canManageRelatos && selectedTypes[relato.id] && selectedTypes[relato.id] !== 'CLEAR_SELECTION' && (
+                      <Button
+                        onClick={() => handleSaveClassification(relato.id)}
+                        disabled={classifyingId === relato.id || selectedTypes[relato.id] === relato.tipo_relato}
+                        className="ml-2"
+                      >
+                        {classifyingId === relato.id ? 'Salvando...' : 'Salvar'}
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </MainLayout>
   );
 };
 

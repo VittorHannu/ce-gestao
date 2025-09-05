@@ -91,10 +91,10 @@ const ApresentacaoView = () => (
 );
 
 const FluxoView = () => {
-  const [activeStep, setActiveStep] = useState(1);
+  const [_activeStep, setActiveStep] = useState(1);
   const [fluxoContent, setFluxoContent] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [_loading, setLoading] = useState(true);
+  const [_error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -5,6 +5,7 @@ import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import RelatoCard from '../components/RelatoCard';
 import BackButton from '@/01-shared/components/BackButton';
 import { Button } from '@/01-shared/components/ui/button'; // Importar Button
+import MainLayout from '@/01-shared/components/MainLayout';
 
 const RelatosAtribuidosPage = () => {
   const [relatos, setRelatos] = useState([]);
@@ -70,39 +71,43 @@ const RelatosAtribuidosPage = () => {
   }, [fetchAssignedRelatos]);
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex items-center mb-4">
-        <BackButton />
-        <h1 className="text-2xl font-bold ml-4">Relatos Atribuídos a Você</h1>
-      </div>
-
-      <div className="mb-4 flex space-x-2">
-        <Button
-          variant={filterType === 'notConcluded' ? 'default' : 'outline'}
-          onClick={() => setFilterType('notConcluded')}
-        >
-          Não Concluídos
-        </Button>
-        <Button
-          variant={filterType === 'all' ? 'default' : 'outline'}
-          onClick={() => setFilterType('all')}
-        >
-          Todos
-        </Button>
-      </div>
-
-      {loading ? (
-        <LoadingSpinner />
-      ) : relatos.length === 0 ? (
-        <p>Nenhum relato atribuído a você {filterType === 'notConcluded' ? 'não concluído' : ''}.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {relatos.map((relato) => (
-            <RelatoCard key={relato.id} relato={relato} />
-          ))}
-        </div>
+    <MainLayout
+      header={(
+        <>
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">Relatos Atribuídos a Você</h1>
+        </>
       )}
-    </div>
+    >
+      <div className="p-4">
+        <div className="mb-4 flex space-x-2">
+          <Button
+            variant={filterType === 'notConcluded' ? 'default' : 'outline'}
+            onClick={() => setFilterType('notConcluded')}
+          >
+            Não Concluídos
+          </Button>
+          <Button
+            variant={filterType === 'all' ? 'default' : 'outline'}
+            onClick={() => setFilterType('all')}
+          >
+            Todos
+          </Button>
+        </div>
+
+        {loading ? (
+          <LoadingSpinner />
+        ) : relatos.length === 0 ? (
+          <p>Nenhum relato atribuído a você {filterType === 'notConcluded' ? 'não concluído' : ''}.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {relatos.map((relato) => (
+              <RelatoCard key={relato.id} relato={relato} />
+            ))}
+          </div>
+        )}
+      </div>
+    </MainLayout>
   );
 };
 

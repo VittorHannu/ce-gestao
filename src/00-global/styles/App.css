@@ -157,6 +157,10 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
+.pt-safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
 
 
 

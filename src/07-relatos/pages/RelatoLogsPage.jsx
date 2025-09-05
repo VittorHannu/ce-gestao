@@ -4,6 +4,7 @@ import { supabase } from '@/01-shared/lib/supabase';
 import { useToast } from '@/01-shared/hooks/useToast';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import BackButton from '@/01-shared/components/BackButton';
+import MainLayout from '@/01-shared/components/MainLayout';
 
 const RelatoLogsPage = () => {
   const { id } = useParams();
@@ -37,30 +38,34 @@ const RelatoLogsPage = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex items-center mb-4">
-        <BackButton />
-        <h1 className="text-2xl font-bold ml-4">Histórico de Alterações do Relato</h1>
+    <MainLayout
+      header={(
+        <>
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">Histórico de Alterações do Relato</h1>
+        </>
+      )}
+    >
+      <div className="p-4">
+        <div className="mt-8 p-4 border rounded-lg bg-white">
+          {relatoLogs.length === 0 ? (
+            <p className="text-gray-600">Nenhuma alteração registrada ainda.</p>
+          ) : (
+            <ul className="space-y-3">
+              {relatoLogs.map((log) => (
+                <li key={log.id} className="p-3 bg-gray-50 rounded-md shadow-sm">
+                  <div className="text-sm text-gray-800">
+                    <span className="font-semibold">{new Date(log.created_at).toLocaleString()}</span> - 
+                    <span className="font-medium">{log.profiles?.full_name || log.profiles?.email || 'Usuário Desconhecido'}</span>:
+                    {formatLogDetails(log)}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
-
-      <div className="mt-8 p-4 border rounded-lg bg-white">
-        {relatoLogs.length === 0 ? (
-          <p className="text-gray-600">Nenhuma alteração registrada ainda.</p>
-        ) : (
-          <ul className="space-y-3">
-            {relatoLogs.map((log) => (
-              <li key={log.id} className="p-3 bg-gray-50 rounded-md shadow-sm">
-                <div className="text-sm text-gray-800">
-                  <span className="font-semibold">{new Date(log.created_at).toLocaleString()}</span> - 
-                  <span className="font-medium">{log.profiles?.full_name || log.profiles?.email || 'Usuário Desconhecido'}</span>:
-                  {formatLogDetails(log)}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
+    </MainLayout>
   );
 };
 

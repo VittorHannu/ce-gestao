@@ -76,8 +76,8 @@ function AppWrapper({ showToast }) {
   const [loading, setLoading] = useState(true);
   const [profileLoadError, setProfileLoadError] = useState(null); // New state
   const [isReadyForRender, setIsReadyForRender] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const _navigate = useNavigate();
+  const _location = useLocation();
 
   // Ativa o hook de presença se houver uma sessão
   const hasSession = !!session;

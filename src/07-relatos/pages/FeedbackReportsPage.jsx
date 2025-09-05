@@ -76,11 +76,14 @@ const FeedbackReportsPage = () => {
   };
 
   return (
-    <MainLayout title="Relatórios de Feedback">
-      <div className="flex items-center gap-4 mb-4">
-        <BackButton />
-        <h1 className="text-2xl font-bold">Relatórios de Feedback</h1>
-      </div>
+    <MainLayout
+      header={(
+        <>
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">Relatórios de Feedback</h1>
+        </>
+      )}
+    >
 
       <div className="flex flex-wrap space-x-4 mb-4">
         <Select onValueChange={setFilterType} value={filterType}>

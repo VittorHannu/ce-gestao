@@ -10,6 +10,7 @@ import { Button } from '@/01-shared/components/ui/button';
 import { AlignLeft, AlignCenter, Filter, FilterX, Layers } from 'lucide-react';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import DateFilterCard from '../components/DateFilterCard';
+import MainLayout from '@/01-shared/components/MainLayout';
 
 const RelatosByTypePage = () => {
   const { startDate, endDate } = useDateFilter();
@@ -121,193 +122,197 @@ const RelatosByTypePage = () => {
   const maxPyramidCount = Math.max(...birdPyramidData.map(d => d.value));
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex items-center mb-4">
-        <BackButton />
-        <h1 className="text-2xl font-bold ml-4">Relatos por Tipo</h1>
-      </div>
-
-      <div className="mb-4">
-        <DateFilterCard />
-      </div>
-
-      <div className="p-6 border rounded-lg bg-white shadow-md">
-        <div className="pb-4 mb-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Pirâmide de Bird</h2>
-          <div className="flex justify-between w-full">
-            <div className="flex space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowZeroBars(!showZeroBars)}
-                className={!showZeroBars ? 'bg-gray-200' : ''}
-              >
-                {showZeroBars ? <FilterX className="h-4 w-4" /> : <Filter className="h-4 w-4" />}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowDetailedView(!showDetailedView)}
-                className={showDetailedView ? 'bg-gray-200' : ''}
-              >
-                <Layers className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="flex space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setBarAlignment('left')}
-                className={barAlignment === 'left' ? 'bg-gray-200' : ''}
-              >
-                <AlignLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setBarAlignment('center')}
-                className={barAlignment === 'center' ? 'bg-gray-200' : ''}
-              >
-                <AlignCenter className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+    <MainLayout
+      header={(
+        <>
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">Relatos por Tipo</h1>
+        </>
+      )}
+    >
+      <div className="p-4">
+        <div className="mb-4">
+          <DateFilterCard />
         </div>
-        {birdPyramidData.length > 0 && maxPyramidCount > 0 ? (
-          <div className="flex flex-col items-center space-y-2">
-            {birdPyramidData.map((item, _index) => {
-              const barWidth = (item.value / maxPyramidCount) * 100; // Percentage width
-              const colorMap = {
-                'Fatal': 'bg-black',
-                'Severo': 'bg-red-600',
-                'Acidente com afastamento': 'bg-red-500',
-                'Acidente sem afastamento': 'bg-orange-500',
-                'Primeiros socorros': 'bg-yellow-500',
-                'Quase acidente': 'bg-yellow-500',
-                'Condição insegura': 'bg-yellow-400',
-                'Comportamento inseguro': 'bg-yellow-400',
-                'Sem Classificação': 'bg-gray-400'
-              };
 
-              const backgroundColor = colorMap[item.name] || 'bg-green-500'; // Default if not found
-
-              return (
-                <Link
-                  key={item.name}
-                  to={`/relatos/lista?tipo_relato=${encodeURIComponent(item.name)}&startDate=${startDate}&endDate=${endDate}`}
-                  className={`w-full flex flex-col ${barAlignment === 'left' ? 'items-start' : 'items-center'} cursor-pointer`}
+        <div className="p-6 border rounded-lg bg-white shadow-md">
+          <div className="pb-4 mb-4 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Pirâmide de Bird</h2>
+            <div className="flex justify-between w-full">
+              <div className="flex space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowZeroBars(!showZeroBars)}
+                  className={!showZeroBars ? 'bg-gray-200' : ''}
                 >
-                  <p className="text-gray-700 font-medium mb-1">{item.name}</p>
-                  <div className={`flex items-center ${barAlignment === 'left' ? 'justify-start' : 'justify-center'} w-full`}>
-                    {item.value === 0 ? (
-                      <span className="ml-2 text-gray-700 font-bold">0</span>
-                    ) : (
-                      showDetailedView ? (
-                        <div className={`flex items-center w-full ${barAlignment === 'center' ? 'justify-center' : ''}`}> {/* Wrapper div for detailed view */}
-                          <div
-                            className={'h-8 rounded-sm flex items-center justify-center text-white font-bold overflow-hidden'}
-                            style={{ width: `${barWidth}%`, maxWidth: '600px' }}
-                          >
-                            {/* Segmented Bar */}
-                            {item.concluido > 0 && (
-                              <Tooltip.Root delayDuration={300}>
-                                <Tooltip.Trigger asChild>
-                                  <div
-                                    className="bg-green-500 h-full flex items-center justify-center"
-                                    style={{ width: `${(item.concluido / item.value) * 100}%` }}
-                                  >
-                                    {((item.concluido / maxPyramidCount) * 600) > 20 && item.concluido}
-                                  </div>
-                                </Tooltip.Trigger>
-                                <Tooltip.Portal>
-                                  <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
-                                    Concluídos: {item.concluido}
-                                    <Tooltip.Arrow className="fill-current text-gray-800" />
-                                  </Tooltip.Content>
-                                </Tooltip.Portal>
-                              </Tooltip.Root>
-                            )}
-                            {item.emAndamento > 0 && (
-                              <Tooltip.Root delayDuration={300}>
-                                <Tooltip.Trigger asChild>
-                                  <div
-                                    className="bg-amber-500 h-full flex items-center justify-center"
-                                    style={{ width: `${(item.emAndamento / item.value) * 100}%` }}
-                                  >
-                                    {((item.emAndamento / maxPyramidCount) * 600) > 20 && item.emAndamento}
-                                  </div>
-                                </Tooltip.Trigger>
-                                <Tooltip.Portal>
-                                  <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
-                                    Em Andamento: {item.emAndamento}
-                                    <Tooltip.Arrow className="fill-current text-gray-800" />
-                                  </Tooltip.Content>
-                                </Tooltip.Portal>
-                              </Tooltip.Root>
-                            )}
-                            {item.semTratativa > 0 && (
-                              <Tooltip.Root delayDuration={300}>
-                                <Tooltip.Trigger asChild>
-                                  <div
-                                    className="bg-red-500 h-full flex items-center justify-center"
-                                    style={{ width: `${(item.semTratativa / item.value) * 100}%` }}
-                                  >
-                                    {((item.semTratativa / maxPyramidCount) * 600) > 20 && item.semTratativa}
-                                  </div>
-                                </Tooltip.Trigger>
-                                <Tooltip.Portal>
-                                  <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
-                                    Sem Tratativa: {item.semTratativa}
-                                    <Tooltip.Arrow className="fill-current text-gray-800" />
-                                  </Tooltip.Content>
-                                </Tooltip.Portal>
-                              </Tooltip.Root>
-                            )}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className={`flex items-center w-full ${barAlignment === 'center' ? 'justify-center' : ''}`}> {/* Wrapper div for single bar view */}
-                          <div
-                            className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
-                            style={{ width: `${barWidth}%`, maxWidth: '600px' }}
-                          >
-                            {((item.value / maxPyramidCount) * 600) > 20 && item.value}
-                          </div>
-                          {((item.value / maxPyramidCount) * 600) <= 20 && (
-                            <span className="ml-2 text-gray-700 font-bold">{item.value}</span>
-                          )}
-                        </div>
-                      )
-                    )}
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="text-center text-gray-500">Nenhum dado disponível para a Pirâmide de Bird.</p>
-        )}
-        {showDetailedView && (
-          <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-600">
-            <p className="font-semibold mb-2">Legenda de Status:</p>
-            <div className="flex items-center mb-1">
-              <span className="w-4 h-4 bg-green-500 rounded-full mr-2"></span>
-              <span>Concluído</span>
-            </div>
-            <div className="flex items-center mb-1">
-              <span className="w-4 h-4 bg-amber-500 rounded-full mr-2"></span>
-              <span>Em Andamento</span>
-            </div>
-            <div className="flex items-center mb-1">
-              <span className="w-4 h-4 bg-red-500 rounded-full mr-2"></span>
-              <span>Sem Tratativa</span>
+                  {showZeroBars ? <FilterX className="h-4 w-4" /> : <Filter className="h-4 w-4" />}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowDetailedView(!showDetailedView)}
+                  className={showDetailedView ? 'bg-gray-200' : ''}
+                >
+                  <Layers className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setBarAlignment('left')}
+                  className={barAlignment === 'left' ? 'bg-gray-200' : ''}
+                >
+                  <AlignLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setBarAlignment('center')}
+                  className={barAlignment === 'center' ? 'bg-gray-200' : ''}
+                >
+                  <AlignCenter className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
-        )}
-      </div>
+          {birdPyramidData.length > 0 && maxPyramidCount > 0 ? (
+            <div className="flex flex-col items-center space-y-2">
+              {birdPyramidData.map((item, _index) => {
+                const barWidth = (item.value / maxPyramidCount) * 100; // Percentage width
+                const colorMap = {
+                  'Fatal': 'bg-black',
+                  'Severo': 'bg-red-600',
+                  'Acidente com afastamento': 'bg-red-500',
+                  'Acidente sem afastamento': 'bg-orange-500',
+                  'Primeiros socorros': 'bg-yellow-500',
+                  'Quase acidente': 'bg-yellow-500',
+                  'Condição insegura': 'bg-yellow-400',
+                  'Comportamento inseguro': 'bg-yellow-400',
+                  'Sem Classificação': 'bg-gray-400'
+                };
 
-      
-    </div>
+                const backgroundColor = colorMap[item.name] || 'bg-green-500'; // Default if not found
+
+                return (
+                  <Link
+                    key={item.name}
+                    to={`/relatos/lista?tipo_relato=${encodeURIComponent(item.name)}&startDate=${startDate}&endDate=${endDate}`}
+                    className={`w-full flex flex-col ${barAlignment === 'left' ? 'items-start' : 'items-center'} cursor-pointer`}
+                  >
+                    <p className="text-gray-700 font-medium mb-1">{item.name}</p>
+                    <div className={`flex items-center ${barAlignment === 'left' ? 'justify-start' : 'justify-center'} w-full`}>
+                      {item.value === 0 ? (
+                        <span className="ml-2 text-gray-700 font-bold">0</span>
+                      ) : (
+                        showDetailedView ? (
+                          <div className={`flex items-center w-full ${barAlignment === 'center' ? 'justify-center' : ''}`}> {/* Wrapper div for detailed view */}
+                            <div
+                              className={'h-8 rounded-sm flex items-center justify-center text-white font-bold overflow-hidden'}
+                              style={{ width: `${barWidth}%`, maxWidth: '600px' }}
+                            >
+                              {/* Segmented Bar */}
+                              {item.concluido > 0 && (
+                                <Tooltip.Root delayDuration={300}>
+                                  <Tooltip.Trigger asChild>
+                                    <div
+                                      className="bg-green-500 h-full flex items-center justify-center"
+                                      style={{ width: `${(item.concluido / item.value) * 100}%` }}
+                                    >
+                                      {((item.concluido / maxPyramidCount) * 600) > 20 && item.concluido}
+                                    </div>
+                                  </Tooltip.Trigger>
+                                  <Tooltip.Portal>
+                                    <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
+                                      Concluídos: {item.concluido}
+                                      <Tooltip.Arrow className="fill-current text-gray-800" />
+                                    </Tooltip.Content>
+                                  </Tooltip.Portal>
+                                </Tooltip.Root>
+                              )}
+                              {item.emAndamento > 0 && (
+                                <Tooltip.Root delayDuration={300}>
+                                  <Tooltip.Trigger asChild>
+                                    <div
+                                      className="bg-amber-500 h-full flex items-center justify-center"
+                                      style={{ width: `${(item.emAndamento / item.value) * 100}%` }}
+                                    >
+                                      {((item.emAndamento / maxPyramidCount) * 600) > 20 && item.emAndamento}
+                                    </div>
+                                  </Tooltip.Trigger>
+                                  <Tooltip.Portal>
+                                    <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
+                                      Em Andamento: {item.emAndamento}
+                                      <Tooltip.Arrow className="fill-current text-gray-800" />
+                                    </Tooltip.Content>
+                                  </Tooltip.Portal>
+                                </Tooltip.Root>
+                              )}
+                              {item.semTratativa > 0 && (
+                                <Tooltip.Root delayDuration={300}>
+                                  <Tooltip.Trigger asChild>
+                                    <div
+                                      className="bg-red-500 h-full flex items-center justify-center"
+                                      style={{ width: `${(item.semTratativa / item.value) * 100}%` }}
+                                    >
+                                      {((item.semTratativa / maxPyramidCount) * 600) > 20 && item.semTratativa}
+                                    </div>
+                                  </Tooltip.Trigger>
+                                  <Tooltip.Portal>
+                                    <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
+                                      Sem Tratativa: {item.semTratativa}
+                                      <Tooltip.Arrow className="fill-current text-gray-800" />
+                                    </Tooltip.Content>
+                                  </Tooltip.Portal>
+                                </Tooltip.Root>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className={`flex items-center w-full ${barAlignment === 'center' ? 'justify-center' : ''}`}> {/* Wrapper div for single bar view */}
+                            <div
+                              className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
+                              style={{ width: `${barWidth}%`, maxWidth: '600px' }}
+                            >
+                              {((item.value / maxPyramidCount) * 600) > 20 && item.value}
+                            </div>
+                            {((item.value / maxPyramidCount) * 600) <= 20 && (
+                              <span className="ml-2 text-gray-700 font-bold">{item.value}</span>
+                            )}
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-center text-gray-500">Nenhum dado disponível para a Pirâmide de Bird.</p>
+          )}
+          {showDetailedView && (
+            <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-600">
+              <p className="font-semibold mb-2">Legenda de Status:</p>
+              <div className="flex items-center mb-1">
+                <span className="w-4 h-4 bg-green-500 rounded-full mr-2"></span>
+                <span>Concluído</span>
+              </div>
+              <div className="flex items-center mb-1">
+                <span className="w-4 h-4 bg-amber-500 rounded-full mr-2"></span>
+                <span>Em Andamento</span>
+              </div>
+              <div className="flex items-center mb-1">
+                <span className="w-4 h-4 bg-red-500 rounded-full mr-2"></span>
+                <span>Sem Tratativa</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        
+      </div>
+    </MainLayout>
   );
 };
 

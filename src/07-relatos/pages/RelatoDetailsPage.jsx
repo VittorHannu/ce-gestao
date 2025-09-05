@@ -6,6 +6,7 @@ import RelatoForm from '../components/RelatoForm'; // Importa o formulário
 import RelatoDisplayDetails from '../components/RelatoDisplayDetails'; // Importa o componente de exibição de detalhes
 import BackButton from '@/01-shared/components/BackButton'; // Importa o BackButton
 import RelatoComments from '../components/RelatoComments';
+import MainLayout from '@/01-shared/components/MainLayout';
 import { useRelatoManagement } from '../hooks/useRelatoManagement';
 
 const RelatoDetailsPage = () => {
@@ -50,12 +51,14 @@ const RelatoDetailsPage = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex items-center mb-4">
-        <BackButton />
-        <h1 className="text-2xl font-bold ml-4">Detalhes do Relato</h1>
-      </div>
-
+    <MainLayout
+      header={(
+        <>
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">Detalhes do Relato</h1>
+        </>
+      )}
+    >
       {isEditing ? (
         <RelatoForm
           onSubmit={async (formData) => {
@@ -137,7 +140,7 @@ const RelatoDetailsPage = () => {
           <RelatoComments relatoId={id} />
         </div>
       )}
-    </div>
+    </MainLayout>
   );
 };
 

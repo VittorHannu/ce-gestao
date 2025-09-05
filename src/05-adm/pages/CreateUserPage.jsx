@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import MainLayout from '@/01-shared/components/MainLayout';
+import BackButton from '@/01-shared/components/BackButton';
 import CreateUserForm from '@/05-adm/components/CreateUserForm';
 
 const CreateUserPage = () => {
@@ -12,14 +13,17 @@ const CreateUserPage = () => {
     navigate('/users-management');
   };
 
-  const handleCancel = () => {
-    navigate('/users-management');
-  };
-
   return (
-    <MainLayout title="Criar Novo Usuário">
+    <MainLayout
+      header={(
+        <>
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">Criar Novo Usuário</h1>
+        </>
+      )}
+    >
       <div className="p-4">
-        <CreateUserForm onUserCreated={handleUserCreated} onCancel={handleCancel} />
+        <CreateUserForm onUserCreated={handleUserCreated} />
       </div>
     </MainLayout>
   );

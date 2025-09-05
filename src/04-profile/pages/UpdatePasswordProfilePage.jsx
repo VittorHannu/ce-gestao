@@ -6,6 +6,7 @@ import { supabase } from '@/01-shared/lib/supabase';
 import { Input } from '@/01-shared/components/ui/input';
 import { Label } from '@/01-shared/components/ui/label';
 import MainLayout from '@/01-shared/components/MainLayout';
+import BackButton from '@/01-shared/components/BackButton';
 import FormActionButtons from '@/01-shared/components/FormActionButtons';
 
 const UpdatePasswordProfilePage = () => {
@@ -48,7 +49,14 @@ const UpdatePasswordProfilePage = () => {
   };
 
   return (
-    <MainLayout title="Alterar Senha">
+    <MainLayout
+      header={(
+        <>
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">Alterar Senha</h1>
+        </>
+      )}
+    >
       <div className="p-4">
         <div className="grid grid-cols-1 gap-4 pt-2">
           <div>
@@ -77,7 +85,6 @@ const UpdatePasswordProfilePage = () => {
             <p className="text-sm text-red-500">{passwordChangeMessage}</p>
           )}
           <FormActionButtons
-            onCancel={() => navigate(-1)}
             onConfirm={handleChangePassword}
             isConfirming={isChangingPassword}
             confirmText="Alterar Senha"

@@ -9,6 +9,7 @@ import { useToast } from '@/01-shared/hooks/useToast';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import BackButton from '@/01-shared/components/BackButton'; // Importa o BackButton
 import { Link } from 'react-router-dom';
+import MainLayout from '@/01-shared/components/MainLayout';
 
 const RelatosAprovacaoPage = () => {
   const [relatos, setRelatos] = useState([]);
@@ -83,37 +84,41 @@ const RelatosAprovacaoPage = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex items-center mb-4">
-        <BackButton />
-        <h1 className="text-2xl font-bold ml-4">Aprovação de Relatos</h1>
-        <Link to="/relatos/reprovados" className="ml-4">
-          <Button variant="outline" size="sm">
-            Ver Reprovados
-          </Button>
-        </Link>
-      </div>
-      
-      {relatos.length === 0 ? (
-        <p>Não há relatos pendentes de aprovação no momento.</p>
-      ) : (
-        <div className="space-y-4">
-          {relatos.map((relato) => (
-            <div key={relato.id} className="border p-4 rounded-lg shadow-sm bg-white">
-              <RelatoDisplayDetails relato={relato} /> {/* Usa o componente de detalhes */}
-              <div className="mt-4 flex space-x-2 justify-end">
-                <Button variant="outline" size="sm" onClick={() => handleUpdateStatus(relato.id, 'REPROVADO')}>
-                  Reprovar
-                </Button>
-                <Button size="sm" onClick={() => handleUpdateStatus(relato.id, 'APROVADO')}>
-                  Aprovar
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
+    <MainLayout
+      header={(
+        <>
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">Aprovação de Relatos</h1>
+          <Link to="/relatos/reprovados" className="ml-auto">
+            <Button variant="outline" size="sm">
+              Ver Reprovados
+            </Button>
+          </Link>
+        </>
       )}
-    </div>
+    >
+      <div className="p-4">
+        {relatos.length === 0 ? (
+          <p>Não há relatos pendentes de aprovação no momento.</p>
+        ) : (
+          <div className="space-y-4">
+            {relatos.map((relato) => (
+              <div key={relato.id} className="border p-4 rounded-lg shadow-sm bg-white">
+                <RelatoDisplayDetails relato={relato} /> {/* Usa o componente de detalhes */}
+                <div className="mt-4 flex space-x-2 justify-end">
+                  <Button variant="outline" size="sm" onClick={() => handleUpdateStatus(relato.id, 'REPROVADO')}>
+                    Reprovar
+                  </Button>
+                  <Button size="sm" onClick={() => handleUpdateStatus(relato.id, 'APROVADO')}>
+                    Aprovar
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </MainLayout>
   );
 };
 
