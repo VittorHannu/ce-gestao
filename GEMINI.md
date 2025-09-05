@@ -78,3 +78,7 @@ Quando solicitado a habilitar o acesso remoto, o agente seguirá estes passos:
 5.  Atualizar `VITE_SUPABASE_URL` no `.env` com a URL do túnel do backend.
 6.  Reiniciar `pnpm dev` para aplicar a nova variável de ambiente.
 7.  Fornecer a URL do túnel do frontend ao usuário para acesso.
+
+## 📝 Tarefas Futuras
+
+*   **Otimização PWA (Pré-cache do App Shell):** Investigar e implementar o `vite-plugin-pwa` para garantir o pré-cache adequado dos assets do App Shell (especialmente arquivos JS/CSS com nomes dinâmicos). Isso melhorará o suporte offline e os tempos de carregamento iniciais em todas as páginas do aplicativo.
