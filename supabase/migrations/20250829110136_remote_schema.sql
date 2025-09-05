@@ -114,6 +114,6 @@ END;
 $function$
 ;
 
-grant insert on table "public"."relatos" to "PUBLIC";
+grant insert on table "public"."relatos" to PUBLIC;
 
 

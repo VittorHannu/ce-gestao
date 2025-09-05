@@ -22,9 +22,9 @@ export function usePresence(enabled = true) {
       const channel = supabase.channel(CHANNEL_NAME, {
         config: {
           presence: {
-            key: user.id,
-          },
-        },
+            key: user.id
+          }
+        }
       });
 
       channelRef.current = channel;
@@ -49,7 +49,7 @@ export function usePresence(enabled = true) {
             // Anuncia a presença do usuário no canal
             await channel.track({
               user_id: user.id,
-              online_at: new Date().toISOString(),
+              online_at: new Date().toISOString()
             });
           }
         });

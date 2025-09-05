@@ -27,7 +27,7 @@ const DateFilter = () => {
   ];
 
   return (
-    <div className="flex flex-col items-center gap-0">
+    <div className="flex flex-row items-center gap-2 w-full">
 
       {/* Year Selector (always visible) */}
       <Select value={year.toString()} onValueChange={(value) => setYear(parseInt(value, 10))}>
@@ -42,7 +42,7 @@ const DateFilter = () => {
       </Select>
 
       {/* NEW: Combined Month/Semester/Year Selector */}
-      <Select className="mt-[-0.5rem]" value={periodType.toString()} onValueChange={(value) => setPeriodType(parseInt(value, 10))}>
+      <Select value={periodType.toString()} onValueChange={(value) => setPeriodType(parseInt(value, 10))}>
         <SelectTrigger className="w-full hover:bg-accent hover:text-accent-foreground">
           <SelectValue placeholder="Período" />
         </SelectTrigger>

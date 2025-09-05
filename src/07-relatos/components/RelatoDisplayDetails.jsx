@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Table, TableBody, TableCell, TableRow } from '@/01-shared/components/ui/table';
 import { supabase } from '@/01-shared/lib/supabase';
 import { CheckCircle, Clock, AlertCircle } from 'lucide-react';
 
@@ -28,7 +29,7 @@ const RelatoDisplayDetails = ({ relato, responsibles = [] }) => {
           setRelatorName('Não informado');
         }
       } else {
-        setRelatorName('Não informado'); // Caso user_id seja nulo e não seja anônimo (situação inesperada)
+        setRelatorName('Não informado');
       }
     };
 
@@ -58,30 +59,43 @@ const RelatoDisplayDetails = ({ relato, responsibles = [] }) => {
     return <p>Nenhum relato para exibir.</p>;
   }
 
+  const renderRow = (label, value) => {
+    if (value === null || value === undefined || value === '') return null;
+    return (
+      <TableRow>
+        <TableCell className="whitespace-normal">
+          <div>
+            <p className="font-bold">{label}</p>
+            <div className="break-words">{value}</div>
+          </div>
+        </TableCell>
+      </TableRow>
+    );
+  };
+
   return (
-    <div className="space-y-2 text-sm">
-      <p><strong>Relator:</strong> {relatorName}</p>
-      <p><strong>Código do Relato:</strong> {relato.relato_code || relato.id}</p>
-      <p><strong>Local da Ocorrência:</strong> {relato.local_ocorrencia}</p>
-      <p><strong>Data da Ocorrência:</strong> {new Date(relato.data_ocorrencia).toLocaleDateString()}</p>
-      {relato.hora_aproximada_ocorrencia && <p><strong>Hora Aproximada:</strong> {relato.hora_aproximada_ocorrencia}</p>}
-      <p><strong>Descrição:</strong> {relato.descricao}</p>
-      <p><strong>Riscos Identificados:</strong> {relato.riscos_identificados}</p>
-      {relato.danos_ocorridos && <p><strong>Danos Ocorridos:</strong> {relato.danos_ocorridos}</p>}
-      {relato.planejamento_cronologia_solucao && <p><strong>Planejamento/Cronologia da Solução:</strong> {relato.planejamento_cronologia_solucao}</p>}
-      {relato.data_conclusao_solucao && <p><strong>Data de Conclusão da Solução:</strong> {new Date(relato.data_conclusao_solucao).toLocaleDateString()}</p>}
-      <p>
-        <strong>Responsáveis:</strong>{' '}
-        {responsibles && responsibles.length > 0
-          ? responsibles.map(r => formatFullName(r.full_name)).join(', ')
-          : 'Nenhum responsável'}
-      </p>
-      <div className="flex items-center">
-        <StatusIcon className={`h-4 w-4 mr-2 ${statusColor}`} />
-        <p><strong>Status:</strong> <span className={statusColor}>{statusText}</span></p>
-      </div>
-      <p><strong>Criado em:</strong> {new Date(relato.created_at).toLocaleString()}</p>
-    </div>
+    <Table>
+      <TableBody>
+        {renderRow('Código do Relato', relato.relato_code || relato.id)}
+        {renderRow('Status', (
+          <div className="flex items-center">
+            <StatusIcon className={`h-4 w-4 mr-2 ${statusColor}`} />
+            <span className={statusColor}>{statusText}</span>
+          </div>
+        ))}
+        {renderRow('Relator', relatorName)}
+        {renderRow('Local da Ocorrência', relato.local_ocorrencia)}
+        {renderRow('Data da Ocorrência', new Date(relato.data_ocorrencia).toLocaleDateString())}
+        {renderRow('Hora Aproximada', relato.hora_aproximada_ocorrencia)}
+        {renderRow('Descrição', relato.descricao)}
+        {renderRow('Riscos Identificados', relato.riscos_identificados)}
+        {renderRow('Danos Ocorridos', relato.danos_ocorridos)}
+        {renderRow('Planejamento/Cronologia da Solução', relato.planejamento_cronologia_solucao)}
+        {renderRow('Data de Conclusão da Solução', relato.data_conclusao_solucao ? new Date(relato.data_conclusao_solucao).toLocaleDateString() : null)}
+        {renderRow('Responsáveis', responsibles && responsibles.length > 0 ? responsibles.map(r => formatFullName(r.full_name)).join(', ') : null)}
+        {renderRow('Criado em', new Date(relato.created_at).toLocaleString())}
+      </TableBody>
+    </Table>
   );
 };
 

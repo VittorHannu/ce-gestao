@@ -4,9 +4,14 @@ import { Card, CardContent } from '@/01-shared/components/ui/card';
 
 const DateFilterCard = () => {
   return (
-    <Card className="flex flex-col justify-between p-4 h-full shadow-sm">
-      <CardContent className="p-0 flex flex-col items-center justify-center h-full">
-        <DateFilter />
+    <Card className="p-4 shadow-sm">
+      <CardContent className="p-0 flex items-center justify-center w-full">
+        <div className="flex flex-row items-center gap-4 w-full">
+          <span className="font-bold">Selecionar período:</span>
+          <div className="flex-grow">
+            <DateFilter />
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
