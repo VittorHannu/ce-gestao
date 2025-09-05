@@ -19,7 +19,7 @@ const RelatoStatsCard = ({ label, count, path, progressBarColor, totalRelatos })
             <div className="flex items-center gap-2 mt-1">
               <div className="w-full bg-gray-200 rounded-full h-4 relative flex items-center overflow-hidden">
                 <div
-                  className={`h-4 rounded-full ${progressBarColor} flex items-center justify-start pl-2`}
+                  className={`h-4 rounded-full ${progressBarColor} flex items-center justify-start pl-2 transition-all duration-500 ease-in-out`}
                   style={{ width: `${displayPercentage}%` }}
                 >
                   {displayPercentage >= 25 && (

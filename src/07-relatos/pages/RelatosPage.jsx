@@ -9,8 +9,6 @@ import { CheckCircle, Clock, XCircle, BarChart, Plus, User, AlertTriangle, List,
 
 import RelatoStatsCard from '../components/RelatoStatsCard';
 import TotalReportsCard from '../components/TotalReportsCard';
-import RelatoStatsCardSkeleton from '../components/RelatoStatsCardSkeleton';
-import TotalReportsCardSkeleton from '../components/TotalReportsCardSkeleton';
 import MainLayout from '@/01-shared/components/MainLayout';
 import SettingsGroup from '@/01-shared/components/settings/SettingsGroup';
 import SettingsItem from '@/01-shared/components/settings/SettingsItem';
@@ -18,7 +16,8 @@ import CompactDateSelector from '@/01-shared/components/CompactDateSelector';
 import DaysWithoutAccidentsCard from '../components/DaysWithoutAccidentsCard';
 
 // Componente otimizado para os cards de estatísticas
-const StatsGrid = React.memo(({ isFetching, relatoCounts }) => {
+// Agora ele sempre renderiza os dados, permitindo animações no componente filho.
+const StatsGrid = React.memo(({ relatoCounts }) => {
   const cardData = [
     {
       id: 'total',
@@ -57,17 +56,6 @@ const StatsGrid = React.memo(({ isFetching, relatoCounts }) => {
     }
   ];
 
-  if (isFetching) {
-    return (
-      <div className="grid grid-cols-2 gap-4">
-        <TotalReportsCardSkeleton />
-        <RelatoStatsCardSkeleton />
-        <RelatoStatsCardSkeleton />
-        <RelatoStatsCardSkeleton />
-      </div>
-    );
-  }
-
   return (
     <div className="grid grid-cols-2 gap-4">
       {cardData.map((card) => (
@@ -93,7 +81,8 @@ const StatsGrid = React.memo(({ isFetching, relatoCounts }) => {
 
 const RelatosPage = () => {
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
-  const { data: relatoCounts, isFetching } = useRelatoCounts();
+  // isFetching foi removido do uso, pois a UI agora atualiza sem piscar
+  const { data: relatoCounts } = useRelatoCounts();
   const { data: lastAccidentDate, isLoading: isLoadingLastAccident } = useLastAccidentDate();
 
   const managementItems = [
@@ -116,7 +105,8 @@ const RelatosPage = () => {
       )}
     >
       <div className="space-y-8" style={{ marginTop: '1.75rem' }}>
-        <StatsGrid isFetching={isFetching} relatoCounts={relatoCounts} />
+        {/* StatsGrid agora sempre renderiza os dados que tem, sejam novos ou antigos */}
+        <StatsGrid relatoCounts={relatoCounts} />
 
         <div>
           <SettingsGroup>
@@ -124,7 +114,8 @@ const RelatosPage = () => {
               <SettingsItem
                 key={index}
                 label={item.label}
-                value={isFetching ? '...' : item.value}
+                // O valor agora simplesmente reflete os dados atuais, sem mostrar '...'
+                value={item.value}
                 icon={item.icon}
                 iconColor={item.iconColor}
                 path={item.path}
