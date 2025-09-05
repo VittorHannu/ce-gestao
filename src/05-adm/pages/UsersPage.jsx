@@ -3,7 +3,7 @@ import MainLayout from '@/01-shared/components/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import SearchInput from '@/01-shared/components/SearchInput';
 import { useUsers } from '@/05-adm/hooks/useUsers';
-import { usePresence } from '@/01-shared/hooks/usePresence';
+import { usePresence } from '@/01-shared/context/PresenceContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/01-shared/components/ui/button';
@@ -11,7 +11,7 @@ import { Button } from '@/01-shared/components/ui/button';
 
 function UsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const { onlineUsers } = usePresence();
+  const { onlineUsers, loading: presenceLoading } = usePresence();
   const navigate = useNavigate();
 
   const { data: users, isLoading: loading, isError, error } = useUsers(searchTerm);
@@ -64,7 +64,13 @@ function UsersPage() {
               >
                 <div className="flex items-center justify-between">
                   <p className="font-semibold">{user.full_name}</p>
-                  <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                  <div className={`w-3 h-3 rounded-full ${
+                    presenceLoading
+                      ? 'bg-gray-300 animate-pulse'
+                      : isOnline
+                        ? 'bg-green-500'
+                        : 'bg-gray-400'
+                  }`}></div>
                 </div>
                 <p className="text-sm text-gray-600">{user.email}</p>
                 <p className="text-xs text-gray-500">Status: {user.is_active ? 'Ativo' : 'Inativo'}</p>

@@ -6,19 +6,22 @@ const CHANNEL_NAME = 'online-users';
 
 export function usePresence(enabled = true) {
   const [onlineUsers, setOnlineUsers] = useState([]);
-  // Usamos uma ref para evitar recriar o canal em cada renderização
+  const [loading, setLoading] = useState(true);
   const channelRef = useRef(null);
 
   useEffect(() => {
     if (!enabled) {
+      setLoading(false);
       return;
     }
-    const createAndSubscribe = async () => {
-      // Pega o usuário logado de forma assíncrona e segura
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
 
-      // Cria o canal com a chave de presença baseada no ID do usuário para garantir unicidade
+    let isMounted = true;
+
+    const createAndSubscribe = async () => {
+      setLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || !isMounted) return;
+
       const channel = supabase.channel(CHANNEL_NAME, {
         config: {
           presence: {
@@ -31,22 +34,28 @@ export function usePresence(enabled = true) {
 
       channel
         .on('presence', { event: 'sync' }, () => {
+          if (!isMounted) return;
           const presenceState = channel.presenceState();
           const users = Object.keys(presenceState)
             .map((presenceId) => presenceState[presenceId][0])
-            .filter(user => user.user_id);
+            .filter(u => u.user_id);
           setOnlineUsers(users);
+          setLoading(false);
         })
         .on('presence', { event: 'join' }, ({ newPresences }) => {
-          setOnlineUsers(prevUsers => [...prevUsers, ...newPresences]);
+          if (!isMounted) return;
+          setOnlineUsers(prevUsers => {
+            const newUsers = newPresences.filter(p => !prevUsers.some(u => u.user_id === p.user_id));
+            return [...prevUsers, ...newUsers];
+          });
         })
         .on('presence', { event: 'leave' }, ({ leftPresences }) => {
+          if (!isMounted) return;
           const leftUserIds = leftPresences.map(p => p.user_id);
           setOnlineUsers(prevUsers => prevUsers.filter(u => !leftUserIds.includes(u.user_id)));
         })
         .subscribe(async (status) => {
           if (status === 'SUBSCRIBED') {
-            // Anuncia a presença do usuário no canal
             await channel.track({
               user_id: user.id,
               online_at: new Date().toISOString()
@@ -58,6 +67,7 @@ export function usePresence(enabled = true) {
     createAndSubscribe();
 
     return () => {
+      isMounted = false;
       if (channelRef.current) {
         supabase.removeChannel(channelRef.current);
         channelRef.current = null;
@@ -65,5 +75,5 @@ export function usePresence(enabled = true) {
     };
   }, [enabled]);
 
-  return { onlineUsers };
+  return { onlineUsers, loading };
 }
