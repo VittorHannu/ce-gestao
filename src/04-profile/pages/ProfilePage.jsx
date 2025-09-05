@@ -10,6 +10,7 @@ import DataLoader from '@/01-shared/components/data-loader/DataLoader';
 import { Button } from '@/01-shared/components/ui/button';
 import MainLayout from '@/01-shared/components/MainLayout';
 import FeedbackForm from '@/01-shared/components/FeedbackForm';
+import BackButton from '@/01-shared/components/BackButton';
 import { MessageSquare, List } from 'lucide-react';
 
 const ProfilePage = () => {
@@ -83,14 +84,15 @@ const ProfilePage = () => {
   return (
     <MainLayout
       header={(
-        <>
-          <h1 className="text-2xl font-bold">Meu Perfil</h1>
+        <div className="flex items-center w-full">
+          <BackButton />
+          <h1 className="text-2xl font-bold ml-4">Meu Perfil</h1>
           <div className="flex-grow" />
           <Button onClick={handleLogoutClick} variant="destructive">
             <LogOut className="w-4 h-4 mr-2" />
             Sair
           </Button>
-        </>
+        </div>
       )}
     >
       <DataLoader loading={isProfileLoading} error={profileError} onRetry={refetch} loadingMessage="Carregando perfil...">

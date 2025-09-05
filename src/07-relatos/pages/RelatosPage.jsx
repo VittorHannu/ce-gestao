@@ -4,7 +4,7 @@ import { Button } from '@/01-shared/components/ui/button';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { useRelatoCounts } from '../hooks/useRelatoCounts';
 
-import { CheckCircle, Clock, XCircle, BarChart, Plus, User, AlertTriangle, List, Bell } from 'lucide-react';
+import { CheckCircle, Clock, XCircle, BarChart, Plus, User, AlertTriangle, List, Bell, Settings } from 'lucide-react';
 import RelatoStatsCard from '../components/RelatoStatsCard';
 import TotalReportsCard from '../components/TotalReportsCard';
 import DateFilterCard from '../components/DateFilterCard';
@@ -105,11 +105,18 @@ const RelatosPage = () => {
       header={(
         <div className="flex items-center justify-between w-full">
           <h1 className="text-2xl font-bold">Relatos</h1>
-          <Link to="/notifications">
-            <Button variant="ghost" size="icon">
-              <Bell className="h-6 w-6" />
-            </Button>
-          </Link>
+          <div className="flex items-center">
+            <Link to="/notifications">
+              <Button variant="ghost" size="icon">
+                <Bell className="h-6 w-6" />
+              </Button>
+            </Link>
+            <Link to="/settings">
+              <Button variant="ghost" size="icon">
+                <Settings className="h-6 w-6" />
+              </Button>
+            </Link>
+          </div>
         </div>
       )}
     >
