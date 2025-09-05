@@ -97,12 +97,12 @@ export default function CompactDateSelector({ children, className }) {
                 ref={isSelected ? activePeriodRef : null}
                 onClick={() => handlePeriodClick(period.value)}
                 className={cn(
-                  'snap-center flex-shrink-0 flex flex-col items-center justify-center h-12 rounded-lg cursor-pointer transition-all duration-200 ease-in-out mx-1',
+                  'snap-center flex-shrink-0 flex flex-col items-center justify-center h-12 rounded-lg cursor-pointer transition-all duration-200 ease-in-out m-1',
                   {
                     'w-20': isSemester, // Wider for semester labels
                     'w-14': !isSemester,
-                    'bg-gray-600 font-bold shadow-md': isSelected,
-                    'bg-gray-700 hover:bg-gray-600': !isSelected
+                    'bg-gray-600 text-white font-bold shadow-md ring-1 ring-white': isSelected,
+                    'bg-gray-700 text-white hover:bg-gray-600': !isSelected
                   }
                 )}
               >
