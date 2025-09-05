@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { differenceInCalendarDays, format } from 'date-fns';
 
 
@@ -34,7 +35,15 @@ const DaysWithoutAccidentsCard = ({ lastAccidentDate, isLoading }) => {
         </h2>
         <p className="text-lg font-semibold text-left">dias sem acidentes com afastamento</p>
       </div>
-      <p className="text-sm text-teal-100 mt-4 text-center">{footerText}</p>
+      <p className="text-sm text-teal-100 mt-4 text-center">
+        {lastAccidentDate ? (
+          <Link to="/relatos/acidentes-graves" className="underline">
+            {footerText}
+          </Link>
+        ) : (
+          footerText
+        )}
+      </p>
     </div>
   );
 };
