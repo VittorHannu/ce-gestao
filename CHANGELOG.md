@@ -1,5 +1,14 @@
 # Histórico de Versões - SGI Copa
 
+## [0.1.7] - 2025-09-09
+
+### 🐛 Correções
+
+*   **Erros de Console**: Corrigido um conjunto de erros e warnings que apareciam no console do navegador:
+    *   Removida a tentativa de registro de um Service Worker inexistente que causava um `SecurityError`.
+    *   Ajustada a inicialização do OneSignal para ocorrer apenas uma vez, eliminando avisos de duplicação.
+    *   Refatorado o componente `SettingsGroup` para evitar que a prop `isLast` fosse passada para elementos DOM inválidos, resolvendo um warning comum do React.
+
 ## [0.1.4] - 2025-09-09
 
 ### 🐛 Correções

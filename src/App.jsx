@@ -32,6 +32,8 @@ import PublicLayout from '@/01-shared/components/PublicLayout';
 import { DateFilterProvider } from './01-shared/hooks/useDateFilter.jsx';
 import { initOneSignal } from '@/01-shared/lib/oneSignal';
 
+initOneSignal();
+
 const ApresentacaoPage = React.lazy(() => import('@/09-presentation/pages/ApresentacaoPage'));
 const LoginPage = React.lazy(() => import('@/03-auth/pages/LoginPage'));
 const ProfilePage = React.lazy(() => import('@/04-profile/pages/ProfilePage'));
@@ -145,7 +147,6 @@ function AppWrapper() {
     };
 
     handleInitialLoad();
-    initOneSignal();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log('AppWrapper: onAuthStateChange event, session:', session);
