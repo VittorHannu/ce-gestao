@@ -6,6 +6,8 @@ import BackButton from '@/01-shared/components/BackButton';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 
+import NotificationSettings from '../components/NotificationSettings';
+
 function SettingsPage() {
   const { data: userProfile, isLoading } = useUserProfile();
 
@@ -27,6 +29,10 @@ function SettingsPage() {
               label="Editar Perfil"
               path="/perfil"
             />
+          </SettingsGroup>
+
+          <SettingsGroup title="Notificações">
+            <NotificationSettings />
           </SettingsGroup>
 
           {userProfile?.can_view_users && (

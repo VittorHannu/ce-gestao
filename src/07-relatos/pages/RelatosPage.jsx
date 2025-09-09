@@ -22,7 +22,7 @@ const StatsGrid = React.memo(({ relatoCounts }) => {
     {
       id: 'total',
       component: <TotalReportsCard totalReports={relatoCounts?.totalAprovados || 0} />,
-      path: '/relatos/lista',
+      path: '/relatos/lista'
     },
     {
       id: 'concluidos',
@@ -32,7 +32,7 @@ const StatsGrid = React.memo(({ relatoCounts }) => {
       path: '/relatos/lista?status=concluido',
       iconTextColor: 'text-green-700',
       iconBgColor: 'bg-green-100',
-      progressBarColor: 'bg-green-500',
+      progressBarColor: 'bg-green-500'
     },
     {
       id: 'emAndamento',
@@ -42,7 +42,7 @@ const StatsGrid = React.memo(({ relatoCounts }) => {
       path: '/relatos/lista?status=em_andamento',
       iconTextColor: 'text-amber-700',
       iconBgColor: 'bg-amber-100',
-      progressBarColor: 'bg-amber-500',
+      progressBarColor: 'bg-amber-500'
     },
     {
       id: 'semTratativa',
@@ -52,7 +52,7 @@ const StatsGrid = React.memo(({ relatoCounts }) => {
       path: '/relatos/lista?status=sem_tratativa',
       iconTextColor: 'text-rose-700',
       iconBgColor: 'bg-rose-100',
-      progressBarColor: 'bg-rose-500',
+      progressBarColor: 'bg-rose-500'
     }
   ];
 
@@ -77,6 +77,7 @@ const StatsGrid = React.memo(({ relatoCounts }) => {
     </div>
   );
 });
+StatsGrid.displayName = 'StatsGrid';
 
 
 const RelatosPage = () => {

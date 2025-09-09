@@ -7,6 +7,8 @@ const useAnimatedCount = (endValue, duration = 500) => {
   const startValueRef = useRef();
 
   useEffect(() => {
+    if (endValue === count) return;
+
     startValueRef.current = count;
     startTimeRef.current = performance.now();
 
@@ -14,7 +16,7 @@ const useAnimatedCount = (endValue, duration = 500) => {
       const elapsedTime = timestamp - startTimeRef.current;
       const progress = Math.min(elapsedTime / duration, 1);
       const currentVal = Math.round(
-        startValueRef.current + ((endValue || 0) - startValueRef.current) * progress
+        startValueRef.current + (endValue - startValueRef.current) * progress
       );
       setCount(currentVal);
 
@@ -26,7 +28,7 @@ const useAnimatedCount = (endValue, duration = 500) => {
     frameRef.current = requestAnimationFrame(animate);
 
     return () => cancelAnimationFrame(frameRef.current);
-  }, [endValue, duration]);
+  }, [endValue, duration, count]);
 
   return count;
 };

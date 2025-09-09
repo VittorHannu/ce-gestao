@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import OneSignal from 'react-onesignal';
 import { supabase } from '@/01-shared/lib/supabase';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
-import { Switch } from '@/01-shared/components/ui/switch';
+import { Switch } from '@/components/ui/switch';
 import { Label } from '@/01-shared/components/ui/label';
 import { useToast } from '@/01-shared/hooks/useToast';
-import { Button } from '@/01-shared/components/ui/button';
 
 const NotificationSettings = () => {
   const { data: userProfile, refetch: refetchUserProfile } = useUserProfile();
@@ -15,7 +14,6 @@ const NotificationSettings = () => {
 
   useEffect(() => {
     const checkPushStatus = async () => {
-      if (!OneSignal.isInitialized()) return;
       const isEnabled = await OneSignal.isPushNotificationsEnabled();
       setIsPushEnabled(isEnabled);
     };
@@ -35,7 +33,7 @@ const NotificationSettings = () => {
         general_updates: true,
         new_report_assigned: true,
         new_comment_on_report: true,
-        report_status_changed: true,
+        report_status_changed: true
       };
       setPreferences(defaultPreferences);
     }
@@ -61,10 +59,6 @@ const NotificationSettings = () => {
     }
   };
 
-  const handleSubscribeClick = () => {
-    OneSignal.showSlidedownPrompt();
-  };
-
   return (
     <div className="space-y-6">
       <div className="p-4 border rounded-lg">
@@ -76,9 +70,9 @@ const NotificationSettings = () => {
         ) : (
           <div>
             <p className="text-sm text-muted-foreground mb-3">
-              Para receber alertas em tempo real, clique no botão abaixo para se inscrever.
+              Para receber alertas em tempo real, ative as notificações.
             </p>
-            <Button onClick={handleSubscribeClick}>Inscrever-se para Notificações</Button>
+            <div className="onesignal-customlink-container"></div>
           </div>
         )}
       </div>

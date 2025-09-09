@@ -25,7 +25,7 @@ const RelatosAcidentesGravesPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { data: relatos, isLoading, error } = useQuery({
     queryKey: ['acidentesGraves'],
-    queryFn: fetchAcidentesGraves,
+    queryFn: fetchAcidentesGraves
   });
 
   const filteredRelatos = relatos?.filter((relato) => {

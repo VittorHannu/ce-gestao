@@ -54,6 +54,6 @@ export const useRelatoCounts = () => {
     queryKey: ['relatoCounts', user?.id, startDate, endDate],
     queryFn: () => fetchRelatoCounts(user, startDate, endDate),
     enabled: !loadingUser && !!user, // Só executa a query se o usuário estiver carregado e logado
-    placeholderData: keepPreviousData, // Mantém os dados anteriores enquanto busca novos
+    placeholderData: keepPreviousData // Mantém os dados anteriores enquanto busca novos
   });
 };

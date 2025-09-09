@@ -1,6 +1,6 @@
 importScripts('https://cdn.onesignal.com/sdks/OneSignalSDK.sw.js');
 
-/* eslint-disable no-restricted-globals */
+ 
 
 // public/service-worker.js
 
@@ -12,7 +12,7 @@ const APP_SHELL_URLS = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/favicon.ico',
+  '/favicon.ico'
 ];
 
 // --- CICLO DE VIDA DO SERVICE WORKER ---
