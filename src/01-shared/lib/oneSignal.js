@@ -10,14 +10,14 @@ export const initOneSignal = () => {
         promptOptions: {
           customlink: {
             enabled: true,
-            style: "button",
-            size: "medium",
+            style: 'button',
+            size: 'medium',
             text: {
-              subscribe: "Inscrever-se para receber notificações",
-              unsubscribe: "Cancelar inscrição de notificações",
-            },
-          },
-        },
+              subscribe: 'Inscrever-se para receber notificações',
+              unsubscribe: 'Cancelar inscrição de notificações'
+            }
+          }
+        }
       });
     });
   } else {

@@ -7,6 +7,7 @@ import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 
 import NotificationSettings from '../components/NotificationSettings';
+import UpdateManager from '../components/UpdateManager';
 
 function SettingsPage() {
   const { data: userProfile, isLoading } = useUserProfile();
@@ -43,6 +44,8 @@ function SettingsPage() {
               />
             </SettingsGroup>
           )}
+
+          <UpdateManager />
         </div>
       )}
     </MainLayout>

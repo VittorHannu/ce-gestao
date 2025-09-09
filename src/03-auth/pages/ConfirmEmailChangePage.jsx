@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '@/01-shared/lib/supabase';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import PublicLayout from '@/01-shared/components/PublicLayout';
 
+import { useToast } from '@/01-shared/hooks/useToast';
+
 const ConfirmEmailChangePage = () => {
+  const { toast } = useToast();
   const location = useLocation();
   const navigate = useNavigate();
-  const { showToast } = useOutletContext();
+  
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('Confirmando alteração de e-mail...');
 
@@ -26,26 +29,26 @@ const ConfirmEmailChangePage = () => {
           }
 
           setMessage('E-mail alterado com sucesso! Redirecionando...');
-          showToast('Seu e-mail foi alterado com sucesso!', 'success');
+          toast({ title: 'Seu e-mail foi alterado com sucesso!', type: 'success' });
           navigate('/perfil', { replace: true }); // Redireciona para a página de perfil
         } catch (error) {
           console.error('Erro ao confirmar alteração de e-mail:', error);
           setMessage(`Erro ao confirmar alteração de e-mail: ${error.message}`);
-          showToast(`Erro ao confirmar alteração de e-mail: ${error.message}`, 'error');
+          toast({ title: `Erro ao confirmar alteração de e-mail: ${error.message}`, type: 'error' });
           navigate('/auth', { replace: true }); // Redireciona para a página de login em caso de erro
         } finally {
           setLoading(false);
         }
       } else {
         setMessage('Link de confirmação inválido.');
-        showToast('Link de confirmação inválido.', 'error');
+        toast({ title: 'Link de confirmação inválido.', type: 'error' });
         setLoading(false);
         navigate('/auth', { replace: true });
       }
     };
 
     confirmEmailChange();
-  }, [location.search, navigate, showToast]);
+  }, [location.search, navigate, toast]);
 
   return (
     <PublicLayout>

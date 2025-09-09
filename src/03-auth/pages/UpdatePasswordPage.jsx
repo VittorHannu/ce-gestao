@@ -18,7 +18,10 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/01-shared/lib/supabase';
 import { useNavigate } from 'react-router-dom';
 
-const UpdatePasswordPage = ({ showToast }) => {
+import { useToast } from '@/01-shared/hooks/useToast';
+
+const UpdatePasswordPage = () => {
+  const { toast } = useToast();
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -33,9 +36,9 @@ const UpdatePasswordPage = ({ showToast }) => {
     // allowing the user to update their password.
     const { data: { session } } = supabase.auth.getSession();
     if (!session) {
-      showToast('Por favor, use o link do e-mail para redefinir sua senha.', 'info');
+      toast({ title: 'Por favor, use o link do e-mail para redefinir sua senha.', type: 'info' });
     }
-  }, [showToast]);
+  }, [toast]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,13 +46,13 @@ const UpdatePasswordPage = ({ showToast }) => {
     setMessage('');
 
     if (password !== confirmPassword) {
-      showToast('As senhas não coincidem.', 'error');
+      toast({ title: 'As senhas não coincidem.', type: 'error' });
       setLoading(false);
       return;
     }
 
     if (password.length < 6) { // Minimum password length, adjust as per your Supabase settings
-      showToast('A senha deve ter pelo menos 6 caracteres.', 'error');
+      toast({ title: 'A senha deve ter pelo menos 6 caracteres.', type: 'error' });
       setLoading(false);
       return;
     }
@@ -59,9 +62,9 @@ const UpdatePasswordPage = ({ showToast }) => {
     });
 
     if (error) {
-      showToast(`Erro ao atualizar a senha: ${error.message}`, 'error');
+      toast({ title: 'Erro ao atualizar a senha', description: error.message, type: 'error' });
     } else {
-      showToast('Sua senha foi atualizada com sucesso! Você pode fazer login agora.', 'success');
+      toast({ title: 'Senha atualizada com sucesso! Redirecionando para o login...', type: 'success' });
       setPassword('');
       setConfirmPassword('');
       navigate('/', { replace: true }); // Redireciona para a home page após sucesso

@@ -4,6 +4,7 @@ import { Button } from '@/01-shared/components/ui/button';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { useRelatoCounts } from '../hooks/useRelatoCounts';
 import { useLastAccidentDate } from '../hooks/useLastAccidentDate';
+import { useUpdate } from '@/01-shared/context/UpdateContext';
 
 import { CheckCircle, Clock, XCircle, BarChart, Plus, User, AlertTriangle, List, Bell, Settings } from 'lucide-react';
 
@@ -85,6 +86,7 @@ const RelatosPage = () => {
   // isFetching foi removido do uso, pois a UI agora atualiza sem piscar
   const { data: relatoCounts } = useRelatoCounts();
   const { data: lastAccidentDate, isLoading: isLoadingLastAccident } = useLastAccidentDate();
+  const { isUpdateAvailable } = useUpdate();
 
   const managementItems = [
     { label: 'Lista Total de Relatos', value: relatoCounts?.totalAprovados || 0, icon: List, iconColor: 'bg-gray-500', path: '/relatos/lista', show: true },
@@ -100,7 +102,14 @@ const RelatosPage = () => {
         <CompactDateSelector className="text-white">
           <div className="flex items-center space-x-2">
             <Link to="/notifications"><Button variant="ghost" size="icon"><Bell className="h-6 w-6" /></Button></Link>
-            <Link to="/settings"><Button variant="ghost" size="icon"><Settings className="h-6 w-6" /></Button></Link>
+            <Link to="/settings">
+              <Button variant="ghost" size="icon" className="relative">
+                <Settings className="h-6 w-6" />
+                {isUpdateAvailable && (
+                  <span className="absolute top-1 right-1 block h-3 w-3 rounded-full bg-red-500 border-2 border-white" />
+                )}
+              </Button>
+            </Link>
           </div>
         </CompactDateSelector>
       )}

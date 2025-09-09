@@ -10,11 +10,9 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       injectRegister: 'auto',
       workbox: {
-        clientsClaim: true,
-        skipWaiting: true,
         navigateFallback: 'index.html',
         navigateFallbackDenylist: [/^\/api\//, /^\/supabase\//],
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],

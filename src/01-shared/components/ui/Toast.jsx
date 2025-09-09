@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { XCircle, CheckCircle, Info, X } from 'lucide-react';
 
-const Toast = ({ message, type, onClose }) => {
+const Toast = ({ message, title, description, type, onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -30,7 +30,10 @@ const Toast = ({ message, type, onClose }) => {
   return (
     <div className={`fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white flex items-center space-x-3 ${bgColor} z-[9999]`}>
       <Icon className="w-6 h-6" />
-      <p className="flex-1">{message}</p>
+      <div className="flex-1">
+        {title && <h3 className="font-bold">{title}</h3>}
+        {(description || message) && <p>{description || message}</p>}
+      </div>
       <button onClick={() => {
         setIsVisible(false);
         onClose();

@@ -23,7 +23,10 @@ import { supabase } from '@/01-shared/lib/supabase';
 import { Building } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const LoginPage = ({ showToast }) => {
+import { useToast } from '@/01-shared/hooks/useToast';
+
+const LoginPage = () => {
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,7 +40,7 @@ const LoginPage = ({ showToast }) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     console.log('handleLogin: Resultado do login - error:', error);
     if (error) {
-      showToast(error.message, 'error');
+      toast({ title: error.message, type: 'error' });
       console.error('handleLogin: Erro de login:', error.message);
     }
     setLoading(false);
@@ -46,7 +49,7 @@ const LoginPage = ({ showToast }) => {
 
   const handlePasswordReset = async () => {
     if (!email) {
-      showToast('Por favor, digite seu e-mail para redefinir a senha.', 'info');
+      toast({ title: 'Por favor, digite seu e-mail para redefinir a senha.', type: 'info' });
       return;
     }
     setLoading(true);
@@ -54,9 +57,9 @@ const LoginPage = ({ showToast }) => {
       redirectTo: '/update-password' // Redireciona para uma página onde o usuário pode definir a nova senha
     });
     if (error) {
-      showToast(error.message, 'error');
+      toast({ title: error.message, type: 'error' });
     } else {
-      showToast('Verifique seu e-mail para o link de redefinição de senha!', 'success');
+      toast({ title: 'Verifique seu e-mail para o link de redefinição de senha!', type: 'success' });
     }
     setLoading(false);
   };

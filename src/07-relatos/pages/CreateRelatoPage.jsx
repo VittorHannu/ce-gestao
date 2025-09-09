@@ -6,7 +6,10 @@ import { supabase } from '@/01-shared/lib/supabase';
 import BackButton from '@/01-shared/components/BackButton';
 import MainLayout from '@/01-shared/components/MainLayout';
 
-const CreateRelatoPage = ({ showToast }) => {
+import { useToast } from '@/01-shared/hooks/useToast';
+
+const CreateRelatoPage = () => {
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state for login status
   const navigate = useNavigate();
@@ -37,7 +40,7 @@ const CreateRelatoPage = ({ showToast }) => {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!formData.is_anonymous && !user) {
-        showToast('Você precisa estar logado para criar um relato identificado.', 'error');
+        toast({ title: 'Você precisa estar logado para criar um relato identificado.', type: 'error' });
         setIsLoading(false);
         return;
       }
@@ -89,7 +92,7 @@ const CreateRelatoPage = ({ showToast }) => {
         }
       }
 
-      showToast('Relato enviado com sucesso!', 'success');
+      toast({ title: 'Relato enviado com sucesso!', type: 'success' });
       if (user) {
         navigate('/relatos');
       } else {
@@ -97,7 +100,7 @@ const CreateRelatoPage = ({ showToast }) => {
       }
     } catch (error) {
       console.error('Erro detalhado ao criar relato:', error);
-      showToast(`Erro ao enviar o relato: ${error.message}`, 'error');
+      toast({ title: `Erro ao enviar o relato: ${error.message}`, type: 'error' });
     } finally {
       setIsLoading(false);
     }

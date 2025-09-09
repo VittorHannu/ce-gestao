@@ -1,4 +1,3 @@
-
 /*
  * Este é o componente principal (`App.jsx`) do aplicativo React.
  * Ele configura o roteamento usando `react-router-dom`, gerencia o estado
@@ -19,9 +18,10 @@ import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { supabase } from '@/01-shared/lib/supabase';
-import Toast from '@/01-shared/components/ui/Toast';
 import { useToast } from '@/01-shared/hooks/useToast';
 import { PresenceProvider } from '@/01-shared/context/PresenceContext.jsx';
+import { UpdateProvider } from '@/01-shared/context/UpdateContext.jsx';
+import { ToastProvider } from '@/01-shared/context/ToastProvider.jsx';
 
 import ProtectedRoute from '@/01-shared/components/protected-route/ProtectedRoute';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
@@ -60,15 +60,15 @@ const SettingsPage = React.lazy(() => import('@/10-settings/pages/SettingsPage')
 
 import '@/00-global/styles/App.css';
 
-function LayoutWithoutHeader({ user, onLogout, showToast }) {
+function LayoutWithoutHeader({ user, onLogout }) {
   return (
     <MainLayout _user={user}>
-      <Outlet context={{ user, onLogout, showToast }} />
+      <Outlet context={{ user, onLogout }} />
     </MainLayout>
   );
 }
 
-function AppWrapper({ showToast }) {
+function AppWrapper() {
   const [session, setSession] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -76,6 +76,7 @@ function AppWrapper({ showToast }) {
   const [isReadyForRender, setIsReadyForRender] = useState(false);
   const _navigate = useNavigate();
   const _location = useLocation();
+  const { toast } = useToast();
 
   const fetchUserProfile = useCallback(async (userId) => {
     try {
@@ -110,7 +111,7 @@ function AppWrapper({ showToast }) {
 
         if (createError) throw createError;
         userProfile = newProfile;
-        showToast('Perfil criado com sucesso!', 'success');
+        toast({ title: 'Perfil criado com sucesso!', type: 'success' });
       }
 
       setUser(userProfile);
@@ -119,16 +120,16 @@ function AppWrapper({ showToast }) {
       console.log('DEBUG: can_view_users no App.jsx:', userProfile?.can_view_users);
     } catch (error) {
       console.error('Erro ao buscar ou criar perfil:', error);
-      showToast('Erro ao carregar ou criar dados do perfil.', 'error');
+      toast({ title: 'Erro ao carregar ou criar dados do perfil.', type: 'error' });
       setProfileLoadError(error);
     }
-  }, [showToast]);
+  }, [toast]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setSession(null);
     setUser(null);
-    showToast('Você foi desconectado.', 'info');
+    toast({ title: 'Você foi desconectado.', type: 'info' });
   };
 
   useEffect(() => {
@@ -184,10 +185,10 @@ function AppWrapper({ showToast }) {
       <Routes>
         <Route element={<PublicLayout />}>
           <Route path="/apresentacao" element={<Suspense fallback={<LoadingSpinner />}><ApresentacaoPage /></Suspense>} />
-          <Route path="/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordPage showToast={showToast} /></Suspense>} />
-          <Route path="/auth" element={<Suspense fallback={<LoadingSpinner />}><LoginPage showToast={showToast} /></Suspense>} />
-          <Route path="/auth/confirm" element={<Suspense fallback={<LoadingSpinner />}><ConfirmEmailChangePage showToast={showToast} /></Suspense>} />
-          <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage showToast={showToast} /></Suspense>} />
+          <Route path="/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordPage /></Suspense>} />
+          <Route path="/auth" element={<Suspense fallback={<LoadingSpinner />}><LoginPage /></Suspense>} />
+          <Route path="/auth/confirm" element={<Suspense fallback={<LoadingSpinner />}><ConfirmEmailChangePage /></Suspense>} />
+          <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage /></Suspense>} />
           <Route path="/" element={<Navigate to="/auth" />} />
           <Route path="*" element={<Navigate to="/auth" />} />
         </Route>
@@ -197,7 +198,7 @@ function AppWrapper({ showToast }) {
 
   return (
     <Routes>
-      <Route element={<LayoutWithoutHeader user={user} onLogout={handleLogout} showToast={showToast} />}>
+      <Route element={<LayoutWithoutHeader user={user} onLogout={handleLogout} />}>
         <Route path="/" element={<Navigate to="/relatos" />} />
         <Route path="/perfil" element={<Suspense fallback={<LoadingSpinner />}><ProfilePage /></Suspense>} />
         <Route path="/perfil/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordProfilePage /></Suspense>} />
@@ -205,7 +206,7 @@ function AppWrapper({ showToast }) {
         <Route path="/notifications" element={<Suspense fallback={<LoadingSpinner />}><NotificationsPage /></Suspense>} />
         <Route path="/settings" element={<Suspense fallback={<LoadingSpinner />}><SettingsPage /></Suspense>} />
         <Route path="/relatos" element={<Suspense fallback={<LoadingSpinner />}><RelatosPage /></Suspense>} />
-        <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage showToast={showToast} /></Suspense>} />
+        <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage /></Suspense>} />
         <Route path="/relatos/aprovacao" element={<ProtectedRoute user={user} requiredPermission="can_manage_relatos"><Suspense fallback={<LoadingSpinner />}><RelatosAprovacaoPage /></Suspense></ProtectedRoute>} />
         <Route path="/relatos/lista" element={<Suspense fallback={<LoadingSpinner />}><RelatosListaPage /></Suspense>} />
         <Route path="/relatos/detalhes/:id" element={<Suspense fallback={<LoadingSpinner />}><RelatoDetailsPage /></Suspense>} />
@@ -227,23 +228,17 @@ function AppWrapper({ showToast }) {
 }
 
 function App() {
-  const { toast, showToast, hideToast } = useToast();
-
   return (
     <BrowserRouter>
-      <PresenceProvider>
-        <DateFilterProvider>
-          <AppWrapper showToast={showToast} />
-          {toast && (
-            <Toast
-              key={toast.id}
-              message={toast.message}
-              type={toast.type}
-              onClose={hideToast}
-            />
-          )}
-        </DateFilterProvider>
-      </PresenceProvider>
+      <ToastProvider>
+        <UpdateProvider>
+          <PresenceProvider>
+            <DateFilterProvider>
+              <AppWrapper />
+            </DateFilterProvider>
+          </PresenceProvider>
+        </UpdateProvider>
+      </ToastProvider>
     </BrowserRouter>
   );
 }
