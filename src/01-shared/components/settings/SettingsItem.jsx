@@ -17,19 +17,28 @@ const SettingsItem = ({ icon: Icon, iconColor, label, path, value, isLast }) => 
         {value != null && (
           <span className="text-gray-500 dark:text-gray-400 mr-2">{value}</span>
         )}
-        <ChevronRight className="w-5 h-5 text-gray-400" />
+        {path && <ChevronRight className="w-5 h-5 text-gray-400" />}
       </div>
     </>
   );
 
+  const commonClassName = "w-full flex justify-between items-center px-4 py-3 text-left";
+  const interactiveClassName = "transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-700";
+
+  const WrapperComponent = path ? Link : 'div';
+  const wrapperProps = path 
+    ? { to: path, className: `${commonClassName} ${interactiveClassName}` }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    : { className: commonClassName };
+
   return (
     <div className="relative">
-      <Link
-        to={path}
-        className="w-full flex justify-between items-center px-4 py-3 text-left transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-700"
-      >
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
+      <WrapperComponent {...wrapperProps}>
         {content}
-      </Link>
+      </WrapperComponent>
       {!isLast && (
         <div className="absolute bottom-0 left-14 right-0 h-px bg-gray-200 dark:bg-gray-700" />
       )}

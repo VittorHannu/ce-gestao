@@ -1,5 +1,13 @@
 # Histórico de Versões - SGI Copa
 
+## [0.1.1] - 09/09/2025
+
+### 🐛 Correções
+
+*   Corrigido um aviso no console do React relacionado ao componente `SettingsItem`. O componente foi refatorado para ser mais flexível, evitando que propriedades inválidas sejam passadas para elementos DOM.
+
+---
+
 ## [0.1.0] - 08/09/2025
 
 ### ✨ Funcionalidades
