@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  kong:
+    ports:
+      - "0.0.0.0:8000:8000"
+  db:
+    ports:
+      - "0.0.0.0:5432:5432"
+  studio:
+    ports:
+      - "0.0.0.0:54321:54321"
+  inbucket:
+    ports:
+      - "0.0.0.0:54324:54324"

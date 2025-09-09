@@ -1,3 +1,5 @@
+importScripts('https://cdn.onesignal.com/sdks/OneSignalSDK.sw.js');
+
 /* eslint-disable no-restricted-globals */
 
 // public/service-worker.js
@@ -76,36 +78,5 @@ self.addEventListener('fetch', (event) => {
       // Se tanto o cache quanto a rede falharem, pode-se retornar uma página de fallback offline
       // return caches.match('/offline.html');
     })
-  );
-});
-
-
-// --- MANIPULADORES DE PUSH NOTIFICATION (LÓGICA EXISTENTE) ---
-
-self.addEventListener('push', (event) => {
-  const data = event.data.json();
-  console.log('Push received:', data);
-
-  const title = data.title || 'Nova Notificação';
-  const options = {
-    body: data.body || 'Você tem uma nova mensagem.',
-    icon: '/favicon.ico',
-    badge: '/favicon.ico',
-    data: {
-      url: data.url || '/'
-    }
-  };
-
-  event.waitUntil(
-    self.registration.showNotification(title, options)
-  );
-});
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  const urlToOpen = event.notification.data.url;
-
-  event.waitUntil(
-    clients.openWindow(urlToOpen)
   );
 });
