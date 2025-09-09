@@ -1,5 +1,11 @@
 # Histórico de Versões - SGI Copa
 
+## [0.1.3] - 2025-09-09
+
+### 🐛 Correções
+
+*   **Botão de Inscrição de Notificações**: Corrigido um bug onde o botão de inscrição/cancelamento de notificações ficava permanentemente no estado "Carregando". A lógica de verificação de status e gerenciamento de estado foi refatorada para ser mais robusta e baseada nos eventos do OneSignal, eliminando o comportamento inesperado.
+
 ## [0.1.2] - 2025-09-09
 
 ### ✨ Funcionalidades

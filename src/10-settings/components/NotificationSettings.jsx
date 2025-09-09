@@ -1,53 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/01-shared/components/ui/button';
 
 const NotificationSettings = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const OneSignal = window.OneSignal || [];
+  const handleSubscriptionChange = useCallback(() => {
+    setIsLoading(true);
+    if (isSubscribed) {
+      window.OneSignal.setSubscription(false);
+    } else {
+      window.OneSignal.showSlidedownPrompt();
+    }
+  }, [isSubscribed]);
 
-    const updateSubscriptionStatus = async () => {
-      const isPushEnabled = await OneSignal.isPushNotificationsEnabled();
-      setIsSubscribed(isPushEnabled);
-      setIsLoading(false);
+  useEffect(() => {
+    const setupOneSignal = () => {
+      const updateStatus = async () => {
+        setIsLoading(true);
+        try {
+          const isPushEnabled = await window.OneSignal.isPushNotificationsEnabled();
+          setIsSubscribed(isPushEnabled);
+        } catch (error) {
+          console.error('OneSignal: Erro ao verificar status da inscrição', error);
+        }
+        setIsLoading(false);
+      };
+
+      updateStatus();
+
+      const onSubscriptionChange = (subscribed) => {
+        console.log('OneSignal: Inscrição alterada para:', subscribed);
+        setIsSubscribed(subscribed);
+        setIsLoading(false); // Para de carregar quando o evento de mudança é recebido
+      };
+
+      window.OneSignal.on('subscriptionChange', onSubscriptionChange);
+
+      return () => {
+        window.OneSignal.off('subscriptionChange', onSubscriptionChange);
+      };
     };
 
-    OneSignal.push(() => {
-      // Run after OneSignal is initialized
-      updateSubscriptionStatus();
+    if (window.OneSignal) {
+      window.OneSignal.push(setupOneSignal);
+    }
 
-      OneSignal.on('subscriptionChange', function (isSubscribed) {
-        console.log('A inscrição de notificação foi alterada para:', isSubscribed);
-        setIsSubscribed(isSubscribed);
-      });
-    });
-
-    // Cleanup listener on component unmount
+    // Cleanup no caso do componente ser desmontado antes do OneSignal carregar
     return () => {
-        OneSignal.push(() => {
-            OneSignal.off('subscriptionChange');
+      if (window.OneSignal) {
+        window.OneSignal.push(() => {
+          window.OneSignal.off('subscriptionChange');
         });
+      }
     };
   }, []);
-
-  const handleSubscriptionChange = async () => {
-    const OneSignal = window.OneSignal || [];
-    setIsLoading(true);
-    await OneSignal.push(async () => {
-      if (isSubscribed) {
-        // Unsubscribe
-        await OneSignal.setSubscription(false);
-      } else {
-        // Subscribe
-        await OneSignal.showSlidedownPrompt();
-      }
-      // The subscriptionChange event will update the state
-    });
-    // Give OneSignal a moment to process and fire the event
-    setTimeout(() => setIsLoading(false), 1000);
-  };
 
   return (
     <div className="space-y-6">
