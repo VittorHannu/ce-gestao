@@ -1,5 +1,13 @@
 # Histórico de Versões - SGI Copa
 
+## [0.1.3] - 2025-09-09
+
+### 🐛 Correções
+
+*   **Entrega de Notificações Push**: Corrige a falha na entrega de notificações push no dispositivo. A lógica de autenticação agora associa o `user_id` do Supabase ao `external_user_id` do OneSignal no momento do login, garantindo que o OneSignal saiba para qual dispositivo enviar o push de um usuário específico.
+
+---
+
 ## [0.1.2] - 2025-09-09
 
 ### ✨ Funcionalidades

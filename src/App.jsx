@@ -152,8 +152,12 @@ function AppWrapper() {
       setSession(session);
       if (session) {
         fetchUserProfile(session.user.id);
+        console.log(`OneSignal: Associando usuário ${session.user.id}`);
+        window.OneSignal.login(session.user.id);
       } else {
         setUser(null);
+        console.log('OneSignal: Desassociando usuário.');
+        window.OneSignal.logout();
       }
     });
 
