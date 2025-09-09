@@ -45,7 +45,7 @@ O fluxo de trabalho obrigatório é:
 
 *   `pnpm dev`: Iniciar o servidor de desenvolvimento.
 *   `pnpm build`: Gerar a build de produção.
-*   `pnpm lint -- --fix`: Executar o linter e corrigir problemas.
+*   `pnpm lint --fix`: Executar o linter e corrigir problemas.
 *   `pnpm test`: Rodar a suíte de testes.
 *   `supabase start`: Iniciar o ambiente Supabase local.
 *   `supabase migration new <nome>`: Criar um novo arquivo de migração.

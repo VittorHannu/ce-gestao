@@ -22,20 +22,16 @@ const SettingsItem = ({ icon: Icon, iconColor, label, path, value, isLast }) => 
     </>
   );
 
-  const commonClassName = "w-full flex justify-between items-center px-4 py-3 text-left";
-  const interactiveClassName = "transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-700";
+  const commonClassName = 'w-full flex justify-between items-center px-4 py-3 text-left';
+  const interactiveClassName = 'transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-700';
 
   const WrapperComponent = path ? Link : 'div';
   const wrapperProps = path 
     ? { to: path, className: `${commonClassName} ${interactiveClassName}` }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     : { className: commonClassName };
 
   return (
     <div className="relative">
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-ignore */}
       <WrapperComponent {...wrapperProps}>
         {content}
       </WrapperComponent>

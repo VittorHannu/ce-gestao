@@ -27,7 +27,7 @@ const loadOneSignalScript = () => {
     script.async = true;
     script.onload = () => resolve();
     script.onerror = (error) => {
-      console.error("OneSignal: Falha ao carregar o SDK.", error);
+      console.error('OneSignal: Falha ao carregar o SDK.', error);
       reject(error);
     };
     document.head.appendChild(script);
@@ -40,13 +40,13 @@ const loadOneSignalScript = () => {
  */
 export const initOneSignal = async () => {
   if (isOneSignalInitialized) {
-    console.log("OneSignal: Já inicializado.");
+    console.log('OneSignal: Já inicializado.');
     return;
   }
 
   // Não executa em ambientes que não sejam DEV ou PROD
   if (!import.meta.env.PROD && !import.meta.env.DEV) {
-    console.log("OneSignal: Inicialização não realizada (ambiente não suportado).");
+    console.log('OneSignal: Inicialização não realizada (ambiente não suportado).');
     return;
   }
 
@@ -58,14 +58,14 @@ export const initOneSignal = async () => {
       OneSignal.init({
         appId: import.meta.env.VITE_ONESIGNAL_APP_ID,
         safari_web_id: import.meta.env.VITE_ONESIGNAL_SAFARI_WEB_ID,
-        allowLocalhostAsSecureOrigin: true,
+        allowLocalhostAsSecureOrigin: true
       });
     });
     
     isOneSignalInitialized = true;
-    console.log("OneSignal: SDK inicializado com sucesso.");
+    console.log('OneSignal: SDK inicializado com sucesso.');
 
   } catch (error) {
-    console.error("OneSignal: Não foi possível inicializar o SDK. Push Notifications podem não funcionar.", error);
+    console.error('OneSignal: Não foi possível inicializar o SDK. Push Notifications podem não funcionar.', error);
   }
 };

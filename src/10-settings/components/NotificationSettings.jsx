@@ -1,56 +1,74 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/01-shared/components/ui/button';
+import { initOneSignal } from '@/01-shared/lib/oneSignal';
 
 const NotificationSettings = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const handleSubscriptionChange = useCallback(() => {
+    if (isLoading) return;
+
     setIsLoading(true);
     if (isSubscribed) {
       window.OneSignal.setSubscription(false);
     } else {
       window.OneSignal.showSlidedownPrompt();
     }
-  }, [isSubscribed]);
+  }, [isSubscribed, isLoading]);
 
   useEffect(() => {
-    const setupOneSignal = () => {
-      const updateStatus = async () => {
-        setIsLoading(true);
+    let isMounted = true;
+    let cleanupOneSignal = () => {};
+
+    const initializeAndSetup = async () => {
+      // Garante que o SDK esteja pronto antes de qualquer outra coisa
+      await initOneSignal(); 
+
+      if (!window.OneSignal) {
+        console.error('OneSignal SDK não pôde ser inicializado.');
+        if (isMounted) setIsLoading(false);
+        return;
+      }
+
+      // Usa a fila de comandos do OneSignal para garantir execução segura
+      window.OneSignal.push(async () => {
+        if (!isMounted) return;
+
         try {
           const isPushEnabled = await window.OneSignal.isPushNotificationsEnabled();
-          setIsSubscribed(isPushEnabled);
+          if (isMounted) setIsSubscribed(isPushEnabled);
         } catch (error) {
           console.error('OneSignal: Erro ao verificar status da inscrição', error);
+        } finally {
+          if (isMounted) setIsLoading(false);
         }
-        setIsLoading(false);
-      };
 
-      updateStatus();
+        const onSubscriptionChange = (subscribed) => {
+          if (isMounted) {
+            console.log('OneSignal: Inscrição alterada para:', subscribed);
+            setIsSubscribed(subscribed);
+            setIsLoading(false);
+          }
+        };
 
-      const onSubscriptionChange = (subscribed) => {
-        console.log('OneSignal: Inscrição alterada para:', subscribed);
-        setIsSubscribed(subscribed);
-        setIsLoading(false); // Para de carregar quando o evento de mudança é recebido
-      };
-
-      window.OneSignal.on('subscriptionChange', onSubscriptionChange);
-
-      return () => {
-        window.OneSignal.off('subscriptionChange', onSubscriptionChange);
-      };
+        window.OneSignal.on('subscriptionChange', onSubscriptionChange);
+        
+        // Prepara a função de limpeza
+        cleanupOneSignal = () => {
+          window.OneSignal.off('subscriptionChange', onSubscriptionChange);
+        };
+      });
     };
 
-    if (window.OneSignal) {
-      window.OneSignal.push(setupOneSignal);
-    }
+    initializeAndSetup();
 
-    // Cleanup no caso do componente ser desmontado antes do OneSignal carregar
+    // Função de limpeza do useEffect
     return () => {
+      isMounted = false;
       if (window.OneSignal) {
         window.OneSignal.push(() => {
-          window.OneSignal.off('subscriptionChange');
+          cleanupOneSignal();
         });
       }
     };
@@ -70,8 +88,8 @@ const NotificationSettings = () => {
           {isLoading
             ? 'Carregando...'
             : isSubscribed
-            ? 'Cancelar Inscrição'
-            : 'Inscrever-se para Notificações'}
+              ? 'Cancelar Inscrição'
+              : 'Inscrever-se para Notificações'}
         </Button>
       </div>
     </div>

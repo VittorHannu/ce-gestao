@@ -11,7 +11,7 @@ const pkg = JSON.parse(readFileSync(path.resolve(__dirname, 'package.json'), 'ut
 export default defineConfig({
   define: {
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
-    'import.meta.env.VITE_APP_BUILD_DATE': JSON.stringify(new Date().toLocaleDateString('pt-BR')),
+    'import.meta.env.VITE_APP_BUILD_DATE': JSON.stringify(new Date().toLocaleDateString('pt-BR'))
   },
   plugins: [
     react(),

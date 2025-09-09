@@ -28,12 +28,12 @@ export const UpdateProvider = ({ children }) => {
     // The `needRefresh` state will change automatically if an update is found.
     // We can't reliably know the result here, so we check the state *after* a small delay.
     setTimeout(() => {
-        if (!isUpdateAvailable) {
-            toast({
-              title: 'Nenhuma atualização encontrada',
-              description: 'Você já está com a versão mais recente.'
-            });
-        }
+      if (!isUpdateAvailable) {
+        toast({
+          title: 'Nenhuma atualização encontrada',
+          description: 'Você já está com a versão mais recente.'
+        });
+      }
     }, 2000); // 2 second delay to allow state to propagate
   };
 

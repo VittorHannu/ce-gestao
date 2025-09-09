@@ -8,6 +8,7 @@ import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 
 import NotificationSettings from '../components/NotificationSettings';
 import UpdateManager from '../components/UpdateManager';
+import DebugSettings from '../components/DebugSettings';
 
 function SettingsPage() {
   const { data: userProfile, isLoading } = useUserProfile();
@@ -34,6 +35,10 @@ function SettingsPage() {
 
           <SettingsGroup title="Notificações">
             <NotificationSettings />
+          </SettingsGroup>
+
+          <SettingsGroup title="Depuração">
+            <DebugSettings />
           </SettingsGroup>
 
           {userProfile?.can_view_users && (

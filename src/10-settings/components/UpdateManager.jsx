@@ -36,7 +36,7 @@ function UpdateManager() {
             <p className="text-sm text-green-700 dark:text-green-300">Instale para obter os recursos mais recentes.</p>
           </div>
         ) : (
-           <p className="text-xs text-center text-muted-foreground">Clique para verificar se há uma nova versão.</p>
+          <p className="text-xs text-center text-muted-foreground">Clique para verificar se há uma nova versão.</p>
         )}
 
         <Button 
@@ -56,22 +56,22 @@ function UpdateManager() {
           )}
         </Button>
         {isUpdateAvailable && (
-            <Button variant="ghost" size="sm" className="w-full" onClick={() => dismissUpdate()}>
+          <Button variant="ghost" size="sm" className="w-full" onClick={() => dismissUpdate()}>
                 Ignorar por agora
-            </Button>
+          </Button>
         )}
       </div>
 
       <SettingsItem
-        label={`Versão do App`}
+        label={'Versão do App'}
         value={`${version} (ver histórico)`}
         isLast={false}
         icon={CheckCircle}
         iconColor="bg-blue-500"
         path="/version-history"
       />
-       <SettingsItem
-        label={`Data da Compilação`}
+      <SettingsItem
+        label={'Data da Compilação'}
         value={buildDate}
         isLast={true}
         icon={Calendar}

@@ -1,5 +1,12 @@
 # Histórico de Versões - SGI Copa
 
+## [0.1.4] - 2025-09-09
+
+### 🐛 Correções
+
+*   **Console de Depuração**: Corrigido o problema onde o console de depuração (Eruda) não era desativado corretamente ao desativar o toggle. A lógica de destruição da instância do Eruda foi ajustada para garantir seu correto desligamento.
+*   **Importação de Componente Switch**: Corrigido o caminho de importação do componente `Switch` em `DebugSettings.jsx`.
+
 ## [0.1.3] - 2025-09-09
 
 ### 🐛 Correções
