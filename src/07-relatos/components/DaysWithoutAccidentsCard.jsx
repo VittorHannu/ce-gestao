@@ -33,7 +33,7 @@ const DaysWithoutAccidentsCard = ({ lastAccidentDate, isLoading }) => {
         <h2 className="text-5xl font-bold">
           {daysSinceLastAccident}
         </h2>
-        <p className="text-lg font-semibold text-left">dias sem acidentes com afastamento</p>
+        <p className="text-lg font-semibold text-left">dias sem acidentes com afastamento v2</p>
       </div>
       <p className="text-sm text-teal-100 mt-4 text-center">
         {lastAccidentDate ? (
