@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
 import { supabase } from '@/01-shared/lib/supabase';
@@ -53,6 +53,7 @@ export const useRelatoCounts = () => {
   return useQuery({
     queryKey: ['relatoCounts', user?.id, startDate, endDate],
     queryFn: () => fetchRelatoCounts(user, startDate, endDate),
-    enabled: !loadingUser && !!user // Só executa a query se o usuário estiver carregado e logado
+    enabled: !loadingUser && !!user, // Só executa a query se o usuário estiver carregado e logado
+    placeholderData: keepPreviousData, // Mantém os dados anteriores enquanto busca novos
   });
 };

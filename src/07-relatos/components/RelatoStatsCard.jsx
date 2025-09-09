@@ -9,7 +9,9 @@ const RelatoStatsCard = ({ label, count, path, progressBarColor, totalRelatos })
     <Link to={path} className="block h-full">
       <div className="bg-white rounded-xl shadow-sm p-4 h-full flex flex-col justify-between gap-0 hover:shadow-md transition-shadow duration-300">
         <div className="flex flex-col justify-between h-full">
-          <p className="text-2xl font-bold text-gray-900">{count}</p>
+          <p className="text-2xl font-bold text-gray-900">
+            <span className="animated-number">{count || 0}</span>
+          </p>
         </div>
 
         <div>
