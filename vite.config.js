@@ -53,7 +53,7 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: /.*\/supabase\/.*/,
+            urlPattern: /.*\/rest\/v1\/.*/,
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'supabase-api-cache',

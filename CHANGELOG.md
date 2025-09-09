@@ -1,5 +1,13 @@
 # Histórico de Versões - SGI Copa
 
+## [0.1.5] - 2025-09-09
+
+### 🐛 Correções
+
+*   **Persistência de Login no PWA**: Corrige um erro crítico onde a sessão do usuário não era mantida ao fechar e reabrir o PWA. A política de cache do Service Worker foi ajustada para não armazenar em cache as respostas da API de autenticação do Supabase, garantindo que o status de login seja sempre verificado corretamente.
+
+---
+
 ## [0.1.4] - 2025-09-09
 
 ### 🐛 Correções
