@@ -16,26 +16,27 @@ const RelatoStatsCard = ({ label, count, path, progressBarColor, totalRelatos })
 
         <div>
           <p className="text-base font-semibold text-gray-600">{label}</p>
-          
-          {percentage > 0 && (
-            <div className="flex items-center gap-2 mt-1">
-              <div className="w-full bg-gray-200 rounded-full h-4 relative flex items-center overflow-hidden">
-                <div
-                  className={`h-4 rounded-full ${progressBarColor} flex items-center justify-start pl-2 transition-all duration-500 ease-in-out`}
-                  style={{ width: `${displayPercentage}%` }}
-                >
-                  {displayPercentage >= 25 && (
-                    <span className="text-xs font-bold text-white">{displayPercentage}%</span>
-                  )}
-                </div>
-                {displayPercentage < 25 && (
-                  <span className="ml-2 text-xs font-medium text-gray-600">
-                    {displayPercentage}%
-                  </span>
+
+          <div
+            className="flex items-center gap-2 mt-1 transition-opacity duration-500 ease-in-out"
+            style={{ opacity: percentage > 0 ? 1 : 0 }}
+          >
+            <div className="w-full bg-gray-200 rounded-full h-4 relative flex items-center overflow-hidden">
+              <div
+                className={`h-4 rounded-full ${progressBarColor} flex items-center justify-start pl-2 transition-all duration-500 ease-in-out`}
+                style={{ width: `${displayPercentage}%` }}
+              >
+                {displayPercentage >= 25 && (
+                  <span className="text-xs font-bold text-white">{displayPercentage}%</span>
                 )}
               </div>
+              {displayPercentage < 25 && (
+                <span className="ml-2 text-xs font-medium text-gray-600">
+                  {displayPercentage > 0 ? `${displayPercentage}%` : ''}
+                </span>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </Link>
