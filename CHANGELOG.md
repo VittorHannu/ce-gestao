@@ -1,5 +1,13 @@
 # Histórico de Versões - SGI Copa
 
+## [0.1.2] - 2025-09-09
+
+### ✨ Funcionalidades
+
+*   **Notificações Push Automatizadas**: Implementado sistema de notificações push via OneSignal. Novas notificações inseridas na base de dados agora disparam automaticamente um push para o usuário correspondente através de uma Edge Function, criando um sistema de notificação em tempo real e persistente.
+
+---
+
 ## [0.1.1] - 09/09/2025
 
 ### 🐛 Correções
