@@ -52,20 +52,7 @@ export default defineConfig({
               }
             }
           },
-          {
-            urlPattern: /.*\/rest\/v1\/.*/,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'supabase-api-cache',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 // <== 24 hours
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          },
+          
           {
             urlPattern: /\.(?:png|jpg|jpeg|svg|gif|ico)$/,
             handler: 'CacheFirst',
