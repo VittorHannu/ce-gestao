@@ -1,58 +1,40 @@
-
-import { useState, useEffect } from 'react';
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import MainLayout from '@/01-shared/components/MainLayout';
-import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
-import usePageTitle from '@/01-shared/hooks/usePageTitle';
 import BackButton from '@/01-shared/components/BackButton';
-import changelogPath from '/CHANGELOG.md?url';
+import changelogContent from '../../../CHANGELOG.md?raw';
 
-const VersionHistoryPage = () => {
-  usePageTitle('O que há de novo?');
-  const [markdown, setMarkdown] = useState('');
-  const [loading, setLoading] = useState(true);
+// Basic styling for the markdown content.
+// Using a wrapper div with a 'prose' like class for styling.
+const proseClassName = `
+  prose dark:prose-invert 
+  max-w-none
+  prose-h1:text-3xl prose-h1:font-bold prose-h1:mb-4
+  prose-h2:text-2xl prose-h2:font-semibold prose-h2:mt-6 prose-h2:mb-3
+  prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-4 prose-h3:mb-2
+  prose-ul:list-disc prose-ul:ml-6 prose-ul:space-y-1
+  prose-li:text-gray-700 dark:prose-li:text-gray-300
+  prose-p:text-gray-600 dark:prose-p:text-gray-400
+  prose-strong:font-semibold
+`;
 
-  useEffect(() => {
-    setLoading(true);
-    fetch(changelogPath)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Changelog not found');
-        }
-        return response.text();
-      })
-      .then((text) => {
-        setMarkdown(text);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Failed to fetch changelog:', err);
-        setMarkdown('Não foi possível carregar o histórico de versões.');
-        setLoading(false);
-      });
-  }, []);
-
+function VersionHistoryPage() {
   return (
     <MainLayout
       header={(
         <div className="flex items-center">
           <BackButton />
-          <h1 className="text-2xl font-bold ml-4">O que há de novo?</h1>
+          <h1 className="text-2xl font-bold ml-4">Histórico de Versões</h1>
         </div>
       )}
     >
-      <div className="container mx-auto p-4 max-w-4xl">
-        <div className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl dark:prose-invert max-w-none text-red-500">
-          {loading ? (
-            <LoadingSpinner />
-          ) : (
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdown}</ReactMarkdown>
-          )}
+      <div className="p-4 sm:p-6">
+        <div className={proseClassName}>
+          <ReactMarkdown>{changelogContent}</ReactMarkdown>
         </div>
       </div>
     </MainLayout>
   );
-};
+}
 
 export default VersionHistoryPage;

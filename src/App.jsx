@@ -56,6 +56,7 @@ const RelatoLogsPage = React.lazy(() => import('@/07-relatos/pages/RelatoLogsPag
 const RelatosAcidentesGravesPage = React.lazy(() => import('@/07-relatos/pages/RelatosAcidentesGravesPage'));
 const NotificationsPage = React.lazy(() => import('@/08-notifications/pages/NotificationsPage'));
 const SettingsPage = React.lazy(() => import('@/10-settings/pages/SettingsPage'));
+const VersionHistoryPage = React.lazy(() => import('@/11-version-history/pages/VersionHistoryPage'));
 
 
 import '@/00-global/styles/App.css';
@@ -205,6 +206,7 @@ function AppWrapper() {
         <Route path="/perfil/update-email" element={<Suspense fallback={<LoadingSpinner />}><UpdateEmailPage /></Suspense>} />
         <Route path="/notifications" element={<Suspense fallback={<LoadingSpinner />}><NotificationsPage /></Suspense>} />
         <Route path="/settings" element={<Suspense fallback={<LoadingSpinner />}><SettingsPage /></Suspense>} />
+        <Route path="/version-history" element={<Suspense fallback={<LoadingSpinner />}><VersionHistoryPage /></Suspense>} />
         <Route path="/relatos" element={<Suspense fallback={<LoadingSpinner />}><RelatosPage /></Suspense>} />
         <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage /></Suspense>} />
         <Route path="/relatos/aprovacao" element={<ProtectedRoute user={user} requiredPermission="can_manage_relatos"><Suspense fallback={<LoadingSpinner />}><RelatosAprovacaoPage /></Suspense></ProtectedRoute>} />

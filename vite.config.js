@@ -3,9 +3,16 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import { VitePWA } from 'vite-plugin-pwa';
+import { readFileSync } from 'fs';
+
+const pkg = JSON.parse(readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'));
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
+    'import.meta.env.VITE_APP_BUILD_DATE': JSON.stringify(new Date().toLocaleDateString('pt-BR')),
+  },
   plugins: [
     react(),
     tailwindcss(),

@@ -55,6 +55,20 @@ O fluxo de trabalho obrigatório é:
 *   **Serviços**: Funções que interagem diretamente com o Supabase (ou outros serviços externos) são abstraídas em módulos de serviço (ex: `userService.js`).
 *   **Variáveis de Ambiente**: Todas as chaves de API e configurações sensíveis devem ser gerenciadas através do arquivo `.env`.
 
+## 🔄 Versioning (Semantic Versioning)
+
+To ensure clarity and predictability in the development process, this project adheres to Semantic Versioning (SemVer). I, the AI agent, am responsible for managing the version number in `package.json`.
+
+The process is as follows:
+
+1.  **Propose Version Bump**: After completing a feature or fix, I will analyze the nature of the changes and determine the appropriate version bump.
+    *   **MAJOR (`X.y.z`)**: For incompatible or breaking API changes.
+    *   **MINOR (`x.Y.z`)**: For new, backward-compatible functionality.
+    *   **PATCH (`x.y.Z`)**: For backward-compatible bug fixes.
+2.  **User Confirmation**: I will inform you of the proposed version bump and ask for your confirmation before proceeding. For example: *"I've added the new feature. This is a minor change. Shall I update the version from 1.1.0 to 1.2.0 and commit?"*
+3.  **Update `package.json`**: Once confirmed, I will update the `version` field in the `package.json` file.
+4.  **Commit**: The version bump will be included in the commit for the feature or fix.
+
 ## 🌐 Gerenciamento de Acesso Remoto (ngrok)
 
 O agente de IA é responsável por gerenciar o acesso remoto ao ambiente de desenvolvimento local via `ngrok`. Isso inclui:
