@@ -1,5 +1,14 @@
 # Histórico de Versões - SGI Copa
 
+## [0.1.4] - 2025-09-09
+
+### 🐛 Correções
+
+*   **Conflito de Service Worker**: Resolvido um conflito entre o service worker do `vite-plugin-pwa` e o do OneSignal, que impedia o registro correto do OneSignal e a entrega de notificações. A configuração do PWA agora ignora explicitamente os arquivos do OneSignal.
+*   **Robustez da Integração**: A lógica de login e logout do OneSignal agora utiliza a fila de comandos (`OneSignal.push`), garantindo que a associação do ID do usuário ocorra de forma segura e no momento correto, mesmo em condições de carregamento lento do SDK.
+
+---
+
 ## [0.1.3] - 2025-09-09
 
 ### 🐛 Correções

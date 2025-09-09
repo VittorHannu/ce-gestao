@@ -20,6 +20,7 @@ export default defineConfig({
       registerType: 'prompt',
       injectRegister: 'auto',
       workbox: {
+        globIgnores: ['**/OneSignalSDKWorker.js'],
         navigateFallback: 'index.html',
         navigateFallbackDenylist: [/^\/api\//, /^\/supabase\//],
         runtimeCaching: [
