@@ -5,7 +5,7 @@ import { Switch } from '@/components/ui/switch';
 import { Bug, MessageSquareWarning } from 'lucide-react';
 
 const DebugSettings = () => {
-  const { isErudaEnabled, setIsErudaEnabled, isDebugLogsEnabled, setIsDebugLogsEnabled } = useDebug();
+  const { isErudaEnabled, setIsErudaEnabled, isDebugLogsEnabled, _setIsDebugLogsEnabled } = useDebug();
 
   const handleErudaToggle = () => {
     setIsErudaEnabled(!isErudaEnabled);

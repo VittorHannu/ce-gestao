@@ -89,3 +89,26 @@ Quando solicitado a habilitar o acesso remoto, o agente seguirá estes passos:
 ## 📝 Tarefas Futuras
 
 *   **Otimização PWA (Pré-cache do App Shell):** Investigar e implementar o `vite-plugin-pwa` para garantir o pré-cache adequado dos assets do App Shell (especialmente arquivos JS/CSS com nomes dinâmicos). Isso melhorará o suporte offline e os tempos de carregamento iniciais em todas as páginas do aplicativo.
+
+## 📱 Acesso HTTPS Local em Dispositivos Móveis (mkcert)
+
+Quando o `ngrok` não for uma opção viável (ex: limites de banda), o acesso ao ambiente de desenvolvimento a partir de um dispositivo móvel na mesma rede local pode ser feito com `mkcert`.
+
+O processo envolve:
+1.  Gerar um certificado SSL válido para o endereço IP da máquina de desenvolvimento na rede local.
+2.  Configurar o `vite.config.js` para usar esse certificado.
+3.  Instalar o certificado raiz (`rootCA.pem`) do `mkcert` no dispositivo móvel para que ele confie na conexão HTTPS.
+
+### O que fazer quando o IP da rede local mudar
+
+O certificado gerado é atrelado a um IP específico. Se o IP da máquina de desenvolvimento mudar (ao conectar em outra rede Wi-Fi, por exemplo), o acesso HTTPS será quebrado. Para corrigir:
+
+1.  **Descobrir o novo IP local** da máquina de desenvolvimento.
+2.  **Gerar um novo certificado** com o `mkcert`, incluindo o novo IP e o `localhost`:
+    ```bash
+    mkcert <NOVO_IP> localhost 127.0.0.1 ::1
+    ```
+3.  **Atualizar `vite.config.js`**: Substituir os nomes dos arquivos de certificado (`.pem` e `-key.pem`) pelos novos nomes gerados no passo anterior.
+4.  **Atualizar `.gitignore`**: Adicionar os novos nomes de arquivo para evitar que sejam versionados.
+
+**Importante**: O passo de instalar o certificado raiz no dispositivo móvel só precisa ser feito **uma única vez**. O dispositivo confiará na autoridade de certificação, independentemente de quantos certificados específicos de IP ela assine.

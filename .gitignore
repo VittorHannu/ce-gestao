@@ -16,3 +16,5 @@ supabase/migrations_backup/
 # Backups
 supabase/backups/
 supabase/.temp/
+
+

@@ -7,6 +7,9 @@ schemas = ["public", "storage", "graphql"]
 extra_search_path = ["public"]
 max_rows = 1000
 
+[rest]
+cors_allowed_origins = ["*"]
+
 [db]
 port = 5432
 major_version = 15
@@ -49,6 +52,7 @@ otp_expiry = 3600
 
 [storage]
 file_size_limit = "50MiB"
+
 [functions.send-push-notification]
 enabled = true
 verify_jwt = true

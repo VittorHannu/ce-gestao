@@ -30,9 +30,6 @@ import { Button } from '@/01-shared/components/ui/button';
 import MainLayout from '@/01-shared/components/MainLayout';
 import PublicLayout from '@/01-shared/components/PublicLayout';
 import { DateFilterProvider } from './01-shared/hooks/useDateFilter.jsx';
-import { initOneSignal } from '@/01-shared/lib/oneSignal';
-
-initOneSignal();
 
 const ApresentacaoPage = React.lazy(() => import('@/09-presentation/pages/ApresentacaoPage'));
 const LoginPage = React.lazy(() => import('@/03-auth/pages/LoginPage'));
