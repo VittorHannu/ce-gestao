@@ -1,4 +1,4 @@
-## [1.1.3] - 2025-09-10
+## [0.1.11] - 2025-09-10
 
 ### Fix
 - **onesignal**: Refatora completamente a integração com o OneSignal para maior robustez, adicionando timeouts, tratamento de erros aprimorado e um botão de depuração para forçar a reinicialização. A inicialização agora é feita sob demanda para melhorar o desempenho.
