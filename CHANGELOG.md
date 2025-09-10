@@ -1,5 +1,11 @@
 # Histórico de Versões - SGI Copa
 
+## [0.1.8] - 2025-09-10
+
+### ✨ Funcionalidades
+
+*   **PWA para Desktop**: O aplicativo agora pode ser instalado como um aplicativo de desktop (PWA) em navegadores compatíveis, como o Chrome. Isso permite um acesso mais rápido e uma experiência mais integrada ao sistema operacional.
+
 ## [0.1.7] - 2025-09-09
 
 ### 🐛 Correções
