@@ -79,22 +79,35 @@ export default defineConfig({
         ]
       },
       manifest: {
-        name: 'SGI',
-        short_name: 'Copa SGI',
-        start_url: '.',
-        display: 'standalone',
-        background_color: '#ffffff',
+        name: 'SGI Copa',
+        short_name: 'SGI',
+        description: 'Sistema de Gestão Integrada da Copa Energia',
         theme_color: '#ffffff',
-        description: 'Sistema de Gestão Integrada',
+        background_color: '#ffffff',
+        display: 'standalone',
         orientation: 'portrait',
+        scope: '/',
+        start_url: '/',
         icons: [
           {
-            src: '/favicon.ico',
-            sizes: '64x64 32x32 24x24 16x16',
-            type: 'image/x-icon'
-          }
-        ]
-      }
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
+        ],
+      },
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
     })
   ],
   test: {

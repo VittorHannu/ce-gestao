@@ -59,22 +59,32 @@ const StatsGrid = React.memo(({ relatoCounts }) => {
 
   return (
     <div className="grid grid-cols-2 gap-4">
-      {cardData.map((card) => (
-        <Link to={card.path} key={card.id} className="w-full block">
-          {card.component ? card.component : (
-            <RelatoStatsCard
-              label={card.label}
-              count={card.count}
-              icon={card.icon}
-              path={card.path}
-              iconTextColor={card.iconTextColor}
-              iconBgColor={card.iconBgColor}
-              progressBarColor={card.progressBarColor}
-              totalRelatos={relatoCounts?.totalAprovados || 0}
-            />
-          )}
-        </Link>
-      ))}
+      {cardData.map((card) => {
+        // Se o card for um componente customizado (como TotalReportsCard),
+        // ele não tem seu próprio Link, então envolvemos com um.
+        if (card.component) {
+          return (
+            <Link to={card.path} key={card.id} className="w-full block">
+              {card.component}
+            </Link>
+          );
+        }
+        // Se for um RelatoStatsCard, ele já renderiza seu próprio Link,
+        // então o usamos diretamente para evitar <a> aninhado.
+        return (
+          <RelatoStatsCard
+            key={card.id}
+            label={card.label}
+            count={card.count}
+            icon={card.icon}
+            path={card.path}
+            iconTextColor={card.iconTextColor}
+            iconBgColor={card.iconBgColor}
+            progressBarColor={card.progressBarColor}
+            totalRelatos={relatoCounts?.totalAprovados || 0}
+          />
+        );
+      })}
     </div>
   );
 });
