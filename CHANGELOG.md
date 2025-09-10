@@ -1,60 +1,29 @@
-# Histórico de Versões - SGI Copa
+## [1.1.3] - 2025-09-10
 
-## [0.1.8] - 2025-09-10
+### Fix
+- **onesignal**: Refatora completamente a integração com o OneSignal para maior robustez, adicionando timeouts, tratamento de erros aprimorado e um botão de depuração para forçar a reinicialização. A inicialização agora é feita sob demanda para melhorar o desempenho.
 
-### ✨ Funcionalidades
+# Changelog
 
-*   **PWA para Desktop**: O aplicativo agora pode ser instalado como um aplicativo de desktop (PWA) em navegadores compatíveis, como o Chrome. Isso permite um acesso mais rápido e uma experiência mais integrada ao sistema operacional.
+## [1.1.2] - 2025-09-09
 
-## [0.1.7] - 2025-09-09
+### Fixes
+- **notificações**: Limpa `user_id` do OneSignal no logout para evitar receber notificações de outro usuário.
+- **UI**: Garante que o foco do teclado não seja visível em elementos não interativos no modo mobile.
 
-### 🐛 Correções
+## [1.1.1] - 2025-09-09
 
-*   **Erros de Console**: Corrigido um conjunto de erros e warnings que apareciam no console do navegador:
-    *   Removida a tentativa de registro de um Service Worker inexistente que causava um `SecurityError`.
-    *   Ajustada a inicialização do OneSignal para ocorrer apenas uma vez, eliminando avisos de duplicação.
-    *   Refatorado o componente `SettingsGroup` para evitar que a prop `isLast` fosse passada para elementos DOM inválidos, resolvendo um warning comum do React.
+### Fixes
+- **notificações**: Corrige a lógica de limpeza de notificações, removendo tabelas e funções obsoletas do Supabase para uma gestão mais limpa e centralizada através de uma única tabela `notifications`.
 
-## [0.1.4] - 2025-09-09
+## [1.1.0] - 2025-09-08
 
-### 🐛 Correções
+### Features
+- **Notificações**: Adiciona uma nova página de "Notificações" que exibe um histórico de todas as notificações recebidas pelo usuário, com suporte para paginação.
 
-*   **Console de Depuração**: Corrigido o problema onde o console de depuração (Eruda) não era desativado corretamente ao desativar o toggle. A lógica de destruição da instância do Eruda foi ajustada para garantir seu correto desligamento.
-*   **Importação de Componente Switch**: Corrigido o caminho de importação do componente `Switch` em `DebugSettings.jsx`.
+### Fixes
+- **Navegação**: Corrige o bug que impedia o menu inferior de ser exibido em telas maiores que `sm` (640px), garantindo que ele apareça corretamente em tablets e dispositivos com telas maiores.
 
-## [0.1.3] - 2025-09-09
+## [1.0.0] - 2025-09-05
 
-### 🐛 Correções
-
-*   **Botão de Inscrição de Notificações**: Corrigido um bug onde o botão de inscrição/cancelamento de notificações ficava permanentemente no estado "Carregando". A lógica de verificação de status e gerenciamento de estado foi refatorada para ser mais robusta e baseada nos eventos do OneSignal, eliminando o comportamento inesperado.
-
-## [0.1.2] - 2025-09-09
-
-### ✨ Funcionalidades
-
-*   **Notificações Push Automatizadas**: Implementado sistema de notificações push via OneSignal. Novas notificações inseridas na base de dados agora disparam automaticamente um push para o usuário correspondente através de uma Edge Function, criando um sistema de notificação em tempo real e persistente.
-
----
-
-## [0.1.1] - 09/09/2025
-
-### 🐛 Correções
-
-*   Corrigido um aviso no console do React relacionado ao componente `SettingsItem`. O componente foi refatorado para ser mais flexível, evitando que propriedades inválidas sejam passadas para elementos DOM.
-
----
-
-## [0.1.0] - 08/09/2025
-
-### ✨ Funcionalidades
-
-*   **Página de Apresentação**: Criação de uma página de apresentação interativa para a matriz, detalhando a história, design e conceitos do projeto SGI Copa.
-*   **Página de Histórico de Versões**: Adicionada esta página para que os usuários possam acompanhar as novidades e melhorias a cada nova versão do aplicativo.
-
-### 🐛 Correções
-
-*   Correções gerais de performance e estabilidade.
-
-### ⚙️ Melhorias
-
-*   Melhoria no sistema de notificações push para garantir entrega mais confiável.
+Lançamento inicial do SGI Copa.
