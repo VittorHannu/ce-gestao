@@ -7,7 +7,13 @@ export const DebugProvider = ({ children }) => {
     return localStorage.getItem('erudaEnabled') === 'true';
   });
 
+  const [isDebugLogsEnabled, setIsDebugLogsEnabled] = useState(() => {
+    return localStorage.getItem('debugLogsEnabled') === 'true';
+  });
+
   const erudaRef = React.useRef(null);
+
+  
 
   useEffect(() => {
     const loadEruda = async () => {
@@ -15,7 +21,7 @@ export const DebugProvider = ({ children }) => {
         try {
           const erudaModule = await import('eruda');
           erudaModule.default.init();
-          erudaRef.current = erudaModule.default; // Store the eruda instance
+          erudaRef.current = erudaModule.default;
           localStorage.setItem('erudaEnabled', 'true');
         } catch (error) {
           console.error('Failed to load Eruda', error);
@@ -23,7 +29,7 @@ export const DebugProvider = ({ children }) => {
       } else {
         if (erudaRef.current) {
           erudaRef.current.destroy();
-          erudaRef.current = null; // Clear the ref
+          erudaRef.current = null;
         }
         localStorage.setItem('erudaEnabled', 'false');
       }
@@ -31,7 +37,6 @@ export const DebugProvider = ({ children }) => {
 
     loadEruda();
 
-    // Cleanup function for useEffect
     return () => {
       if (!isErudaEnabled && erudaRef.current) {
         erudaRef.current.destroy();
@@ -41,7 +46,7 @@ export const DebugProvider = ({ children }) => {
   }, [isErudaEnabled]);
 
   return (
-    <DebugContext.Provider value={{ isErudaEnabled, setIsErudaEnabled }}>
+    <DebugContext.Provider value={{ isErudaEnabled, setIsErudaEnabled, isDebugLogsEnabled, setIsDebugLogsEnabled }}>
       {children}
     </DebugContext.Provider>
   );

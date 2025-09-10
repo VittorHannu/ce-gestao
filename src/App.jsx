@@ -119,8 +119,6 @@ function AppWrapper() {
 
       setUser(userProfile);
       setProfileLoadError(null);
-      console.log('DEBUG: Perfil do usuário buscado:', userProfile);
-      console.log('DEBUG: can_view_users no App.jsx:', userProfile?.can_view_users);
     } catch (error) {
       console.error('Erro ao buscar ou criar perfil:', error);
       toast({ title: 'Erro ao carregar ou criar dados do perfil.', type: 'error' });
@@ -149,7 +147,6 @@ function AppWrapper() {
     handleInitialLoad();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('AppWrapper: onAuthStateChange event, session:', session);
       setSession(session);
       if (session) {
         fetchUserProfile(session.user.id);
