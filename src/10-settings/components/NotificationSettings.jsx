@@ -11,9 +11,9 @@ const NotificationSettings = () => {
 
     setIsLoading(true);
     if (isSubscribed) {
-      window.OneSignal.setSubscription(false);
+      window.OneSignal.Notifications.setSubscription(false);
     } else {
-      window.OneSignal.showSlidedownPrompt();
+      window.OneSignal.Slidedown.promptPush();
     }
   }, [isSubscribed, isLoading]);
 
@@ -36,7 +36,7 @@ const NotificationSettings = () => {
         if (!isMounted) return;
 
         try {
-          const isPushEnabled = await window.OneSignal.isPushNotificationsEnabled();
+          const isPushEnabled = await window.OneSignal.Notifications.isPushSubscribed();
           if (isMounted) setIsSubscribed(isPushEnabled);
         } catch (error) {
           console.error('OneSignal: Erro ao verificar status da inscrição', error);

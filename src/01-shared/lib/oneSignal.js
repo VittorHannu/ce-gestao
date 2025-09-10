@@ -53,13 +53,11 @@ export const initOneSignal = async () => {
   try {
     await loadOneSignalScript();
     
-    const OneSignal = window.OneSignal || [];
-    OneSignal.push(function() {
-      OneSignal.init({
-        appId: import.meta.env.VITE_ONESIGNAL_APP_ID,
-        safari_web_id: import.meta.env.VITE_ONESIGNAL_SAFARI_WEB_ID,
-        allowLocalhostAsSecureOrigin: true
-      });
+    window.OneSignal = window.OneSignal || [];
+    await window.OneSignal.init({
+      appId: import.meta.env.VITE_ONESIGNAL_APP_ID,
+      safari_web_id: import.meta.env.VITE_ONESIGNAL_SAFARI_WEB_ID,
+      allowLocalhostAsSecureOrigin: true,
     });
     
     isOneSignalInitialized = true;
