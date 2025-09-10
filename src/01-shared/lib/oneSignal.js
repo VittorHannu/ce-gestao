@@ -270,3 +270,44 @@ export const resetOneSignal = () => {
   oneSignalInstance = null;
   console.log('OneSignal: Estado resetado.');
 };
+
+/**
+ * Associa o usuário atual ao OneSignal.
+ * @param {string} externalId O ID do usuário no seu sistema.
+ */
+export const loginOneSignal = async (externalId) => {
+  if (!isOneSignalReady()) {
+    console.error('OneSignal: Não é possível fazer login, SDK não está pronto.');
+    return;
+  }
+  if (!externalId) {
+    console.error('OneSignal: ID externo do usuário não fornecido para login.');
+    return;
+  }
+
+  try {
+    console.log(`OneSignal: Associando usuário com ID externo: ${externalId}`);
+    await window.OneSignal.login(externalId);
+    console.log('OneSignal: Usuário associado com sucesso.');
+  } catch (error) {
+    console.error('OneSignal: Erro ao associar usuário:', error);
+  }
+};
+
+/**
+ * Desassocia o usuário atual do OneSignal.
+ */
+export const logoutOneSignal = async () => {
+  if (!isOneSignalReady()) {
+    console.error('OneSignal: Não é possível fazer logout, SDK não está pronto.');
+    return;
+  }
+
+  try {
+    console.log('OneSignal: Desassociando usuário.');
+    await window.OneSignal.logout();
+    console.log('OneSignal: Usuário desassociado com sucesso.');
+  } catch (error) {
+    console.error('OneSignal: Erro ao desassociar usuário:', error);
+  }
+};

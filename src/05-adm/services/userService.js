@@ -79,3 +79,26 @@ export const createUser = async (userData) => {
     return handleServiceError('createUser', error);
   }
 };
+
+export const updateUserPlayerId = async (userId, playerId) => {
+  if (!userId || !playerId) {
+    console.warn('updateUserPlayerId: userId ou playerId não fornecido.');
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .update({ onesignal_player_id: playerId })
+      .eq('id', userId);
+
+    if (error) {
+      throw error;
+    }
+
+    console.log(`OneSignal Player ID atualizado para o usuário ${userId}`);
+    return { data, error: null };
+  } catch (error) {
+    return handleServiceError('updateUserPlayerId', error);
+  }
+};

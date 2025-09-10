@@ -23,6 +23,8 @@ import { PresenceProvider } from '@/01-shared/context/PresenceContext.jsx';
 import { UpdateProvider } from '@/01-shared/context/UpdateContext.jsx';
 import { ToastProvider } from '@/01-shared/context/ToastProvider.jsx';
 
+import { useOneSignal } from '@/01-shared/hooks/useOneSignal';
+
 import ProtectedRoute from '@/01-shared/components/protected-route/ProtectedRoute';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { Button } from '@/01-shared/components/ui/button';
@@ -69,6 +71,8 @@ function LayoutWithoutHeader({ user, onLogout }) {
 }
 
 function AppWrapper() {
+  useOneSignal();
+
   const [session, setSession] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -124,6 +128,7 @@ function AppWrapper() {
   }, [toast]);
 
   const handleLogout = async () => {
+    // A lógica de logout do OneSignal agora está centralizada no hook useOneSignal
     await supabase.auth.signOut();
     setSession(null);
     setUser(null);
