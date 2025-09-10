@@ -1,3 +1,8 @@
+## [0.1.12] - 2025-09-10
+
+### Refactor
+- **onesignal**: Centraliza toda a lógica de ciclo de vida do OneSignal (inicialização, login/logout de usuário) em um hook dedicado `useOneSignal`. Isso corrige bugs de múltiplas inicializações e garante uma arquitetura mais robusta e estável para o sistema de notificações.
+
 ## [0.1.11] - 2025-09-10
 
 ### Fix
