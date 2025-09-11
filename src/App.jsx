@@ -20,10 +20,8 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom
 import { supabase } from '@/01-shared/lib/supabase';
 import { useToast } from '@/01-shared/hooks/useToast';
 import { PresenceProvider } from '@/01-shared/context/PresenceContext.jsx';
-import { UpdateProvider } from '@/01-shared/context/UpdateContext.jsx';
-import { ToastProvider } from '@/01-shared/context/ToastProvider.jsx';
 
-import { useOneSignal } from '@/01-shared/hooks/useOneSignal';
+import { ToastProvider } from '@/01-shared/context/ToastProvider.jsx';
 
 import ProtectedRoute from '@/01-shared/components/protected-route/ProtectedRoute';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
@@ -71,8 +69,6 @@ function LayoutWithoutHeader({ user, onLogout }) {
 }
 
 function AppWrapper() {
-  useOneSignal();
-
   const [session, setSession] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -128,7 +124,6 @@ function AppWrapper() {
   }, [toast]);
 
   const handleLogout = async () => {
-    // A lógica de logout do OneSignal agora está centralizada no hook useOneSignal
     await supabase.auth.signOut();
     setSession(null);
     setUser(null);
@@ -233,13 +228,11 @@ function App() {
   return (
     <BrowserRouter>
       <ToastProvider>
-        <UpdateProvider>
-          <PresenceProvider>
-            <DateFilterProvider>
-              <AppWrapper />
-            </DateFilterProvider>
-          </PresenceProvider>
-        </UpdateProvider>
+        <PresenceProvider>
+          <DateFilterProvider>
+            <AppWrapper />
+          </DateFilterProvider>
+        </PresenceProvider>
       </ToastProvider>
     </BrowserRouter>
   );

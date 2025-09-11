@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { cn } from '@/01-shared/utils/utils';
 
+import PwaReloadPrompt from './PwaReloadPrompt';
+
 const MainLayout = ({ children, header, _user, headerClassName }) => {
   const scrollContainerRef = useRef(null);
   const mainRef = useRef(null);
@@ -24,6 +26,7 @@ const MainLayout = ({ children, header, _user, headerClassName }) => {
 
   return (
     <Tooltip.Provider>
+      <PwaReloadPrompt />
       <div ref={scrollContainerRef} className="h-screen flex flex-col">
         {header && (
           <div

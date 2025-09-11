@@ -11,14 +11,14 @@ const RelatosAtribuidosPage = () => {
   const [relatos, setRelatos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState('notConcluded'); // Estado para o filtro: 'all' ou 'notConcluded'
-  const { showToast } = useToast();
+  const { toast } = useToast();
 
   const fetchAssignedRelatos = useCallback(async () => {
     setLoading(true);
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      showToast('Você precisa estar logado para ver os relatos atribuídos.', 'error');
+      toast({ title: 'Você precisa estar logado para ver os relatos atribuídos.', variant: 'destructive' });
       setLoading(false);
       return;
     }
@@ -31,7 +31,7 @@ const RelatosAtribuidosPage = () => {
 
     if (assignedIdsError) {
       console.error('Erro ao buscar IDs de relatos atribuídos:', assignedIdsError);
-      showToast('Erro ao carregar relatos atribuídos.', 'error');
+      toast({ title: 'Erro ao carregar relatos atribuídos.', variant: 'destructive' });
       setLoading(false);
       return;
     }
@@ -59,12 +59,12 @@ const RelatosAtribuidosPage = () => {
 
     if (error) {
       console.error('Erro ao buscar relatos atribuídos:', error);
-      showToast('Erro ao carregar relatos atribuídos.', 'error');
+      toast({ title: 'Erro ao carregar relatos atribuídos.', variant: 'destructive' });
     } else {
       setRelatos(data);
     }
     setLoading(false);
-  }, [showToast, filterType]); // Adicionar filterType como dependência
+  }, [toast, filterType]); // Adicionar filterType como dependência
 
   useEffect(() => {
     fetchAssignedRelatos();

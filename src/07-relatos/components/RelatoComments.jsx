@@ -13,7 +13,7 @@ const RelatoComments = ({ relatoId }) => {
   const [submitting, setSubmitting] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null); // Novo estado para o ID do usuário logado
   const [canDeleteAnyComment, setCanDeleteAnyComment] = useState(false); // Novo estado para permissão de apagar qualquer comentário
-  const { showToast } = useToast();
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -51,12 +51,12 @@ const RelatoComments = ({ relatoId }) => {
 
     if (error) {
       console.error('Erro ao buscar comentários:', error);
-      showToast('Erro ao carregar comentários.', 'error');
+      toast({ title: 'Erro ao carregar comentários.', variant: 'destructive' });
     } else {
       setComments(data);
     }
     setLoading(false);
-  }, [relatoId, showToast]);
+  }, [relatoId, toast]);
 
   useEffect(() => {
     fetchComments();
@@ -86,7 +86,7 @@ const RelatoComments = ({ relatoId }) => {
   const handleSubmitComment = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) {
-      showToast('O comentário não pode estar vazio.', 'warning');
+      toast({ title: 'O comentário não pode estar vazio.' });
       return;
     }
 
@@ -94,7 +94,7 @@ const RelatoComments = ({ relatoId }) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        showToast('Você precisa estar logado para comentar.', 'error');
+        toast({ title: 'Você precisa estar logado para comentar.', variant: 'destructive' });
         setSubmitting(false);
         return;
       }
@@ -107,14 +107,14 @@ const RelatoComments = ({ relatoId }) => {
 
       if (error) {
         console.error('Erro ao enviar comentário:', error);
-        showToast(`Erro ao enviar comentário: ${error.message}`, 'error');
+        toast({ title: 'Erro ao enviar comentário', description: error.message, variant: 'destructive' });
       } else {
         setNewComment('');
-        showToast('Comentário enviado!', 'success');
+        toast({ title: 'Comentário enviado!' });
       }
     } catch (error) {
       console.error('Erro inesperado ao enviar comentário:', error);
-      showToast('Erro inesperado ao enviar comentário.', 'error');
+      toast({ title: 'Erro inesperado ao enviar comentário.', variant: 'destructive' });
     } finally {
       setSubmitting(false);
     }
@@ -133,13 +133,13 @@ const RelatoComments = ({ relatoId }) => {
 
       if (error) {
         console.error('Erro ao excluir comentário:', error);
-        showToast(`Erro ao excluir comentário: ${error.message}`, 'error');
+        toast({ title: 'Erro ao excluir comentário', description: error.message, variant: 'destructive' });
       } else {
-        showToast('Comentário excluído com sucesso!', 'success');
+        toast({ title: 'Comentário excluído com sucesso!' });
       }
     } catch (error) {
       console.error('Erro inesperado ao excluir comentário:', error);
-      showToast('Erro inesperado ao excluir comentário.', 'error');
+      toast({ title: 'Erro inesperado ao excluir comentário.', variant: 'destructive' });
     } finally {
       setSubmitting(false);
     }

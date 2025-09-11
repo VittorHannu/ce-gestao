@@ -22,7 +22,7 @@ const RelatosListaPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [responsibleFilter, setResponsibleFilter] = useState('all'); // 'all', 'with_responsibles', 'without_responsibles'
   const { startDate, endDate } = useDateFilter();
-  const { showToast } = useToast();
+  const { toast } = useToast();
   const location = useLocation();
 
   const queryParams = new URLSearchParams(location.search);
@@ -91,7 +91,7 @@ const RelatosListaPage = () => {
 
     if (error) {
       console.error('Erro ao buscar relatos:', error);
-      showToast('Erro ao carregar relatos.', 'error');
+      toast({ title: 'Erro ao carregar relatos.', variant: 'destructive' });
       // Set error state to display reload button
       setError(error);
     } else {
@@ -108,7 +108,7 @@ const RelatosListaPage = () => {
       setError(null);
     }
     setLoading(false);
-  }, [location.search, searchTerm, responsibleFilter, showToast, startDate, endDate, tipoRelatoFilter]);
+  }, [location.search, searchTerm, responsibleFilter, toast, startDate, endDate, tipoRelatoFilter]);
 
   const handleSaveClassification = async (relatoId) => {
     const newType = selectedTypes[relatoId];
@@ -118,7 +118,7 @@ const RelatosListaPage = () => {
     setClassifyingId(relatoId);
     try {
       await updateRelatoType(relatoId, typeToSave); // Use typeToSave
-      showToast('Relato classificado com sucesso!', 'success');
+      toast({ title: 'Relato classificado com sucesso!' });
       // Filter out the classified relato from the state instead of reloading all relatos
       setRelatos(prevRelatos => prevRelatos.filter(r => r.id !== relatoId));
       // Also remove the selected type for this relato from the selectedTypes state
@@ -128,7 +128,7 @@ const RelatosListaPage = () => {
         return newState;
       });
     } catch (err) {
-      showToast(`Erro ao classificar relato: ${err.message}`, 'error');
+      toast({ title: 'Erro ao classificar relato', description: err.message, variant: 'destructive' });
     } finally {
       setClassifyingId(null);
     }

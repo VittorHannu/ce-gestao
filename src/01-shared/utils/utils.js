@@ -1,7 +1,3 @@
-
-
-
-
 /*
  * Este arquivo de utilitários JavaScript contém funções auxiliares genéricas
  * que são usadas em várias partes do seu aplicativo.
@@ -39,3 +35,16 @@ export function debounce(func, delay) {
 
   return debounced;
 }
+
+/**
+ * Log utility for consistent console messaging.
+ * @param {string} prefix - A prefix to identify the source of the log.
+ * @param {...any} args - The messages or objects to log.
+ */
+export const log = (prefix, ...args) => {
+  // Em um ambiente de desenvolvimento, exibe os logs.
+  // Pode ser expandido para desabilitar logs em produção.
+  if (import.meta.env.DEV) {
+    console.log(prefix, ...args);
+  }
+};

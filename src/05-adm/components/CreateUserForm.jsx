@@ -10,12 +10,12 @@ const CreateUserForm = ({ onUserCreated, onCancel }) => {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { showToast } = useToast();
+  const { toast } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!fullName) {
-      showToast('Por favor, preencha o nome completo.', 'error');
+      toast({ title: 'Por favor, preencha o nome completo.', variant: 'destructive' });
       setIsLoading(false); // Garante que o botão não fique travado
       return;
     }
@@ -24,10 +24,10 @@ const CreateUserForm = ({ onUserCreated, onCancel }) => {
       const userData = { email, password, fullName };
       const { data, error } = await createUser(userData);
       if (error) throw error;
-      showToast('Usuário criado com sucesso!', 'success');
+      toast({ title: 'Usuário criado com sucesso!' });
       onUserCreated(data);
     } catch (err) {
-      showToast(`Erro ao criar usuário: ${err.message}`, 'error');
+      toast({ title: 'Erro ao criar usuário', description: err.message, variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }

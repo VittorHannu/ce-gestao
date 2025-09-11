@@ -161,6 +161,9 @@ importers:
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.1.9)(react@19.1.1)
+      react-onesignal:
+        specifier: ^2.0.4
+        version: 2.0.4(react@19.1.1)
       react-resizable-panels:
         specifier: ^3.0.2
         version: 3.0.4(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -3737,6 +3740,12 @@ packages:
     peerDependencies:
       '@types/react': '>=18'
       react: '>=18'
+
+  react-onesignal@2.0.4:
+    resolution: {integrity: sha512-llZ4PV1+EsWWZDt0BRils6gAxaxMoYP0Z3rlNivQy4xqUaiO1/PcRaIJ6CuzCci/koDsw5IzLOXEHlV4Yn+d9Q==}
+    engines: {node: '>=8', npm: '>=5'}
+    peerDependencies:
+      react: '>= 16.8'
 
   react-refresh@0.17.0:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
@@ -8453,6 +8462,10 @@ snapshots:
       vfile: 6.0.3
     transitivePeerDependencies:
       - supports-color
+
+  react-onesignal@2.0.4(react@19.1.1):
+    dependencies:
+      react: 19.1.1
 
   react-refresh@0.17.0: {}
 

@@ -14,7 +14,7 @@ import MainLayout from '@/01-shared/components/MainLayout';
 const RelatosAprovacaoPage = () => {
   const [relatos, setRelatos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { showToast } = useToast();
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchPendentes = async () => {
@@ -27,7 +27,7 @@ const RelatosAprovacaoPage = () => {
 
       if (error) {
         console.error('Erro ao buscar relatos pendentes:', error);
-        showToast('Erro ao buscar relatos para aprovação.', 'error');
+        toast({ title: 'Erro ao buscar relatos para aprovação.', variant: 'destructive' });
       } else {
         setRelatos(data);
       }
@@ -35,12 +35,12 @@ const RelatosAprovacaoPage = () => {
     };
 
     fetchPendentes();
-  }, [showToast]);
+  }, [toast]);
 
   const handleUpdateStatus = async (id, newStatus) => {
     const relatoToUpdate = relatos.find(r => r.id === id);
     if (!relatoToUpdate) {
-      showToast('Relato não encontrado na lista.', 'error');
+      toast({ title: 'Relato não encontrado na lista.', variant: 'destructive' });
       return;
     }
 
@@ -52,7 +52,7 @@ const RelatosAprovacaoPage = () => {
       .eq('id', id);
 
     if (error) {
-      showToast(`Erro ao atualizar o status: ${error.message}`, 'error');
+      toast({ title: 'Erro ao atualizar o status', description: error.message, variant: 'destructive' });
     } else {
       // Log da ação de mudança de status
       const { data: { user } } = await supabase.auth.getUser();
@@ -73,7 +73,7 @@ const RelatosAprovacaoPage = () => {
         // Não impede a operação principal, mas registra o erro
       }
 
-      showToast(`Relato ${newStatus.toLowerCase()} com sucesso!`, 'success');
+      toast({ title: `Relato ${newStatus.toLowerCase()} com sucesso!` });
       // Remove o relato da lista na UI para não precisar recarregar a página
       setRelatos(relatos.filter((r) => r.id !== id));
     }

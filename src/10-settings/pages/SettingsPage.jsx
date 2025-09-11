@@ -6,8 +6,8 @@ import BackButton from '@/01-shared/components/BackButton';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 
-import NotificationSettings from '../components/NotificationSettings';
-import UpdateManager from '../components/UpdateManager';
+
+
 import DebugSettings from '../components/DebugSettings';
 
 function SettingsPage() {
@@ -33,9 +33,7 @@ function SettingsPage() {
             />
           </SettingsGroup>
 
-          <SettingsGroup title="Notificações">
-            <NotificationSettings />
-          </SettingsGroup>
+          
 
           <SettingsGroup title="Depuração">
             <DebugSettings />
@@ -50,7 +48,7 @@ function SettingsPage() {
             </SettingsGroup>
           )}
 
-          <UpdateManager />
+          
         </div>
       )}
     </MainLayout>

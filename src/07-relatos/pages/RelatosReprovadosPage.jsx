@@ -9,7 +9,7 @@ import MainLayout from '@/01-shared/components/MainLayout';
 const RelatosReprovadosPage = () => {
   const [reprovadosRelatos, setReprovadosRelatos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { showToast } = useToast();
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchReprovados = async () => {
@@ -22,7 +22,7 @@ const RelatosReprovadosPage = () => {
 
       if (error) {
         console.error('Erro ao buscar relatos reprovados:', error);
-        showToast('Erro ao buscar relatos reprovados.', 'error');
+        toast({ title: 'Erro ao buscar relatos reprovados.', variant: 'destructive' });
       } else {
         setReprovadosRelatos(data);
       }
@@ -30,7 +30,7 @@ const RelatosReprovadosPage = () => {
     };
 
     fetchReprovados();
-  }, [showToast]);
+  }, [toast]);
 
   if (loading) {
     return <LoadingSpinner />;

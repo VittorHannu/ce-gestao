@@ -8,7 +8,7 @@ import MainLayout from '@/01-shared/components/MainLayout';
 
 const RelatoLogsPage = () => {
   const { id } = useParams();
-  const { showToast } = useToast();
+  const { toast } = useToast();
   const [relatoLogs, setRelatoLogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,12 +22,12 @@ const RelatoLogsPage = () => {
 
     if (error) {
       console.error('Erro ao buscar logs do relato:', error);
-      showToast('Erro ao carregar histórico do relato.', 'error');
+      toast({ title: 'Erro ao carregar histórico do relato.', variant: 'destructive' });
     } else {
       setRelatoLogs(data);
     }
     setLoading(false);
-  }, [id, showToast]);
+  }, [id, toast]);
 
   useEffect(() => {
     fetchRelatoLogs();

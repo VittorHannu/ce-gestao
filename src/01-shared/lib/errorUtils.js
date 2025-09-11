@@ -1,7 +1,3 @@
-
-
-
-
 /*
  * Este arquivo de utilitários JavaScript contém funções para padronizar
  * o tratamento de erros em seu aplicativo. Ele ajuda a formatar mensagens de erro,
@@ -13,15 +9,17 @@
  *
  * Ele é utilizado por serviços de dados (como `arquivoMortoService.js`) para encapsular
  * a lógica de tratamento de erros de chamadas ao Supabase.
- *
- *
- *
- *
  */
 
-
-
-export const handleServiceError = (context, error) => {
+export const handleServiceError = (context, error, toast) => {
   console.error(`Erro no serviço (${context}):`, error);
-  return { data: null, error: error };
+  const errorMessage = error.message || 'Ocorreu um erro inesperado.';
+  if (toast) {
+    toast({
+      title: `Erro em ${context}`,
+      description: errorMessage,
+      variant: 'destructive'
+    });
+  }
+  return { data: null, error: new Error(errorMessage) };
 };

@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useToast } from '@/01-shared/hooks/useToast';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { supabase } from '@/01-shared/lib/supabase';
 import { handleServiceError } from '@/01-shared/lib/errorUtils';
 import { getAllUsers } from '@/05-adm/services/userService';
 
 export const useRelatoManagement = (relatoId) => {
-  const { showToast } = useOutletContext();
+  const { toast } = useToast();
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
 
   const [relato, setRelato] = useState(null);
@@ -38,20 +38,20 @@ export const useRelatoManagement = (relatoId) => {
       setCurrentResponsibles(relatoData.relato_responsaveis.map(r => r.user_id));
     } catch (err) {
       setError(err);
-      handleServiceError('fetchRelato', err, showToast);
+      handleServiceError('fetchRelato', err, toast);
     } finally {
       setLoading(false);
     }
-  }, [relatoId, showToast]);
+  }, [relatoId, toast]);
 
   const fetchAllUsers = useCallback(async () => {
     try {
       const users = await getAllUsers();
       setAllUsers(users);
     } catch (err) {
-      handleServiceError('fetchAllUsers', err, showToast);
+      handleServiceError('fetchAllUsers', err, toast);
     }
-  }, [showToast]);
+  }, [toast]);
 
   const handleUpdateRelato = useCallback(async (formData, canManageRelatos) => {
     setIsSaving(true);
@@ -81,16 +81,16 @@ export const useRelatoManagement = (relatoId) => {
         if (rpcError) throw rpcError;
       }
 
-      showToast('Relato atualizado com sucesso!', 'success');
+      toast({ title: 'Relato atualizado com sucesso!' });
       fetchRelato(); // Recarrega os dados para mostrar o estado atualizado
       return true;
     } catch (err) {
-      handleServiceError('handleUpdateRelato', err, showToast);
+      handleServiceError('handleUpdateRelato', err, toast);
       return false;
     } finally {
       setIsSaving(false);
     }
-  }, [relatoId, showToast, fetchRelato]);
+  }, [relatoId, toast, fetchRelato]);
 
   const handleReproveRelato = useCallback(async (reproveReason) => {
     setIsReproving(true);
@@ -110,16 +110,16 @@ export const useRelatoManagement = (relatoId) => {
         details: { reason: reproveReason }
       });
 
-      showToast('Relato reprovado com sucesso!', 'success');
+      toast({ title: 'Relato reprovado com sucesso!' });
       fetchRelato();
       return true;
     } catch (err) {
-      handleServiceError('handleReproveRelato', err, showToast);
+      handleServiceError('handleReproveRelato', err, toast);
       return false;
     } finally {
       setIsReproving(false);
     }
-  }, [relatoId, showToast, fetchRelato, userProfile]);
+  }, [relatoId, toast, fetchRelato, userProfile]);
 
   const handleReapproveRelato = useCallback(async () => {
     setIsSaving(true); // Using isSaving for reapprove as well
@@ -139,16 +139,16 @@ export const useRelatoManagement = (relatoId) => {
         details: {}
       });
 
-      showToast('Relato reaprovado com sucesso!', 'success');
+      toast({ title: 'Relato reaprovado com sucesso!' });
       fetchRelato();
       return true;
     } catch (err) {
-      handleServiceError('handleReapproveRelato', err, showToast);
+      handleServiceError('handleReapproveRelato', err, toast);
       return false;
     } finally {
       setIsSaving(false);
     }
-  }, [relatoId, showToast, fetchRelato, userProfile]);
+  }, [relatoId, toast, fetchRelato, userProfile]);
 
   const handleDeleteRelato = useCallback(async () => {
     setIsDeleting(true);
@@ -182,15 +182,15 @@ export const useRelatoManagement = (relatoId) => {
 
       if (deleteError) throw deleteError;
 
-      showToast('Relato excluído com sucesso!', 'success');
+      toast({ title: 'Relato excluído com sucesso!' });
       return true;
     } catch (err) {
-      handleServiceError('handleDeleteRelato', err, showToast);
+      handleServiceError('handleDeleteRelato', err, toast);
       return false;
     } finally {
       setIsDeleting(false);
     }
-  }, [relatoId, showToast]);
+  }, [relatoId, toast]);
 
   useEffect(() => {
     if (relatoId) {
