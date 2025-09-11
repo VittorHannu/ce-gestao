@@ -5,6 +5,7 @@ import SettingsItem from '@/01-shared/components/settings/SettingsItem';
 import BackButton from '@/01-shared/components/BackButton';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
+import { CheckCircle, Calendar } from 'lucide-react';
 
 
 
@@ -33,8 +34,6 @@ function SettingsPage() {
             />
           </SettingsGroup>
 
-          
-
           <SettingsGroup title="Depuração">
             <DebugSettings />
           </SettingsGroup>
@@ -48,7 +47,23 @@ function SettingsPage() {
             </SettingsGroup>
           )}
 
-          
+          <SettingsGroup title="Sobre o Aplicativo">
+            <SettingsItem
+              label={'Versão do App'}
+              value={`${import.meta.env.VITE_APP_VERSION} (ver histórico)`}
+              isLast={false}
+              icon={CheckCircle}
+              iconColor="bg-blue-500"
+              path="/version-history"
+            />
+            <SettingsItem
+              label={'Data da Compilação'}
+              value={import.meta.env.VITE_APP_BUILD_DATE}
+              isLast={true}
+              icon={Calendar}
+              iconColor="bg-purple-500"
+            />
+          </SettingsGroup>
         </div>
       )}
     </MainLayout>

@@ -1,3 +1,8 @@
+## [0.1.13] - 2025-09-11
+
+### Feat
+- **settings**: Re-introduces the "About" section in the settings page, displaying the application version, build date, and a link to the changelog.
+
 ## [0.1.12] - 2025-09-10
 
 ### Refactor
@@ -7,8 +12,6 @@
 
 ### Fix
 - **onesignal**: Refatora completamente a integração com o OneSignal para maior robustez, adicionando timeouts, tratamento de erros aprimorado e um botão de depuração para forçar a reinicialização. A inicialização agora é feita sob demanda para melhorar o desempenho.
-
-# Changelog
 
 ## [1.1.2] - 2025-09-09
 
