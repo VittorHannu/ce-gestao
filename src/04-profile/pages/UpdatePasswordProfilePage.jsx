@@ -52,7 +52,7 @@ const UpdatePasswordProfilePage = () => {
     <MainLayout
       header={<PageHeader title="Alterar Senha" />}
     >
-      <div className="p-4">
+      <div>
         <div className="grid grid-cols-1 gap-4 pt-2">
           <div>
             <Label htmlFor="newPassword">Nova Senha</Label>

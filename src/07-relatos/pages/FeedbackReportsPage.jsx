@@ -108,7 +108,7 @@ const FeedbackReportsPage = () => {
       </div>
 
       <DataLoader loading={isLoading} error={error} loadingMessage="Carregando relatórios...">
-        <div className="space-y-4 p-4">
+        <div className="space-y-4">
           {reports && reports.length > 0 ? (
             reports.map((report) => (
               <Card key={report.id}>

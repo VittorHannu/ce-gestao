@@ -125,7 +125,7 @@ const RelatosByTypePage = () => {
     <MainLayout
       header={<PageHeader title="Relatos por Tipo" />}
     >
-      <div className="p-4">
+      <div>
         <div className="mb-4">
           <DateFilterCard />
         </div>

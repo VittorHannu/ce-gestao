@@ -41,7 +41,7 @@ const RelatoLogsPage = () => {
     <MainLayout
       header={<PageHeader title="Histórico de Alterações do Relato" />}
     >
-      <div className="p-4">
+      <div>
         <div className="mt-8 p-4 border rounded-lg bg-white">
           {relatoLogs.length === 0 ? (
             <p className="text-gray-600">Nenhuma alteração registrada ainda.</p>

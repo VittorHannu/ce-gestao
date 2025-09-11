@@ -40,7 +40,7 @@ const RelatosReprovadosPage = () => {
     <MainLayout
       header={<PageHeader title="Relatos Reprovados" />}
     >
-      <div className="p-4">
+      <div>
         {reprovadosRelatos.length === 0 ? (
           <p>Não há relatos reprovados no momento.</p>
         ) : (

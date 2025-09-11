@@ -9,7 +9,7 @@ const RelatosStatsPage = () => {
     <MainLayout
       header={<PageHeader title="Gráficos e Estatísticas" />}
     >
-      <div className="p-4">
+      <div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
           <Link to="/relatos/estatisticas/tipo" className="block">
             <div className="bg-white rounded-lg shadow-md p-4 cursor-pointer hover:shadow-xl transition-shadow duration-300 h-full flex flex-col justify-between items-center text-center">

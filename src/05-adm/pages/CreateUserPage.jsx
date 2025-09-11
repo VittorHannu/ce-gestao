@@ -17,7 +17,7 @@ const CreateUserPage = () => {
     <MainLayout
       header={<PageHeader title="Criar Novo Usuário" />}
     >
-      <div className="p-4">
+      <div>
         <CreateUserForm onUserCreated={handleUserCreated} />
       </div>
     </MainLayout>

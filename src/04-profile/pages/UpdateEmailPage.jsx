@@ -49,7 +49,7 @@ const UpdateEmailPage = () => {
     <MainLayout
       header={<PageHeader title="Alterar Email" />}
     >
-      <div className="p-4">
+      <div>
         {successMessage ? (
           <div className="text-center py-8">
             <p className="text-lg text-green-600 mb-4">{successMessage}</p>

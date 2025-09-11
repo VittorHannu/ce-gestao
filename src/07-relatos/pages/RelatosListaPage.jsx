@@ -160,7 +160,7 @@ const RelatosListaPage = () => {
     <MainLayout
       header={<PageHeader title={getTitle()} />}
     >
-      <div className="p-4">
+      <div>
         <div className="mb-4">
           <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Pesquisar relatos..." />
         </div>

@@ -87,7 +87,7 @@ const RelatosAprovacaoPage = () => {
     <MainLayout
       header={<PageHeader title="Relatos Pendentes" />}
     >
-      <div className="p-4">
+      <div>
         {relatos.length === 0 ? (
           <p>Não há relatos pendentes de aprovação no momento.</p>
         ) : (

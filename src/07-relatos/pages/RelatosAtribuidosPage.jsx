@@ -74,7 +74,7 @@ const RelatosAtribuidosPage = () => {
     <MainLayout
       header={<PageHeader title="Relatos Atribuídos a Você" />}
     >
-      <div className="p-4">
+      <div>
         <div className="mb-4 flex space-x-2">
           <Button
             variant={filterType === 'notConcluded' ? 'default' : 'outline'}

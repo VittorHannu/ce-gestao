@@ -42,7 +42,7 @@ const RelatosAcidentesGravesPage = () => {
     <MainLayout
       header={<PageHeader title="Acidentes Graves" />}
     >
-      <div className="p-4">
+      <div>
         <div className="mb-4">
           <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Pesquisar por descrição ou local..." />
         </div>

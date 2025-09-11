@@ -23,7 +23,7 @@ function VersionHistoryPage() {
     <MainLayout
       header={<PageHeader title="Histórico de Versões" />}
     >
-      <div className="p-4 sm:p-6">
+      <div>
         <div className={proseClassName}>
           <ReactMarkdown>{changelogContent}</ReactMarkdown>
         </div>

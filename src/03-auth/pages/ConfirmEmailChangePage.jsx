@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '@/01-shared/lib/supabase';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
-import PublicLayout from '@/01-shared/components/PublicLayout';
 
 import { useToast } from '@/01-shared/hooks/useToast';
 
@@ -51,15 +50,13 @@ const ConfirmEmailChangePage = () => {
   }, [location.search, navigate, toast]);
 
   return (
-    <PublicLayout>
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        {loading ? (
-          <LoadingSpinner />
-        ) : (
-          <p className="text-center text-lg">{message}</p>
-        )}
-      </div>
-    </PublicLayout>
+    <div className="flex flex-col items-center justify-center flex-grow">
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <p className="text-center text-lg">{message}</p>
+      )}
+    </div>
   );
 };
 
