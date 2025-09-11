@@ -99,10 +99,10 @@ const RelatosPage = () => {
   
 
   const managementItems = [
-    { label: 'Lista Total de Relatos', value: relatoCounts?.totalAprovados || 0, icon: List, iconColor: 'bg-gray-500', path: '/relatos/lista', show: true },
-    { label: 'Relatos que você fez', value: relatoCounts?.myRelatosCount || 0, icon: List, iconColor: 'bg-blue-500', path: '/relatos/lista?only_mine=true', show: true },
     { label: 'Pendentes', value: relatoCounts?.pendenteAprovacao || 0, icon: AlertTriangle, iconColor: 'bg-red-500', path: '/relatos/aprovacao', show: !isLoadingProfile && userProfile?.can_manage_relatos },
-    { label: 'Atribuídos a Você', value: relatoCounts?.relatosAtribuidos || 0, icon: User, iconColor: 'bg-purple-500', path: '/relatos/atribuidos', show: true }
+    { label: 'Reprovados', value: relatoCounts?.relatosReprovados || 0, icon: XCircle, iconColor: 'bg-orange-500', path: '/relatos/reprovados', show: !isLoadingProfile && userProfile?.can_manage_relatos },
+    { label: 'Atribuídos a Você', value: relatoCounts?.relatosAtribuidos || 0, icon: User, iconColor: 'bg-purple-500', path: '/relatos/atribuidos', show: true },
+    { label: 'Relatos que você fez', value: relatoCounts?.myRelatosCount || 0, icon: List, iconColor: 'bg-blue-500', path: '/relatos/lista?only_mine=true', show: true }
   ];
 
   return (

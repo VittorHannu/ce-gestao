@@ -8,7 +8,7 @@ import { supabase } from '@/01-shared/lib/supabase';
 import { useToast } from '@/01-shared/hooks/useToast';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import BackButton from '@/01-shared/components/BackButton'; // Importa o BackButton
-import { Link } from 'react-router-dom';
+
 import MainLayout from '@/01-shared/components/MainLayout';
 
 const RelatosAprovacaoPage = () => {
@@ -88,12 +88,8 @@ const RelatosAprovacaoPage = () => {
       header={(
         <>
           <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Aprovação de Relatos</h1>
-          <Link to="/relatos/reprovados" className="ml-auto">
-            <Button variant="outline" size="sm">
-              Ver Reprovados
-            </Button>
-          </Link>
+          <h1 className="text-2xl font-bold ml-4">Relatos Pendentes</h1>
+          
         </>
       )}
     >

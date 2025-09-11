@@ -2,8 +2,9 @@ import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
 import { supabase } from '@/01-shared/lib/supabase';
+import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 
-const fetchRelatoCounts = async (user, startDate, endDate) => {
+const fetchRelatoCounts = async (user, userProfile, startDate, endDate) => {
   // 1. Busca as estatísticas globais usando a nova e eficiente função RPC.
   const { data: globalStats, error: errorGlobal } = await supabase.rpc('get_dashboard_stats', {
     p_start_date: startDate,
@@ -29,15 +30,34 @@ const fetchRelatoCounts = async (user, startDate, endDate) => {
     }
   }
 
-  // 3. Combina os resultados das estatísticas globais com a contagem específica do usuário.
+  // 3. Busca a contagem de relatos reprovados.
+  let relatosReprovados = 0;
+  if (userProfile?.can_manage_relatos) {
+    const { count: reprovadosCount, error: reprovadosError } = await supabase
+      .from('relatos')
+      .select('id', { count: 'exact' })
+      .eq('status', 'REPROVADO')
+      .gte('data_ocorrencia', startDate)
+      .lte('data_ocorrencia', endDate);
+
+    if (reprovadosError) {
+      console.error('Erro ao buscar relatos reprovados:', reprovadosError);
+    } else {
+      relatosReprovados = reprovadosCount;
+    }
+  }
+
+  // 4. Combina os resultados das estatísticas globais com a contagem específica do usuário.
   return {
     ...globalStats,
-    relatosAtribuidos
+    relatosAtribuidos,
+    relatosReprovados
   };
 };
 
 export const useRelatoCounts = () => {
   const { startDate, endDate } = useDateFilter();
+  const { data: userProfile } = useUserProfile();
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
 
@@ -52,8 +72,8 @@ export const useRelatoCounts = () => {
 
   return useQuery({
     queryKey: ['relatoCounts', user?.id, startDate, endDate],
-    queryFn: () => fetchRelatoCounts(user, startDate, endDate),
-    enabled: !loadingUser && !!user, // Só executa a query se o usuário estiver carregado e logado
+    queryFn: () => fetchRelatoCounts(user, userProfile, startDate, endDate),
+    enabled: !loadingUser && !!user && !!userProfile, // Só executa a query se o usuário e o perfil estiverem carregados
     placeholderData: keepPreviousData // Mantém os dados anteriores enquanto busca novos
   });
 };
