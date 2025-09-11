@@ -224,16 +224,20 @@ function AppWrapper() {
   );
 }
 
+import ErrorBoundary from '@/01-shared/components/ErrorBoundary';
+
 function App() {
   return (
     <BrowserRouter>
-      <ToastProvider>
-        <PresenceProvider>
-          <DateFilterProvider>
-            <AppWrapper />
-          </DateFilterProvider>
-        </PresenceProvider>
-      </ToastProvider>
+      <ErrorBoundary>
+        <ToastProvider>
+          <PresenceProvider>
+            <DateFilterProvider>
+              <AppWrapper />
+            </DateFilterProvider>
+          </PresenceProvider>
+        </ToastProvider>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }
