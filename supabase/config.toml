@@ -7,9 +7,6 @@ schemas = ["public", "storage", "graphql"]
 extra_search_path = ["public"]
 max_rows = 1000
 
-[rest]
-cors_allowed_origins = ["*"]
-
 [db]
 port = 5432
 major_version = 15
