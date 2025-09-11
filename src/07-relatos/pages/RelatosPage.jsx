@@ -121,37 +121,42 @@ const RelatosPage = () => {
         </CompactDateSelector>
       )}
     >
-      <div className="space-y-8">
-        {/* StatsGrid agora sempre renderiza os dados que tem, sejam novos ou antigos */}
-        <StatsGrid relatoCounts={relatoCounts} />
+      <div className="md:flex md:gap-8">
+        {/* Coluna Principal (Esquerda) */}
+        <div className="md:w-2/3 space-y-8">
+          {/* StatsGrid agora sempre renderiza os dados que tem, sejam novos ou antigos */}
+          <StatsGrid relatoCounts={relatoCounts} />
 
-        <div>
-          <SettingsGroup>
-            {managementItems.filter(item => item.show).map((item, index) => (
-              <SettingsItem
-                key={index}
-                label={item.label}
-                // O valor agora simplesmente reflete os dados atuais, sem mostrar '...'
-                value={item.value}
-                icon={item.icon}
-                iconColor={item.iconColor}
-                path={item.path}
-              />
-            ))}
-          </SettingsGroup>
+          <div>
+            <SettingsGroup>
+              {managementItems.filter(item => item.show).map((item, index) => (
+                <SettingsItem
+                  key={index}
+                  label={item.label}
+                  // O valor agora simplesmente reflete os dados atuais, sem mostrar '...'
+                  value={item.value}
+                  icon={item.icon}
+                  iconColor={item.iconColor}
+                  path={item.path}
+                />
+              ))}
+            </SettingsGroup>
+          </div>
         </div>
 
-        <Link to="/relatos/estatisticas" className="w-full block">
-          <div className="bg-yellow-500 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center">
-            <BarChart className="h-12 w-12 text-white mb-4" />
-            <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
-          </div>
-        </Link>
-
-        <DaysWithoutAccidentsCard 
-          isLoading={isLoadingLastAccident}
-          lastAccidentDate={lastAccidentDate}
-        />
+        {/* Sidebar (Direita) */}
+        <div className="space-y-8 md:w-1/3">
+          <DaysWithoutAccidentsCard
+            isLoading={isLoadingLastAccident}
+            lastAccidentDate={lastAccidentDate}
+          />
+          <Link to="/relatos/estatisticas" className="w-full block">
+            <div className="bg-yellow-500 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center h-full">
+              <BarChart className="h-12 w-12 text-white mb-4" />
+              <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
+            </div>
+          </Link>
+        </div>
       </div>
       <Link to="/relatos/novo" className="fixed bottom-12 right-4 z-50">
         <Button variant="warning" size="icon" className="rounded-full w-14 h-14 shadow-lg">

@@ -139,11 +139,5 @@ export default defineConfig({
     host: true,
     allowedHosts: ['.ngrok-free.app']
   },
-  
-  assetsInclude: ['**/*.svg'],
-  css: {
-    postcss: {
-      plugins: []
-    }
-  }
+  assetsInclude: ['**/*.svg']
 });
