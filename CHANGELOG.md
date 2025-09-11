@@ -1,3 +1,8 @@
+## [0.1.14] - 2025-09-11
+
+### Fix
+- **pwa**: Corrige o comportamento de instalação do PWA, garantindo que o aplicativo seja adicionado à tela inicial como um app de tela cheia (standalone) em vez de um atalho de navegador.
+
 ## [0.1.13] - 2025-09-11
 
 ### Feat

@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { registerSW } from 'virtual:pwa-register';
 import { DebugProvider } from './01-shared/context/DebugContext.jsx';
 import '@/00-global/styles/index.css';
 import App from './App.jsx';
@@ -19,6 +20,9 @@ import App from './App.jsx';
 // END: Global console.log override
 
 const queryClient = new QueryClient();
+
+// Register the PWA service worker
+registerSW({ onNeedRefresh() {}, onOfflineReady() {} });
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
