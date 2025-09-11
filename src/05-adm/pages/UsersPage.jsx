@@ -8,7 +8,7 @@ import { usePresence } from '@/01-shared/context/PresenceContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/01-shared/components/ui/button';
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 import {
   Select,
   SelectContent,
@@ -65,12 +65,7 @@ function UsersPage() {
 
   return (
     <MainLayout
-      header={(
-        <div className="flex items-center">
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Usuários</h1>
-        </div>
-      )}
+      header={<PageHeader title="Usuários" />}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <SearchInput

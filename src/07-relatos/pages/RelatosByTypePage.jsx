@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 
 import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
@@ -123,12 +123,7 @@ const RelatosByTypePage = () => {
 
   return (
     <MainLayout
-      header={(
-        <>
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Relatos por Tipo</h1>
-        </>
-      )}
+      header={<PageHeader title="Relatos por Tipo" />}
     >
       <div className="p-4">
         <div className="mb-4">

@@ -3,7 +3,7 @@ import { supabase } from '@/01-shared/lib/supabase';
 import { useToast } from '@/01-shared/hooks/useToast';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import RelatoCard from '../components/RelatoCard';
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 import { Button } from '@/01-shared/components/ui/button'; // Importar Button
 import MainLayout from '@/01-shared/components/MainLayout';
 
@@ -72,12 +72,7 @@ const RelatosAtribuidosPage = () => {
 
   return (
     <MainLayout
-      header={(
-        <>
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Relatos Atribuídos a Você</h1>
-        </>
-      )}
+      header={<PageHeader title="Relatos Atribuídos a Você" />}
     >
       <div className="p-4">
         <div className="mb-4 flex space-x-2">

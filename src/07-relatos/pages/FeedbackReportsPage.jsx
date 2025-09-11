@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useOutletContext } from 'react-router-dom';
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 
 const FeedbackReportsPage = () => {
   const queryClient = useQueryClient();
@@ -77,12 +77,7 @@ const FeedbackReportsPage = () => {
 
   return (
     <MainLayout
-      header={(
-        <>
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Relatórios de Feedback</h1>
-        </>
-      )}
+      header={<PageHeader title="Relatórios de Feedback" />}
     >
 
       <div className="flex flex-wrap space-x-4 mb-4">

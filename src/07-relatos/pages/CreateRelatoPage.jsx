@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import RelatoForm from '../components/RelatoForm';
 
 import { supabase } from '@/01-shared/lib/supabase';
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 import MainLayout from '@/01-shared/components/MainLayout';
 
 import { useToast } from '@/01-shared/hooks/useToast';
@@ -108,12 +108,7 @@ const CreateRelatoPage = () => {
 
   return (
     <MainLayout
-      header={(
-        <>
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Criar Novo Relato</h1>
-        </>
-      )}
+      header={<PageHeader title="Criar Novo Relato" />}
     >
       <div className="p-4">
         <p className="mb-6 text-gray-600">

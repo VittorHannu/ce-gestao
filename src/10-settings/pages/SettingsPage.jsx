@@ -2,7 +2,7 @@ import React from 'react';
 import MainLayout from '@/01-shared/components/MainLayout';
 import SettingsGroup from '@/01-shared/components/settings/SettingsGroup';
 import SettingsItem from '@/01-shared/components/settings/SettingsItem';
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { CheckCircle, Calendar } from 'lucide-react';
@@ -16,12 +16,7 @@ function SettingsPage() {
 
   return (
     <MainLayout
-      header={(
-        <div className="flex items-center">
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Configurações</h1>
-        </div>
-      )}
+      header={<PageHeader title="Configurações" />}
     >
       {isLoading ? (
         <LoadingSpinner />

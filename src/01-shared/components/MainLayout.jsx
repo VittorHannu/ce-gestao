@@ -47,7 +47,7 @@ const MainLayout = ({ children, header, _user, headerClassName }) => {
             ref={mainRef}
             className="flex-grow px-2 overflow-y-visible max-w-screen-md mx-auto w-full"
             style={{
-              paddingTop: `${headerHeight}px`,
+              paddingTop: `calc(${headerHeight}px + 0.7rem)`,
               paddingBottom: '60px'
             }}
           >

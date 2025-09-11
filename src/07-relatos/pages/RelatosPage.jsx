@@ -121,7 +121,7 @@ const RelatosPage = () => {
         </CompactDateSelector>
       )}
     >
-      <div className="space-y-8" style={{ marginTop: '1.75rem' }}>
+      <div className="space-y-8">
         {/* StatsGrid agora sempre renderiza os dados que tem, sejam novos ou antigos */}
         <StatsGrid relatoCounts={relatoCounts} />
 

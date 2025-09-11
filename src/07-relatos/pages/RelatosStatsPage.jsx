@@ -1,5 +1,5 @@
 import React from 'react';
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 import { Link } from 'react-router-dom'; // New import
 import { BarChart } from 'lucide-react'; // New import
 import MainLayout from '@/01-shared/components/MainLayout';
@@ -7,12 +7,7 @@ import MainLayout from '@/01-shared/components/MainLayout';
 const RelatosStatsPage = () => {
   return (
     <MainLayout
-      header={(
-        <>
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Gráficos e Estatísticas</h1>
-        </>
-      )}
+      header={<PageHeader title="Gráficos e Estatísticas" />}
     >
       <div className="p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { supabase } from '@/01-shared/lib/supabase';
 import { useToast } from '@/01-shared/hooks/useToast';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 import MainLayout from '@/01-shared/components/MainLayout';
 
 const RelatoLogsPage = () => {
@@ -39,12 +39,7 @@ const RelatoLogsPage = () => {
 
   return (
     <MainLayout
-      header={(
-        <>
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Histórico de Alterações do Relato</h1>
-        </>
-      )}
+      header={<PageHeader title="Histórico de Alterações do Relato" />}
     >
       <div className="p-4">
         <div className="mt-8 p-4 border rounded-lg bg-white">

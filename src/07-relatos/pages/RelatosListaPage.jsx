@@ -5,7 +5,7 @@ import { supabase } from '@/01-shared/lib/supabase';
 import { useToast } from '@/01-shared/hooks/useToast';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import RelatoCard from '../components/RelatoCard';
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 import SearchInput from '@/01-shared/components/SearchInput';
 import { Button } from '@/01-shared/components/ui/button'; // Importar Button
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/01-shared/components/ui/select';
@@ -158,12 +158,7 @@ const RelatosListaPage = () => {
 
   return (
     <MainLayout
-      header={(
-        <>
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">{getTitle()}</h1>
-        </>
-      )}
+      header={<PageHeader title={getTitle()} />}
     >
       <div className="p-4">
         <div className="mb-4">

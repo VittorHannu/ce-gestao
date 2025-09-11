@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import MainLayout from '@/01-shared/components/MainLayout';
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 import changelogContent from '../../../CHANGELOG.md?raw';
 
 // Basic styling for the markdown content.
@@ -21,12 +21,7 @@ const proseClassName = `
 function VersionHistoryPage() {
   return (
     <MainLayout
-      header={(
-        <div className="flex items-center">
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Histórico de Versões</h1>
-        </div>
-      )}
+      header={<PageHeader title="Histórico de Versões" />}
     >
       <div className="p-4 sm:p-6">
         <div className={proseClassName}>

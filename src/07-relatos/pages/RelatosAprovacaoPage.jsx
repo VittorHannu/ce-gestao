@@ -7,7 +7,7 @@ import RelatoDisplayDetails from '../components/RelatoDisplayDetails'; // Import
 import { supabase } from '@/01-shared/lib/supabase';
 import { useToast } from '@/01-shared/hooks/useToast';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
-import BackButton from '@/01-shared/components/BackButton'; // Importa o BackButton
+import PageHeader from '@/01-shared/components/PageHeader'; // Importa o PageHeader
 
 import MainLayout from '@/01-shared/components/MainLayout';
 
@@ -85,13 +85,7 @@ const RelatosAprovacaoPage = () => {
 
   return (
     <MainLayout
-      header={(
-        <>
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Relatos Pendentes</h1>
-          
-        </>
-      )}
+      header={<PageHeader title="Relatos Pendentes" />}
     >
       <div className="p-4">
         {relatos.length === 0 ? (

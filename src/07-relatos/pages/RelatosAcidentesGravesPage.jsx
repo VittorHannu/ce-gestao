@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/01-shared/lib/supabase';
 import RelatoCard from '../components/RelatoCard';
 import MainLayout from '@/01-shared/components/MainLayout';
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 import SearchInput from '@/01-shared/components/SearchInput';
 
 const fetchAcidentesGraves = async () => {
@@ -40,12 +40,7 @@ const RelatosAcidentesGravesPage = () => {
 
   return (
     <MainLayout
-      header={(
-        <>
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Acidentes Graves</h1>
-        </>
-      )}
+      header={<PageHeader title="Acidentes Graves" />}
     >
       <div className="p-4">
         <div className="mb-4">

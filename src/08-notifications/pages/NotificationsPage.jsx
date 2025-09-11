@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/01-shared/components
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom'; // New import
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState([]);
@@ -117,12 +117,7 @@ const NotificationsPage = () => {
 
   return (
     <MainLayout
-      header={(
-        <>
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Minhas Notificações</h1>
-        </>
-      )}
+      header={<PageHeader title="Minhas Notificações" />}
     >
       <div className="p-4">
         <div className="space-y-4">

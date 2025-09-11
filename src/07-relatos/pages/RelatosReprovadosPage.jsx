@@ -3,7 +3,7 @@ import { supabase } from '@/01-shared/lib/supabase';
 import { useToast } from '@/01-shared/hooks/useToast';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import RelatoCard from '../components/RelatoCard';
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 import MainLayout from '@/01-shared/components/MainLayout';
 
 const RelatosReprovadosPage = () => {
@@ -38,12 +38,7 @@ const RelatosReprovadosPage = () => {
 
   return (
     <MainLayout
-      header={(
-        <>
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Relatos Reprovados</h1>
-        </>
-      )}
+      header={<PageHeader title="Relatos Reprovados" />}
     >
       <div className="p-4">
         {reprovadosRelatos.length === 0 ? (

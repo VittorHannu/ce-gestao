@@ -6,7 +6,7 @@ import { Checkbox } from '@/01-shared/components/ui/checkbox';
 import { Button } from '@/01-shared/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/01-shared/components/ui/alert-dialog';
 import MainLayout from '@/01-shared/components/MainLayout';
-import BackButton from '@/01-shared/components/BackButton';
+import PageHeader from '@/01-shared/components/PageHeader';
 
 const UserDetailsPage = () => {
   const { userId } = useParams();
@@ -158,12 +158,7 @@ const UserDetailsPage = () => {
 
   return (
     <MainLayout
-      header={(
-        <>
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Detalhes do Usuário</h1>
-        </>
-      )}
+      header={<PageHeader title="Detalhes do Usuário" />}
     >
       <div className="bg-white rounded-lg shadow-md p-4 flex flex-col">
         <div className="flex-grow">

@@ -4,7 +4,7 @@ import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { Button } from '@/01-shared/components/ui/button';
 import RelatoForm from '../components/RelatoForm'; // Importa o formulário
 import RelatoDisplayDetails from '../components/RelatoDisplayDetails'; // Importa o componente de exibição de detalhes
-import BackButton from '@/01-shared/components/BackButton'; // Importa o BackButton
+import PageHeader from '@/01-shared/components/PageHeader'; // Importa o PageHeader
 import RelatoComments from '../components/RelatoComments';
 import MainLayout from '@/01-shared/components/MainLayout';
 import { useRelatoManagement } from '../hooks/useRelatoManagement';
@@ -52,12 +52,7 @@ const RelatoDetailsPage = () => {
 
   return (
     <MainLayout
-      header={(
-        <>
-          <BackButton />
-          <h1 className="text-2xl font-bold ml-4">Detalhes do Relato</h1>
-        </>
-      )}
+      header={<PageHeader title="Detalhes do Relato" />}
     >
       {isEditing ? (
         <RelatoForm
