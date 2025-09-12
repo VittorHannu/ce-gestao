@@ -5,7 +5,7 @@ import { CheckCircle, Clock, AlertCircle } from 'lucide-react'; // Importa os í
 
 const RelatoCard = ({ relato, disableLink }) => {
   const getTreatmentStatusDisplay = () => {
-    if (relato.data_conclusao_solucao) {
+    if (relato.data_conclusao_solucao || relato.concluido_sem_data) {
       return { text: 'Concluído', icon: CheckCircle, color: 'text-white', bgColor: 'bg-green-600' };
     } else if (relato.planejamento_cronologia_solucao) {
       return { text: 'Em Andamento', icon: Clock, color: 'text-white', bgColor: 'bg-orange-600' };
