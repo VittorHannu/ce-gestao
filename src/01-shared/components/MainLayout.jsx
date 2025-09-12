@@ -37,7 +37,7 @@ const MainLayout = ({ children, header, _user, headerClassName }) => {
             )}
             style={{ paddingTop: 'env(safe-area-inset-top)' }}
           >
-            <div className="container mx-auto flex items-center p-4">
+            <div className="container mx-auto flex items-center px-2 sm:px-6 lg:px-8 py-4">
               {header}
             </div>
           </div>
@@ -45,7 +45,7 @@ const MainLayout = ({ children, header, _user, headerClassName }) => {
         <div className="flex flex-1">
           <main
             ref={mainRef}
-            className="flex-grow px-2 overflow-y-visible max-w-screen-xl mx-auto w-full"
+            className="flex-grow overflow-y-visible max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 w-full"
             style={{
               paddingTop: `calc(${headerHeight}px + 0.7rem)`,
               paddingBottom: '60px'
