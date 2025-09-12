@@ -1,3 +1,8 @@
+## [0.1.16] - 2025-09-12
+
+### Feat
+- **pwa**: Adiciona a opção de atualizar o aplicativo mais tarde a partir da página de configurações, caso o usuário dispense o aviso de atualização.
+
 ## [0.1.15] - 2025-09-12
 
 ### Feat
