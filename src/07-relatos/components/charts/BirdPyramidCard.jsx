@@ -187,62 +187,62 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
                         >
                           {item.concluido > 0 && (
                             <Tooltip.Provider>
-                            <Tooltip.Root delayDuration={300}>
-                              <Tooltip.Trigger asChild>
-                                <div
-                                  className="bg-green-500 h-full flex items-center justify-center"
-                                  style={{ width: `${(item.concluido / item.value) * 100}%` }}
-                                >
-                                  {((item.concluido / maxPyramidCount) * 600) > 20 && item.concluido}
-                                </div>
-                              </Tooltip.Trigger>
-                              <Tooltip.Portal>
-                                <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
+                              <Tooltip.Root delayDuration={300}>
+                                <Tooltip.Trigger asChild>
+                                  <div
+                                    className="bg-green-500 h-full flex items-center justify-center"
+                                    style={{ width: `${(item.concluido / item.value) * 100}%` }}
+                                  >
+                                    {((item.concluido / maxPyramidCount) * 600) > 20 && item.concluido}
+                                  </div>
+                                </Tooltip.Trigger>
+                                <Tooltip.Portal>
+                                  <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
                                   Concluídos: {item.concluido}
-                                  <Tooltip.Arrow className="fill-current text-gray-800" />
-                                </Tooltip.Content>
-                              </Tooltip.Portal>
-                            </Tooltip.Root>
+                                    <Tooltip.Arrow className="fill-current text-gray-800" />
+                                  </Tooltip.Content>
+                                </Tooltip.Portal>
+                              </Tooltip.Root>
                             </Tooltip.Provider>
                           )}
                           {item.emAndamento > 0 && (
                             <Tooltip.Provider>
-                            <Tooltip.Root delayDuration={300}>
-                              <Tooltip.Trigger asChild>
-                                <div
-                                  className="bg-amber-500 h-full flex items-center justify-center"
-                                  style={{ width: `${(item.emAndamento / item.value) * 100}%` }}
-                                >
-                                  {((item.emAndamento / maxPyramidCount) * 600) > 20 && item.emAndamento}
-                                </div>
-                              </Tooltip.Trigger>
-                              <Tooltip.Portal>
-                                <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
+                              <Tooltip.Root delayDuration={300}>
+                                <Tooltip.Trigger asChild>
+                                  <div
+                                    className="bg-amber-500 h-full flex items-center justify-center"
+                                    style={{ width: `${(item.emAndamento / item.value) * 100}%` }}
+                                  >
+                                    {((item.emAndamento / maxPyramidCount) * 600) > 20 && item.emAndamento}
+                                  </div>
+                                </Tooltip.Trigger>
+                                <Tooltip.Portal>
+                                  <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
                                   Em Andamento: {item.emAndamento}
-                                  <Tooltip.Arrow className="fill-current text-gray-800" />
-                                </Tooltip.Content>
-                              </Tooltip.Portal>
-                            </Tooltip.Root>
+                                    <Tooltip.Arrow className="fill-current text-gray-800" />
+                                  </Tooltip.Content>
+                                </Tooltip.Portal>
+                              </Tooltip.Root>
                             </Tooltip.Provider>
                           )}
                           {item.semTratativa > 0 && (
                             <Tooltip.Provider>
-                            <Tooltip.Root delayDuration={300}>
-                              <Tooltip.Trigger asChild>
-                                <div
-                                  className="bg-red-500 h-full flex items-center justify-center"
-                                  style={{ width: `${(item.semTratativa / item.value) * 100}%` }}
-                                >
-                                  {((item.semTratativa / maxPyramidCount) * 600) > 20 && item.semTratativa}
-                                </div>
-                              </Tooltip.Trigger>
-                              <Tooltip.Portal>
-                                <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
+                              <Tooltip.Root delayDuration={300}>
+                                <Tooltip.Trigger asChild>
+                                  <div
+                                    className="bg-red-500 h-full flex items-center justify-center"
+                                    style={{ width: `${(item.semTratativa / item.value) * 100}%` }}
+                                  >
+                                    {((item.semTratativa / maxPyramidCount) * 600) > 20 && item.semTratativa}
+                                  </div>
+                                </Tooltip.Trigger>
+                                <Tooltip.Portal>
+                                  <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
                                   Sem Tratativa: {item.semTratativa}
-                                  <Tooltip.Arrow className="fill-current text-gray-800" />
-                                </Tooltip.Content>
-                              </Tooltip.Portal>
-                            </Tooltip.Root>
+                                    <Tooltip.Arrow className="fill-current text-gray-800" />
+                                  </Tooltip.Content>
+                                </Tooltip.Portal>
+                              </Tooltip.Root>
                             </Tooltip.Provider>
                           )}
                         </div>

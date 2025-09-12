@@ -1,40 +1,39 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { differenceInCalendarDays, format } from 'date-fns';
+import { format } from 'date-fns';
+import { useRecordeSemAcidentes } from '../hooks/useRecordeSemAcidentes';
 
+const DaysWithoutAccidentsCard = () => {
+  const { data: recordeData, isLoading } = useRecordeSemAcidentes();
 
-const DaysWithoutAccidentsCard = ({ lastAccidentDate, isLoading }) => {
   if (isLoading) {
-    // Skeleton loader
     return (
-      <div className="bg-gray-200 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center animate-pulse">
-        <div className="h-12 w-12 bg-gray-300 rounded-full mb-4"></div>
+      <div className="bg-gray-200 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center animate-pulse aspect-square">
         <div className="h-12 w-24 bg-gray-300 rounded-md mb-2"></div>
-        <div className="h-6 w-48 bg-gray-300 rounded-md"></div>
+        <div className="h-6 w-48 bg-gray-300 rounded-md mb-2"></div>
+        <div className="h-4 w-32 bg-gray-300 rounded-md"></div>
+        <div className="h-4 w-24 bg-gray-300 rounded-md mt-2"></div>
       </div>
     );
   }
 
-  const today = new Date();
-  let daysSinceLastAccident = 0;
-  let footerText = 'Continue o bom trabalho!';
+  // Extrai os dados da resposta da RPC, com fallback para 0 ou null
+  const diasAtuais = recordeData?.[0]?.dias_atuais_sem_acidentes ?? 0;
+  const recordeDias = recordeData?.[0]?.recorde_dias_sem_acidentes ?? 0;
+  const ultimoAcidente = recordeData?.[0]?.data_ultimo_acidente;
 
-  if (lastAccidentDate) {
-    daysSinceLastAccident = differenceInCalendarDays(today, new Date(lastAccidentDate));
-    footerText = `Último acidente em: ${format(new Date(lastAccidentDate), 'dd/MM/yyyy')}`;
-  } else {
-    daysSinceLastAccident = 'Recorde';
-    footerText = 'Nenhum acidente com afastamento registrado!';
-  }
+  const footerText = ultimoAcidente
+    ? `Último em: ${format(new Date(ultimoAcidente), 'dd/MM/yyyy')}`
+    : 'Nenhum acidente registrado!';
 
   return (
     <div className="bg-teal-600 p-4 rounded-lg shadow-none flex flex-col items-center justify-center text-white text-center aspect-square">
       <h2 className="text-4xl font-bold">
-        {daysSinceLastAccident}
+        {diasAtuais}
       </h2>
       <p className="text-base font-semibold mt-2">dias sem acidentes com afastamento</p>
-      <p className="text-sm text-teal-100 mt-4">
-        {lastAccidentDate ? (
+      <p className="text-sm text-teal-100 mt-2">
+        {ultimoAcidente ? (
           <Link to="/relatos/acidentes-graves" className="underline">
             {footerText}
           </Link>
@@ -42,6 +41,11 @@ const DaysWithoutAccidentsCard = ({ lastAccidentDate, isLoading }) => {
           footerText
         )}
       </p>
+      {recordeDias > 0 && (
+        <p className="text-sm text-teal-100 mt-2">
+          {`Recorde: ${recordeDias} dias`}
+        </p>
+      )}
     </div>
   );
 };

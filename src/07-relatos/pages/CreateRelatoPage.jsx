@@ -7,8 +7,10 @@ import PageHeader from '@/01-shared/components/PageHeader';
 import MainLayout from '@/01-shared/components/MainLayout';
 
 import { useToast } from '@/01-shared/hooks/useToast';
+import { useQueryClient } from '@tanstack/react-query';
 
 const CreateRelatoPage = () => {
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // New state for login status
@@ -93,6 +95,13 @@ const CreateRelatoPage = () => {
       }
 
       toast({ title: 'Relato enviado com sucesso!', type: 'success' });
+
+      // Invalidate queries to refetch data on the main page
+      queryClient.invalidateQueries({ queryKey: ['relatos'] });
+      queryClient.invalidateQueries({ queryKey: ['relatoCounts'] });
+      queryClient.invalidateQueries({ queryKey: ['lastAccidentDate'] });
+      queryClient.invalidateQueries({ queryKey: ['recordeSemAcidentes'] });
+
       if (user) {
         navigate('/relatos');
       } else {
