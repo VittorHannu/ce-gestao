@@ -1,3 +1,6 @@
+-- Adiciona o DROP FUNCTION para permitir a alteração da assinatura de retorno.
+DROP FUNCTION IF EXISTS public.search_relatos_unaccented(text, text, text, date, date, text, boolean, integer, integer);
+
 -- Corrigido: Unifica a lógica de paginação, filtros de status e contagem total em uma única função.
 CREATE OR REPLACE FUNCTION public.search_relatos_unaccented(
     p_search_term text DEFAULT NULL::text,
