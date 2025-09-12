@@ -53,9 +53,12 @@ const RelatosListaPage = () => {
   const { startDate, endDate } = useDateFilter();
 
   const queryParams = new URLSearchParams(location.search);
-  const statusFilter = queryParams.get('status');
+  const statusFilterParam = queryParams.get('status');
   const tipoRelatoFilter = queryParams.get('tipo_relato');
   const onlyMineFilter = queryParams.get('only_mine') === 'true';
+
+  // Default to 'aprovado' if no status filter is provided, to show only approved reports on the main list.
+  const statusFilter = statusFilterParam || 'aprovado';
 
   const { data: userProfile } = useUserProfile();
   const canManageRelatos = userProfile?.can_manage_relatos;
@@ -70,6 +73,7 @@ const RelatosListaPage = () => {
     case 'concluido': return 'Relatos Concluídos';
     case 'em_andamento': return 'Relatos Em Andamento';
     case 'sem_tratativa': return 'Relatos Sem Tratativa';
+    // This default case will now be less common due to the default filter above.
     default: return 'Lista de Relatos';
     }
   };

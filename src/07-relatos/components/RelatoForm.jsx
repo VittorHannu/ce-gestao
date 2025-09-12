@@ -54,6 +54,20 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
     }
   }, []);
 
+  useEffect(() => {
+    // Se uma data de conclusão for definida, desmarque a opção "concluído sem data".
+    if (dataConclusaoSolucao) {
+      setConcluidoSemData(false);
+    }
+  }, [dataConclusaoSolucao]);
+
+  useEffect(() => {
+    // Se "concluído sem data" for marcado, limpe a data de conclusão.
+    if (concluidoSemData) {
+      setDataConclusaoSolucao('');
+    }
+  }, [concluidoSemData]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = {
@@ -249,12 +263,14 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
                   value={dataConclusaoSolucao}
                   onChange={(e) => setDataConclusaoSolucao(e.target.value)}
                   className="bg-gray-100"
+                  disabled={concluidoSemData} // Desabilita se a checkbox estiver marcada
                 />
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setDataConclusaoSolucao('')}
                   className="px-3 py-2 text-sm"
+                  disabled={concluidoSemData} // Desabilita se a checkbox estiver marcada
                 >
                     Limpar
                 </Button>
@@ -265,6 +281,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
                 id="concluido_sem_data"
                 checked={concluidoSemData}
                 onCheckedChange={setConcluidoSemData}
+                disabled={!!dataConclusaoSolucao} // Desabilita se uma data for inserida
               />
               <Label htmlFor="concluido_sem_data">Tratado mas sem data de conclusão definida</Label>
             </div>

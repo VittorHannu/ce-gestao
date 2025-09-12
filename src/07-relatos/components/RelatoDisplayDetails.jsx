@@ -92,18 +92,16 @@ const RelatoDisplayDetails = ({ relato, responsibles = [] }) => {
 
   return (
     <div>
-      <div className={`p-2 rounded-md text-center font-semibold mb-4 ${statusDisplay.color}`}>
+      <div className={`p-2 rounded-md text-center font-semibold mb-2 ${statusDisplay.color}`}>
         {statusDisplay.text}
+      </div>
+      <div className={`flex items-center justify-center p-2 rounded-md text-center font-semibold mb-4 ${statusColor.replace('text-', 'bg-').replace('-600', '-100')} ${statusColor}`}>
+        <StatusIcon className="h-4 w-4 mr-2" />
+        <span>{statusText}</span>
       </div>
       <Table>
         <TableBody>
           {renderRow('Código do Relato', relato.relato_code || relato.id)}
-          {renderRow('Status da Tratativa', (
-            <div className="flex items-center">
-              <StatusIcon className={`h-4 w-4 mr-2 ${statusColor}`} />
-              <span className={statusColor}>{statusText}</span>
-            </div>
-          ))}
           {renderRow('Relator', relatorName)}
           {renderRow('Local da Ocorrência', relato.local_ocorrencia)}
           {renderRow('Data da Ocorrência', new Date(relato.data_ocorrencia).toLocaleDateString())}
