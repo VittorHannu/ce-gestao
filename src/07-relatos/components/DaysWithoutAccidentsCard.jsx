@@ -8,7 +8,7 @@ const DaysWithoutAccidentsCard = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-gray-200 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center animate-pulse aspect-square">
+      <div className="bg-gray-200 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center animate-pulse h-44">
         <div className="h-12 w-24 bg-gray-300 rounded-md mb-2"></div>
         <div className="h-6 w-48 bg-gray-300 rounded-md mb-2"></div>
         <div className="h-4 w-32 bg-gray-300 rounded-md"></div>
@@ -27,7 +27,7 @@ const DaysWithoutAccidentsCard = () => {
     : 'Nenhum acidente registrado!';
 
   return (
-    <div className="bg-teal-600 p-4 rounded-lg shadow-none flex flex-col items-center justify-center text-white text-center aspect-square">
+    <div className="bg-teal-600 p-4 rounded-lg shadow-none flex flex-col items-center justify-center text-white text-center md:h-fit">
       <h2 className="text-4xl font-bold">
         {diasAtuais}
       </h2>

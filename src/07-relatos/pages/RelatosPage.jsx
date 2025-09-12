@@ -149,7 +149,7 @@ const RelatosPage = () => {
 
         {/* Sidebar (Direita) */}
         <div className="mt-8 space-y-8 md:w-2/3 md:mt-0">
-          <div className="force-relatos-sidebar-grid-1-2">
+          <div className="flex flex-col gap-8 force-relatos-sidebar-grid-1-2">
             <DaysWithoutAccidentsCard
               isLoading={isLoadingLastAccident}
               lastAccidentDate={lastAccidentDate}
