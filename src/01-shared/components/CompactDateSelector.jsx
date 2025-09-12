@@ -77,8 +77,8 @@ export default function CompactDateSelector({ children, className }) {
             {children}
           </div>
         </div>
-        <div ref={scrollContainerRef} className="w-full overflow-x-auto no-scrollbar">
-          <div className="flex items-center justify-start px-2 border-b-4 border-transparent">
+        <div ref={scrollContainerRef} className="overflow-x-auto no-scrollbar mx-auto max-w-full px-4">
+          <div className="flex items-center border-b-4 border-transparent">
             {periods.map((period) => {
               const isMonth = period.value >= 1 && period.value <= 12;
               const monthDate = isMonth ? new Date(year, period.value - 1, 1) : null;
@@ -111,6 +111,7 @@ export default function CompactDateSelector({ children, className }) {
                 </div>
               );
             })}
+            
           </div>
         </div>
       </div>

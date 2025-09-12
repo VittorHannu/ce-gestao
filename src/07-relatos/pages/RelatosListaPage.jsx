@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useDateFilter } from '@/01-shared/hooks/useDateFilter.jsx';
@@ -32,7 +32,7 @@ const fetchRelatosPage = async ({ pageParam = 1, queryKey }) => {
     p_tipo_relato_filter: tipoRelatoFilter,
     p_only_mine: onlyMineFilter,
     p_page_number: pageParam,
-    p_page_size: PAGE_SIZE,
+    p_page_size: PAGE_SIZE
   });
 
   if (error) {
@@ -66,11 +66,11 @@ const RelatosListaPage = () => {
     if (onlyMineFilter) return 'Relatos Criados por Você';
     if (tipoRelatoFilter) return `Relatos de ${tipoRelatoFilter}`;
     switch (statusFilter) {
-      case 'aprovado': return 'Todos os Relatos';
-      case 'concluido': return 'Relatos Concluídos';
-      case 'em_andamento': return 'Relatos Em Andamento';
-      case 'sem_tratativa': return 'Relatos Sem Tratativa';
-      default: return 'Lista de Relatos';
+    case 'aprovado': return 'Todos os Relatos';
+    case 'concluido': return 'Relatos Concluídos';
+    case 'em_andamento': return 'Relatos Em Andamento';
+    case 'sem_tratativa': return 'Relatos Sem Tratativa';
+    default: return 'Lista de Relatos';
     }
   };
 
@@ -82,7 +82,7 @@ const RelatosListaPage = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    status,
+    status
   } = useInfiniteQuery({
     queryKey: ['relatos', filters],
     queryFn: fetchRelatosPage,
@@ -90,7 +90,7 @@ const RelatosListaPage = () => {
     getNextPageParam: (lastPage, allPages) => {
       // If the last page had fewer items than PAGE_SIZE, there are no more pages.
       return lastPage.length === PAGE_SIZE ? allPages.length + 1 : undefined;
-    },
+    }
   });
 
   useEffect(() => {
