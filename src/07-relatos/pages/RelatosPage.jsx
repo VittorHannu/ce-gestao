@@ -145,7 +145,7 @@ const RelatosPage = () => {
         </div>
 
         {/* Sidebar (Direita) */}
-        <div className="space-y-8 md:w-1/3">
+        <div className="mt-8 space-y-8 md:w-1/3 md:mt-0">
           <DaysWithoutAccidentsCard
             isLoading={isLoadingLastAccident}
             lastAccidentDate={lastAccidentDate}

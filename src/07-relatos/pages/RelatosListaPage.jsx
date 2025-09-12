@@ -147,8 +147,8 @@ const RelatosListaPage = () => {
             <p>Nenhum relato encontrado para os filtros selecionados.</p>
           </div>
         ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {data.pages.map((page, i) => (
                 <Fragment key={i}>
                   {page.map(relato => (
@@ -192,7 +192,6 @@ const RelatosListaPage = () => {
                 </Fragment>
               ))}
             </div>
-
             <div ref={ref} className="h-10 flex justify-center items-center">
               {isFetchingNextPage ? (
                 <LoadingSpinner />
@@ -202,7 +201,7 @@ const RelatosListaPage = () => {
                 'Fim dos resultados'
               )}
             </div>
-          </>
+          </div>
         )}
       </div>
     </MainLayout>
