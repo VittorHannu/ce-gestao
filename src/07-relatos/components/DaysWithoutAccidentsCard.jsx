@@ -30,6 +30,9 @@ const DaysWithoutAccidentsCard = () => {
     <div className="bg-teal-600 p-4 rounded-lg shadow-none flex flex-col items-center justify-center text-white text-center md:h-fit">
       <h2 className="text-4xl font-bold">
         {diasAtuais}
+        {recordeDias > 0 && diasAtuais <= recordeDias && (
+          <span className="text-2xl font-bold text-teal-300 align-middle"> / {recordeDias}</span>
+        )}
       </h2>
       <p className="text-base font-semibold mt-2">dias sem acidentes com afastamento</p>
       <p className="text-sm text-teal-100 mt-2">
@@ -41,11 +44,6 @@ const DaysWithoutAccidentsCard = () => {
           footerText
         )}
       </p>
-      {recordeDias > 0 && (
-        <p className="text-sm text-teal-100 mt-2">
-          {`Recorde: ${recordeDias} dias`}
-        </p>
-      )}
     </div>
   );
 };
