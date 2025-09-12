@@ -15,6 +15,8 @@ import SettingsGroup from '@/01-shared/components/settings/SettingsGroup';
 import SettingsItem from '@/01-shared/components/settings/SettingsItem';
 import CompactDateSelector from '@/01-shared/components/CompactDateSelector';
 import DaysWithoutAccidentsCard from '../components/DaysWithoutAccidentsCard';
+import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
+import BirdPyramidCard from '../components/charts/BirdPyramidCard';
 
 // Componente otimizado para os cards de estatísticas
 // Agora ele sempre renderiza os dados, permitindo animações no componente filho.
@@ -96,6 +98,7 @@ const RelatosPage = () => {
   // isFetching foi removido do uso, pois a UI agora atualiza sem piscar
   const { data: relatoCounts } = useRelatoCounts();
   const { data: lastAccidentDate, isLoading: isLoadingLastAccident } = useLastAccidentDate();
+  const { startDate, endDate } = useDateFilter();
   
 
   const managementItems = [
@@ -150,6 +153,7 @@ const RelatosPage = () => {
             isLoading={isLoadingLastAccident}
             lastAccidentDate={lastAccidentDate}
           />
+          <BirdPyramidCard startDate={startDate} endDate={endDate} />
           <Link to="/relatos/estatisticas" className="w-full block">
             <div className="bg-yellow-500 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center h-full">
               <BarChart className="h-12 w-12 text-white mb-4" />
