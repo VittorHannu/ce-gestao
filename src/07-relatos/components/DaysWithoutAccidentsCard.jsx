@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { format } from 'date-fns';
+
 import { useRecordeSemAcidentes } from '../hooks/useRecordeSemAcidentes';
 
 const DaysWithoutAccidentsCard = () => {
@@ -20,14 +20,10 @@ const DaysWithoutAccidentsCard = () => {
   // Extrai os dados da resposta da RPC, com fallback para 0 ou null
   const diasAtuais = recordeData?.[0]?.dias_atuais_sem_acidentes ?? 0;
   const recordeDias = recordeData?.[0]?.recorde_dias_sem_acidentes ?? 0;
-  const ultimoAcidente = recordeData?.[0]?.data_ultimo_acidente;
-
-  const footerText = ultimoAcidente
-    ? `Último em: ${format(new Date(ultimoAcidente), 'dd/MM/yyyy')}`
-    : 'Nenhum acidente registrado!';
+  
 
   return (
-    <div className="bg-teal-600 p-4 rounded-lg shadow-none flex flex-col items-center justify-center text-white text-center md:h-fit">
+    <Link to="/relatos/acidentes-graves" className="block bg-teal-600 p-4 rounded-lg shadow-none flex flex-col items-center justify-center text-white text-center md:h-fit hover:bg-teal-700 transition-colors duration-200">
       <h2 className="text-4xl font-bold">
         {diasAtuais}
         {recordeDias > 0 && diasAtuais <= recordeDias && (
@@ -35,16 +31,7 @@ const DaysWithoutAccidentsCard = () => {
         )}
       </h2>
       <p className="text-base font-semibold mt-2">dias sem acidentes com afastamento</p>
-      <p className="text-sm text-teal-100 mt-2">
-        {ultimoAcidente ? (
-          <Link to="/relatos/acidentes-graves" className="underline">
-            {footerText}
-          </Link>
-        ) : (
-          footerText
-        )}
-      </p>
-    </div>
+    </Link>
   );
 };
 
