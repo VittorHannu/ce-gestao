@@ -20,6 +20,7 @@ export default defineConfig({
       registerType: 'prompt',
       injectRegister: 'auto',
       workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
         navigateFallback: 'index.html',
         navigateFallbackDenylist: [/^\/api\//, /^\/supabase\//],
         runtimeCaching: [
