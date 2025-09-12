@@ -164,3 +164,12 @@ textarea:focus-visible {
   left: 50%;
   transform: translateX(-50%);
 }
+
+/* HACK: Forcing responsive grid for RelatosPage sidebar */
+@media (min-width: 768px) {
+  .force-relatos-sidebar-grid-1-2 {
+    display: grid;
+    grid-template-columns: 30% 1fr;
+    gap: 2rem; /* Corresponds to Tailwind's gap-8 */
+  }
+}

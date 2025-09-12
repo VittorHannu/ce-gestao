@@ -28,14 +28,12 @@ const DaysWithoutAccidentsCard = ({ lastAccidentDate, isLoading }) => {
   }
 
   return (
-    <div className="bg-teal-600 p-6 rounded-lg shadow-none flex flex-col justify-center text-white">
-      <div className="flex items-center justify-center gap-4">
-        <h2 className="text-5xl font-bold">
-          {daysSinceLastAccident}
-        </h2>
-        <p className="text-lg font-semibold text-left">dias sem acidentes com afastamento v2</p>
-      </div>
-      <p className="text-sm text-teal-100 mt-4 text-center">
+    <div className="bg-teal-600 p-4 rounded-lg shadow-none flex flex-col items-center justify-center text-white text-center aspect-square">
+      <h2 className="text-4xl font-bold">
+        {daysSinceLastAccident}
+      </h2>
+      <p className="text-base font-semibold mt-2">dias sem acidentes com afastamento</p>
+      <p className="text-sm text-teal-100 mt-4">
         {lastAccidentDate ? (
           <Link to="/relatos/acidentes-graves" className="underline">
             {footerText}

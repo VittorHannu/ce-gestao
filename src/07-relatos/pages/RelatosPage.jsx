@@ -126,7 +126,7 @@ const RelatosPage = () => {
     >
       <div className="md:flex md:gap-8">
         {/* Coluna Principal (Esquerda) */}
-        <div className="md:w-2/3 space-y-8">
+        <div className="md:w-1/3 space-y-8">
           {/* StatsGrid agora sempre renderiza os dados que tem, sejam novos ou antigos */}
           <StatsGrid relatoCounts={relatoCounts} />
 
@@ -148,12 +148,14 @@ const RelatosPage = () => {
         </div>
 
         {/* Sidebar (Direita) */}
-        <div className="mt-8 space-y-8 md:w-1/3 md:mt-0">
-          <DaysWithoutAccidentsCard
-            isLoading={isLoadingLastAccident}
-            lastAccidentDate={lastAccidentDate}
-          />
-          <BirdPyramidCard startDate={startDate} endDate={endDate} />
+        <div className="mt-8 space-y-8 md:w-2/3 md:mt-0">
+          <div className="force-relatos-sidebar-grid-1-2">
+            <DaysWithoutAccidentsCard
+              isLoading={isLoadingLastAccident}
+              lastAccidentDate={lastAccidentDate}
+            />
+            <BirdPyramidCard startDate={startDate} endDate={endDate} />
+          </div>
           <Link to="/relatos/estatisticas" className="w-full block">
             <div className="bg-yellow-500 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center h-full">
               <BarChart className="h-12 w-12 text-white mb-4" />
