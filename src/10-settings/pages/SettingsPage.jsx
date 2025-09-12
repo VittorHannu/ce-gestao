@@ -6,6 +6,7 @@ import PageHeader from '@/01-shared/components/PageHeader';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { CheckCircle, Calendar } from 'lucide-react';
+import PwaUpdateSettings from '../components/PwaUpdateSettings';
 
 
 
@@ -27,6 +28,10 @@ function SettingsPage() {
               label="Editar Perfil"
               path="/perfil"
             />
+          </SettingsGroup>
+
+          <SettingsGroup title="Aplicativo">
+            <PwaUpdateSettings />
           </SettingsGroup>
 
           <SettingsGroup title="Depuração">

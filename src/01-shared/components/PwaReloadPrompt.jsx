@@ -1,29 +1,18 @@
 
 import React from 'react';
-import { useRegisterSW } from 'virtual:pwa-register/react';
+import { usePWAUpdate } from '@/01-shared/context/PWAUpdateContext';
 import { Button } from '@/01-shared/components/ui/button';
 import { Rocket } from 'lucide-react';
 
 function PwaReloadPrompt() {
   const {
-    offlineReady: [, setOfflineReady],
-    needRefresh: [needRefresh, setNeedRefresh],
-    updateServiceWorker
-  } = useRegisterSW({
-    onRegistered(r) {
-      console.log('Service Worker registrado:', r);
-    },
-    onRegisterError(error) {
-      console.log('Erro no registro do Service Worker:', error);
-    }
-  });
+    isUpdateAvailable,
+    promptVisible,
+    dismissPrompt,
+    updateApp,
+  } = usePWAUpdate();
 
-  const close = () => {
-    setOfflineReady(false);
-    setNeedRefresh(false);
-  };
-
-  if (needRefresh) {
+  if (isUpdateAvailable && promptVisible) {
     return (
       <div className="fixed right-4 bottom-4 z-50 p-4 bg-gray-800 text-white rounded-lg shadow-lg flex items-center gap-4">
         <div className="flex-grow">
@@ -34,10 +23,10 @@ function PwaReloadPrompt() {
           <p className="text-sm text-gray-300">Uma nova versão do aplicativo está pronta para ser instalada.</p>
         </div>
         <div className="flex flex-col gap-2">
-          <Button onClick={() => updateServiceWorker(true)} className="bg-blue-500 hover:bg-blue-600 text-white">
+          <Button onClick={updateApp} className="bg-blue-500 hover:bg-blue-600 text-white">
             Atualizar
           </Button>
-          <Button onClick={() => close()} variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+          <Button onClick={dismissPrompt} variant="ghost" size="sm" className="text-gray-400 hover:text-white">
             Ignorar
           </Button>
         </div>

@@ -30,6 +30,7 @@ import { Button } from '@/01-shared/components/ui/button';
 import MainLayout from '@/01-shared/components/MainLayout';
 import PublicLayout from '@/01-shared/components/PublicLayout';
 import { DateFilterProvider } from './01-shared/hooks/useDateFilter.jsx';
+import { PWAUpdateProvider } from './01-shared/context/PWAUpdateContext.jsx';
 
 const ApresentacaoPage = React.lazy(() => import('@/09-presentation/pages/ApresentacaoPage'));
 const LoginPage = React.lazy(() => import('@/03-auth/pages/LoginPage'));
@@ -233,7 +234,9 @@ function App() {
         <ToastProvider>
           <PresenceProvider>
             <DateFilterProvider>
-              <AppWrapper />
+              <PWAUpdateProvider>
+                <AppWrapper />
+              </PWAUpdateProvider>
             </DateFilterProvider>
           </PresenceProvider>
         </ToastProvider>
