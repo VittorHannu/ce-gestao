@@ -1,3 +1,9 @@
+## [0.1.15] - 2025-09-12
+
+### Feat
+- **layout**: Adiciona layout de duas colunas na página de lista de relatos para melhor aproveitamento de tela em dispositivos maiores.
+- **layout**: Ajusta o espaçamento na página principal de relatos.
+
 ## [0.1.14] - 2025-09-11
 
 ### Fix
