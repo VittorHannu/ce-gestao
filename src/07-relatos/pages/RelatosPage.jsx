@@ -6,7 +6,7 @@ import { useRelatoCounts } from '../hooks/useRelatoCounts';
 import { useLastAccidentDate } from '../hooks/useLastAccidentDate';
 
 
-import { CheckCircle, Clock, XCircle, BarChart, Plus, User, AlertTriangle, List, Bell, Settings } from 'lucide-react';
+import { CheckCircle, Clock, XCircle, Plus, User, AlertTriangle, List, Bell, Settings } from 'lucide-react';
 
 import RelatoStatsCard from '../components/RelatoStatsCard';
 import TotalReportsCard from '../components/TotalReportsCard';
@@ -156,12 +156,7 @@ const RelatosPage = () => {
             />
             <BirdPyramidCard startDate={startDate} endDate={endDate} />
           </div>
-          <Link to="/relatos/estatisticas" className="w-full block">
-            <div className="bg-yellow-500 p-6 rounded-lg shadow-none text-center flex flex-col items-center justify-center h-full">
-              <BarChart className="h-12 w-12 text-white mb-4" />
-              <h2 className="text-xl font-semibold text-white">Gráficos e Estatísticas</h2>
-            </div>
-          </Link>
+          
         </div>
       </div>
       <Link to="/relatos/novo" className="fixed bottom-12 right-4 z-50">

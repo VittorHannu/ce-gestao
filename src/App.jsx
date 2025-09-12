@@ -44,8 +44,7 @@ const CreateRelatoPage = React.lazy(() => import('@/07-relatos/pages/CreateRelat
 const RelatosAprovacaoPage = React.lazy(() => import('@/07-relatos/pages/RelatosAprovacaoPage'));
 const RelatosListaPage = React.lazy(() => import('@/07-relatos/pages/RelatosListaPage'));
 const RelatoDetailsPage = React.lazy(() => import('@/07-relatos/pages/RelatoDetailsPage'));
-const RelatosStatsPage = React.lazy(() => import('@/07-relatos/pages/RelatosStatsPage'));
-const RelatosByTypePage = React.lazy(() => import('@/07-relatos/pages/RelatosByTypePage'));
+
 const RelatosAtribuidosPage = React.lazy(() => import('@/07-relatos/pages/RelatosAtribuidosPage'));
 const UsersPage = React.lazy(() => import('@/05-adm/pages/UsersPage'));
 const CreateUserPage = React.lazy(() => import('@/05-adm/pages/CreateUserPage'));
@@ -208,8 +207,7 @@ function AppWrapper() {
         <Route path="/relatos/aprovacao" element={<ProtectedRoute user={user} requiredPermission="can_manage_relatos"><Suspense fallback={<LoadingSpinner />}><RelatosAprovacaoPage /></Suspense></ProtectedRoute>} />
         <Route path="/relatos/lista" element={<Suspense fallback={<LoadingSpinner />}><RelatosListaPage /></Suspense>} />
         <Route path="/relatos/detalhes/:id" element={<Suspense fallback={<LoadingSpinner />}><RelatoDetailsPage /></Suspense>} />
-        <Route path="/relatos/estatisticas" element={<Suspense fallback={<LoadingSpinner />}><RelatosStatsPage /></Suspense>} />
-        <Route path="/relatos/estatisticas/tipo" element={<Suspense fallback={<LoadingSpinner />}><RelatosByTypePage /></Suspense>} />
+        
         <Route path="/relatos/atribuidos" element={<Suspense fallback={<LoadingSpinner />}><RelatosAtribuidosPage /></Suspense>} />
         <Route path="/relatos/reprovados" element={<Suspense fallback={<LoadingSpinner />}><RelatosReprovadosPage /></Suspense>} />
         <Route path="/relatos/logs/:id" element={<Suspense fallback={<LoadingSpinner />}><RelatoLogsPage /></Suspense>} />
