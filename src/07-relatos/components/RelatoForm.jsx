@@ -26,6 +26,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
   const [dataConclusaoSolucao, setDataConclusaoSolucao] = useState(initialData?.data_conclusao_solucao || '');
   const [tipoRelato, setTipoRelato] = useState(initialData?.tipo_relato || null);
   const [selectedResponsibles, setSelectedResponsibles] = useState([]);
+  const [concluidoSemData, setConcluidoSemData] = useState(initialData?.concluido_sem_data || false);
   const initialResponsiblesRef = useRef(initialResponsibles);
 
   useEffect(() => {
@@ -41,6 +42,7 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
       setPlanejamentoCronologiaSolucao(initialData.planejamento_cronologia_solucao || '');
       setDataConclusaoSolucao(initialData.data_conclusao_solucao || '');
       setTipoRelato(initialData.tipo_relato || '');
+      setConcluidoSemData(initialData.concluido_sem_data || false);
     }
   }, [initialData]);
 
@@ -65,7 +67,8 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
       planejamento_cronologia_solucao: planejamentoCronologiaSolucao || null,
       data_conclusao_solucao: dataConclusaoSolucao || null,
       tipo_relato: tipoRelato || null,
-      responsaveis: selectedResponsibles
+      responsaveis: selectedResponsibles,
+      concluido_sem_data: concluidoSemData
     };
     onSubmit(formData);
   };
@@ -256,6 +259,14 @@ const RelatoForm = ({ onSubmit, isLoading, initialData, submitButtonText = 'Envi
                     Limpar
                 </Button>
               </div>
+            </div>
+            <div className="md:col-span-2 flex items-center space-x-2">
+              <Checkbox
+                id="concluido_sem_data"
+                checked={concluidoSemData}
+                onCheckedChange={setConcluidoSemData}
+              />
+              <Label htmlFor="concluido_sem_data">Tratado mas sem data de conclusão definida</Label>
             </div>
             {canManageRelatos && (
               <div className="md:col-span-2">

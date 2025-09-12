@@ -9,7 +9,7 @@ function PwaReloadPrompt() {
     isUpdateAvailable,
     promptVisible,
     dismissPrompt,
-    updateApp,
+    updateApp
   } = usePWAUpdate();
 
   if (isUpdateAvailable && promptVisible) {

@@ -46,6 +46,8 @@ const RelatoDisplayDetails = ({ relato, responsibles = [] }) => {
   const getTreatmentStatusDisplay = () => {
     if (relato.data_conclusao_solucao) {
       return { text: 'Concluído', icon: CheckCircle, color: 'text-green-600' };
+    } else if (relato.concluido_sem_data) {
+      return { text: 'Concluído (sem data)', icon: CheckCircle, color: 'text-green-600' };
     } else if (relato.planejamento_cronologia_solucao) {
       return { text: 'Em Andamento', icon: Clock, color: 'text-orange-600' };
     } else {
@@ -73,29 +75,49 @@ const RelatoDisplayDetails = ({ relato, responsibles = [] }) => {
     );
   };
 
+  const getStatusDisplay = (status) => {
+    switch (status) {
+    case 'APROVADO':
+      return { text: 'Aprovado', color: 'bg-green-100 text-green-800' };
+    case 'PENDENTE':
+      return { text: 'Pendente', color: 'bg-orange-100 text-orange-800' };
+    case 'REPROVADO':
+      return { text: 'Reprovado', color: 'bg-red-100 text-red-800' };
+    default:
+      return { text: status, color: 'bg-gray-100 text-gray-800' };
+    }
+  };
+
+  const statusDisplay = getStatusDisplay(relato.status);
+
   return (
-    <Table>
-      <TableBody>
-        {renderRow('Código do Relato', relato.relato_code || relato.id)}
-        {renderRow('Status', (
-          <div className="flex items-center">
-            <StatusIcon className={`h-4 w-4 mr-2 ${statusColor}`} />
-            <span className={statusColor}>{statusText}</span>
-          </div>
-        ))}
-        {renderRow('Relator', relatorName)}
-        {renderRow('Local da Ocorrência', relato.local_ocorrencia)}
-        {renderRow('Data da Ocorrência', new Date(relato.data_ocorrencia).toLocaleDateString())}
-        {renderRow('Hora Aproximada', relato.hora_aproximada_ocorrencia)}
-        {renderRow('Descrição', relato.descricao)}
-        {renderRow('Riscos Identificados', relato.riscos_identificados)}
-        {renderRow('Danos Ocorridos', relato.danos_ocorridos)}
-        {renderRow('Planejamento/Cronologia da Solução', relato.planejamento_cronologia_solucao)}
-        {renderRow('Data de Conclusão da Solução', relato.data_conclusao_solucao ? new Date(relato.data_conclusao_solucao).toLocaleDateString() : null)}
-        {renderRow('Responsáveis', responsibles && responsibles.length > 0 ? responsibles.map(r => formatFullName(r.full_name)).join(', ') : null)}
-        {renderRow('Criado em', new Date(relato.created_at).toLocaleString())}
-      </TableBody>
-    </Table>
+    <div>
+      <div className={`p-2 rounded-md text-center font-semibold mb-4 ${statusDisplay.color}`}>
+        {statusDisplay.text}
+      </div>
+      <Table>
+        <TableBody>
+          {renderRow('Código do Relato', relato.relato_code || relato.id)}
+          {renderRow('Status da Tratativa', (
+            <div className="flex items-center">
+              <StatusIcon className={`h-4 w-4 mr-2 ${statusColor}`} />
+              <span className={statusColor}>{statusText}</span>
+            </div>
+          ))}
+          {renderRow('Relator', relatorName)}
+          {renderRow('Local da Ocorrência', relato.local_ocorrencia)}
+          {renderRow('Data da Ocorrência', new Date(relato.data_ocorrencia).toLocaleDateString())}
+          {renderRow('Hora Aproximada', relato.hora_aproximada_ocorrencia)}
+          {renderRow('Descrição', relato.descricao)}
+          {renderRow('Riscos Identificados', relato.riscos_identificados)}
+          {renderRow('Danos Ocorridos', relato.danos_ocorridos)}
+          {renderRow('Planejamento/Cronologia da Solução', relato.planejamento_cronologia_solucao)}
+          {renderRow('Data de Conclusão da Solução', relato.data_conclusao_solucao ? new Date(relato.data_conclusao_solucao).toLocaleDateString() : null)}
+          {renderRow('Responsáveis', responsibles && responsibles.length > 0 ? responsibles.map(r => formatFullName(r.full_name)).join(', ') : null)}
+          {renderRow('Criado em', new Date(relato.created_at).toLocaleString())}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 

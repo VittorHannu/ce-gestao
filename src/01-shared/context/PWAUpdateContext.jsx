@@ -8,8 +8,8 @@ export const usePWAUpdate = () => useContext(PWAUpdateContext);
 export const PWAUpdateProvider = ({ children }) => {
   const {
     offlineReady: [offlineReady, setOfflineReady],
-    needRefresh: [needRefresh, setNeedRefresh],
-    updateServiceWorker,
+    needRefresh: [needRefresh],
+    updateServiceWorker
   } = useRegisterSW();
 
   const [promptVisible, setPromptVisible] = useState(true);
@@ -24,7 +24,7 @@ export const PWAUpdateProvider = ({ children }) => {
     dismissPrompt,
     updateApp: () => updateServiceWorker(true),
     offlineReady,
-    setOfflineReady,
+    setOfflineReady
   };
 
   return (
