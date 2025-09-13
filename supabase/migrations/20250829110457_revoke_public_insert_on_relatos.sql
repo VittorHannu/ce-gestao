@@ -1,1 +1,0 @@
-REVOKE INSERT ON TABLE public.relatos FROM PUBLIC;

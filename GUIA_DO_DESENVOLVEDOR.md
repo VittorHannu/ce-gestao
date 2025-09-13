@@ -1,5 +1,8 @@
 # Guia do Desenvolvedor: Projeto Relatos Supabase
 
+supabase db dump -f supabase/schema.sql
+
+
 ## 1. Introdução
 
 Olá! Este documento é o seu manual de operações e guia de referência técnica para o projeto `relatos-supabase`. O objetivo não é simplificar a ponto de esconder os conceitos, mas sim **explicar a parte técnica de forma clara**, para que você tenha total confiança para gerenciar e evoluir o sistema.

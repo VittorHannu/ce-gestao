@@ -56,7 +56,7 @@ const RelatosAcidentesGravesPage = React.lazy(() => import('@/07-relatos/pages/R
 const NotificationsPage = React.lazy(() => import('@/08-notifications/pages/NotificationsPage'));
 const SettingsPage = React.lazy(() => import('@/10-settings/pages/SettingsPage'));
 const VersionHistoryPage = React.lazy(() => import('@/11-version-history/pages/VersionHistoryPage'));
-
+const AuditLogsPage = React.lazy(() => import('@/12-audit-logs/pages/AuditLogsPage'));
 
 import '@/00-global/styles/App.css';
 
@@ -82,7 +82,7 @@ function AppWrapper() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks')
+        .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks, can_delete_relatos, can_view_audit_logs')
         .eq('id', userId)
         .limit(1);
 
@@ -216,6 +216,7 @@ function AppWrapper() {
         <Route path="/users-management/create" element={<ProtectedRoute user={user} requiredPermission="can_create_users"><Suspense fallback={<LoadingSpinner />}><CreateUserPage /></Suspense></ProtectedRoute>} />
         <Route path="/users-management/:userId" element={<ProtectedRoute user={user} requiredPermission="can_view_users"><Suspense fallback={<LoadingSpinner />}><UserDetailsPage /></Suspense></ProtectedRoute>} />
         <Route path="/feedback-reports" element={<ProtectedRoute user={user} requiredPermission="can_view_feedbacks"><Suspense fallback={<LoadingSpinner />}><FeedbackReportsPage /></Suspense></ProtectedRoute>} />
+        <Route path="/audit-logs" element={<ProtectedRoute user={user} requiredPermission="can_view_audit_logs"><Suspense fallback={<LoadingSpinner />}><AuditLogsPage /></Suspense></ProtectedRoute>} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" />} />

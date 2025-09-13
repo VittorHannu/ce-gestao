@@ -38,12 +38,20 @@ function SettingsPage() {
             <DebugSettings />
           </SettingsGroup>
 
-          {userProfile?.can_view_users && (
+          {(userProfile?.can_view_users || userProfile?.can_view_audit_logs) && (
             <SettingsGroup title="Administração">
-              <SettingsItem
-                label="Gerenciar Usuários"
-                path="/users-management"
-              />
+              {userProfile?.can_view_users && (
+                <SettingsItem
+                  label="Gerenciar Usuários"
+                  path="/users-management"
+                />
+              )}
+              {userProfile?.can_view_audit_logs && (
+                <SettingsItem
+                  label="Logs de Auditoria"
+                  path="/audit-logs"
+                />
+              )}
             </SettingsGroup>
           )}
 
