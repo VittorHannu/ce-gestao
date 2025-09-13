@@ -42,3 +42,17 @@ export const fetchAuditLogs = async ({ page = 1, filters = {} }) => {
 
   return { data, count };
 };
+
+export const fetchAuditLogDiff = async ({ oldRecord, newRecord }) => {
+  const { data, error } = await supabase.rpc('jsonb_diff_val', {
+    val1: oldRecord,
+    val2: newRecord
+  });
+
+  if (error) {
+    console.error('Error fetching audit log diff:', error);
+    throw new Error(error.message);
+  }
+
+  return data;
+};
