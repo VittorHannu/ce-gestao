@@ -1,3 +1,8 @@
+## [0.1.21] - 2025-09-13
+
+### Fix
+- **migrations**: Corrige o processo de `db push` ao ignorar a migração de schema inicial e passar a versionar o `schema.sql` completo, evitando conflitos com bancos de dados já existentes.
+
 ## [0.1.16] - 2025-09-12
 
 ### Feat
