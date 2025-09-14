@@ -1,3 +1,9 @@
+## [0.1.25] - 2025-09-14
+
+### Correções (Fixes)
+- **relatos**: Corrige o cálculo da Pirâmide de Bird, garantindo que a contagem de status (concluído, em andamento, etc.) seja precisa.
+- **UI**: Adiciona um espaçador na página de relatos para evitar o "flicker" (layout shift) durante a renderização do gráfico da pirâmide.
+
 ## [0.1.24] - 2025-09-14
 
 ### Correções (Fixes)
