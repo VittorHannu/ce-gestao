@@ -1,3 +1,8 @@
+## [0.1.22] - 2025-09-14
+
+### Feat
+- **user**: Adiciona novas permissões na página de detalhes do usuário (`can_delete_any_comment`, `can_view_audit_logs`, `can_manage_classifications`).
+
 ## [0.1.21] - 2025-09-13
 
 ### Fix
