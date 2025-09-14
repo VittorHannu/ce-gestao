@@ -12,7 +12,7 @@ const classificationCategories = [
   { name: 'Causas', table: 'classificacao_causas' },
   { name: 'Danos', table: 'classificacao_danos' },
   { name: 'Ações Corretivas', table: 'classificacao_acoes_corretivas' },
-  { name: 'Riscos', table: 'classificacao_riscos' },
+  { name: 'Riscos', table: 'classificacao_riscos' }
 ];
 
 const GerenciarClassificacoesPage = () => {
@@ -25,10 +25,10 @@ const GerenciarClassificacoesPage = () => {
         <CardContent className="p-0">
           <div className="divide-y divide-border">
             {classificationCategories.map((category) => (
-                <Link key={category.table} to={`/adm/classificacoes/${category.table}`} className="flex items-center justify-between w-full p-4 hover:bg-muted/50 transition-colors">
-                  <span className="font-medium">{category.name}</span>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                </Link>
+              <Link key={category.table} to={`/adm/classificacoes/${category.table}`} className="flex items-center justify-between w-full p-4 hover:bg-muted/50 transition-colors">
+                <span className="font-medium">{category.name}</span>
+                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+              </Link>
             ))}
           </div>
         </CardContent>

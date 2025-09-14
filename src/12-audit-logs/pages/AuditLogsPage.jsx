@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter
-} from "@/01-shared/components/ui/dialog";
+} from '@/01-shared/components/ui/dialog';
 import { useToast } from '@/01-shared/hooks/useToast';
 
 // Helper function to generate human-readable log messages
@@ -21,41 +21,41 @@ const generateLogMessage = (log) => {
   const target = `${log.table_name} ${log.record_id ? `(${log.record_id.substring(0, 8)})` : ''}`;
 
   switch (log.action) {
-    case 'INSERT':
-      return `${author} criou um novo registro em ${log.table_name}.`;
-    case 'DELETE':
-      return `${author} excluiu um registro de ${log.table_name}.`;
-    case 'UPDATE': {
-      if (!log.old_record || !log.new_record) {
-        return `${author} atualizou ${target}`;
-      }
-      const oldKeys = Object.keys(log.old_record);
-      const newKeys = Object.keys(log.new_record);
-      const allKeys = new Set([...oldKeys, ...newKeys]);
-      const changedFields = [];
-      for (const key of allKeys) {
-        if (JSON.stringify(log.old_record[key]) !== JSON.stringify(log.new_record[key])) {
-          changedFields.push(key);
-        }
-      }
-
-      if (changedFields.length === 0) {
-        return `${author} atualizou ${target} (sem alterações visíveis).`;
-      }
-      if (changedFields.length === 1) {
-        const field = changedFields[0];
-        // Rule 1: Simple, short value changes
-        if (['status', 'tipo_relato'].includes(field) && String(log.new_record[field]).length < 25) {
-          return `${author} alterou ${field} de "${log.old_record[field]}" para "${log.new_record[field]}" em ${target}`;
-        }
-        // Rule 2: Long text changes
-        return `${author} atualizou o campo ${field} em ${target}`;
-      }
-      // Rule 3: Multiple changes
-      return `${author} atualizou ${changedFields.length} campos em ${target} (incluindo ${changedFields.join(', ')}).`;
+  case 'INSERT':
+    return `${author} criou um novo registro em ${log.table_name}.`;
+  case 'DELETE':
+    return `${author} excluiu um registro de ${log.table_name}.`;
+  case 'UPDATE': {
+    if (!log.old_record || !log.new_record) {
+      return `${author} atualizou ${target}`;
     }
-    default:
-      return `Ação desconhecida: ${log.action}`;
+    const oldKeys = Object.keys(log.old_record);
+    const newKeys = Object.keys(log.new_record);
+    const allKeys = new Set([...oldKeys, ...newKeys]);
+    const changedFields = [];
+    for (const key of allKeys) {
+      if (JSON.stringify(log.old_record[key]) !== JSON.stringify(log.new_record[key])) {
+        changedFields.push(key);
+      }
+    }
+
+    if (changedFields.length === 0) {
+      return `${author} atualizou ${target} (sem alterações visíveis).`;
+    }
+    if (changedFields.length === 1) {
+      const field = changedFields[0];
+      // Rule 1: Simple, short value changes
+      if (['status', 'tipo_relato'].includes(field) && String(log.new_record[field]).length < 25) {
+        return `${author} alterou ${field} de "${log.old_record[field]}" para "${log.new_record[field]}" em ${target}`;
+      }
+      // Rule 2: Long text changes
+      return `${author} atualizou o campo ${field} em ${target}`;
+    }
+    // Rule 3: Multiple changes
+    return `${author} atualizou ${changedFields.length} campos em ${target} (incluindo ${changedFields.join(', ')}).`;
+  }
+  default:
+    return `Ação desconhecida: ${log.action}`;
   }
 };
 
@@ -131,7 +131,7 @@ const AuditLogItem = ({ log }) => {
       const pseudoDiff = record ? Object.keys(record).map(key => ({
         field: key,
         old: log.old_record ? record[key] : null,
-        new: log.new_record ? record[key] : null,
+        new: log.new_record ? record[key] : null
       })) : [];
       setDiffData(pseudoDiff);
       return;
@@ -185,7 +185,7 @@ const AuditLogsPage = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['auditLogs', page],
     queryFn: () => fetchAuditLogs({ page }),
-    keepPreviousData: true,
+    keepPreviousData: true
   });
 
   const totalPages = data ? Math.ceil(data.count / 20) : 0;

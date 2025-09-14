@@ -11,7 +11,7 @@ const categoryMap = {
   classificacao_causas: 'Causas',
   classificacao_danos: 'Danos',
   classificacao_acoes_corretivas: 'Ações Corretivas',
-  classificacao_riscos: 'Riscos',
+  classificacao_riscos: 'Riscos'
 };
 
 const ManageCategoryPage = () => {

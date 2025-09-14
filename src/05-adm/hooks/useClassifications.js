@@ -3,7 +3,7 @@ import {
   getClassifications,
   addClassification,
   updateClassification,
-  deleteClassification,
+  deleteClassification
 } from '../services/classificationService';
 
 /**
@@ -17,16 +17,15 @@ export const useClassifications = (tableName) => {
   const { data: classifications = [], isLoading, isError } = useQuery({
     queryKey: ['classifications', tableName],
     queryFn: () => getClassifications(tableName),
-    enabled: !!tableName, // Only run the query if tableName is provided
+    enabled: !!tableName // Only run the query if tableName is provided
   });
 
   // Mutation to add a new classification
   const addMutation = useMutation({
     mutationFn: (newItem) => addClassification(tableName, newItem),
     onSuccess: () => {
-      // Invalidate and refetch the classifications query to show the new item
       queryClient.invalidateQueries({ queryKey: ['classifications', tableName] });
-    },
+    }
   });
 
   // Mutation to update a classification
@@ -34,7 +33,7 @@ export const useClassifications = (tableName) => {
     mutationFn: ({ id, updates }) => updateClassification(tableName, id, updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['classifications', tableName] });
-    },
+    }
   });
 
   // Mutation to delete a classification
@@ -42,15 +41,15 @@ export const useClassifications = (tableName) => {
     mutationFn: (id) => deleteClassification(tableName, id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['classifications', tableName] });
-    },
+    }
   });
 
   return {
     classifications,
     isLoading,
     isError,
-    addClassification: addMutation.mutateAsync,
-    updateClassification: updateMutation.mutateAsync,
-    deleteClassification: deleteMutation.mutateAsync,
+    addMutation,
+    updateMutation,
+    deleteMutation
   };
 };
