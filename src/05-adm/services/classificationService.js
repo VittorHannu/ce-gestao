@@ -91,3 +91,21 @@ export const getAllClassificationCounts = async () => {
   handleSupabaseError(error);
   return data;
 };
+
+export const getClassificationCategories = async () => {
+  const { data, error } = await supabase
+    .from('classification_categories')
+    .select('*')
+    .order('ordem', { ascending: true });
+  handleSupabaseError(error);
+  return data;
+};
+
+export const updateClassificationCategoryOrder = async (items) => {
+  const updates = items.map(item =>
+    supabase.from('classification_categories').update({ ordem: item.ordem }).eq('id', item.id)
+  );
+  const results = await Promise.all(updates);
+  results.forEach(result => handleSupabaseError(result.error));
+  return results;
+};
