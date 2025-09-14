@@ -1,17 +1,90 @@
 import React, { useState, useEffect } from 'react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical } from 'lucide-react';
 import { useClassifications } from '../hooks/useClassifications';
 import { Button } from '../../01-shared/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../../01-shared/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../01-shared/components/ui/table';
+import { Card, CardContent, CardHeader } from '../../01-shared/components/ui/card';
+import { Table, TableBody, TableCell, TableRow } from '../../01-shared/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '../../01-shared/components/ui/dialog';
-import { Input } from '../../01-shared/components/ui/input';
+import { Textarea } from '../../01-shared/components/ui/textarea';
 import { Label } from '../../01-shared/components/ui/label';
 import { PlusCircle, Trash2 } from 'lucide-react';
 import LoadingSpinner from '../../01-shared/components/LoadingSpinner';
 import { useToast } from '../../01-shared/hooks/useToast';
 
-const ClassificationTableManager = ({ tableName, title }) => {
-  const { classifications, isLoading, isError, addMutation, updateMutation, deleteMutation } = useClassifications(tableName);
+function SortableItem({ id, item, isReorderMode, onRowClick }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 1 : 'auto'
+  };
+
+  return (
+    <TableRow
+      ref={setNodeRef}
+      style={style}
+      onClick={() => !isReorderMode && onRowClick(item)}
+      className={`${!isReorderMode ? 'cursor-pointer hover:bg-muted/50' : ''} ${isDragging ? 'bg-muted' : ''}`}
+    >
+      <TableCell className="font-medium break-words whitespace-normal">
+        <div className="flex items-center">
+          {isReorderMode ? (
+            <Button variant="ghost" size="icon" {...attributes} {...listeners} className="cursor-grab mr-2">
+              <GripVertical className="h-5 w-5 text-muted-foreground" />
+            </Button>
+          ) : null}
+          {item.nome}
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+}
+
+const ClassificationTableManager = ({ tableName }) => {
+  const {
+    classifications,
+    isLoading,
+    isError,
+    addMutation,
+    updateMutation,
+    deleteMutation,
+    updateOrderMutation
+  } = useClassifications(tableName);
+
+  const [isReorderMode, setIsReorderMode] = useState(false);
+  const [orderedItems, setOrderedItems] = useState([]);
+
+  useEffect(() => {
+    if (classifications) {
+      setOrderedItems(classifications);
+    }
+  }, [classifications]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
   const [itemName, setItemName] = useState('');
@@ -71,41 +144,114 @@ const ClassificationTableManager = ({ tableName, title }) => {
     }
   }, [isDialogOpen]);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor, {
+      // Press delay of 250ms, with a tolerance of 5px of movement
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5
+      }
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates
+    })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (active.id !== over.id) {
+      setOrderedItems((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  const handleSaveChanges = async () => {
+    const itemsToUpdate = orderedItems.map((item, index) => ({
+      id: item.id,
+      ordem: index + 1
+    }));
+
+    try {
+      await updateOrderMutation.mutateAsync({ tableName, items: itemsToUpdate });
+      toast({ title: 'Sucesso', description: 'Ordem atualizada com sucesso.', variant: 'success' });
+      setIsReorderMode(false);
+    } catch (error) {
+      toast({ title: 'Erro', description: `Não foi possível atualizar a ordem: ${error.message}`, variant: 'destructive' });
+    }
+  };
+
+  const handleCancelReorder = () => {
+    setOrderedItems(classifications);
+    setIsReorderMode(false);
+  };
+
   const isMutating = addMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
+
+  const isOrderChanged = classifications && orderedItems && JSON.stringify(classifications.map(c => c.id)) !== JSON.stringify(orderedItems.map(o => o.id));
 
   if (isLoading) return <LoadingSpinner />;
   if (isError) return <div className="text-red-500">Ocorreu um erro ao buscar os dados.</div>;
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>{title}</CardTitle>
-        <Button onClick={() => handleOpenDialog()}>
-          <PlusCircle className="mr-2 h-4 w-4" /> Adicionar Item
-        </Button>
+      <CardHeader className="flex flex-row items-center justify-end">
+        <div className="flex gap-2">
+          {isReorderMode ? (
+            <>
+              <Button variant="outline" onClick={handleCancelReorder}>Cancelar</Button>
+              {isOrderChanged && (
+                <Button onClick={handleSaveChanges}>
+                  {updateOrderMutation.isPending ? <LoadingSpinner className="mr-2 h-4 w-4" /> : null}
+                  Salvar Ordem
+                </Button>
+              )}
+            </>
+          ) : (
+            <>
+              <Button variant="outline" onClick={() => setIsReorderMode(true)}>Alterar Ordem</Button>
+              <Button onClick={() => handleOpenDialog()}>
+                <PlusCircle className="mr-2 h-4 w-4" /> Adicionar Item
+              </Button>
+            </>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nome</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {classifications.map((item) => (
-              <TableRow key={item.id} onClick={() => handleOpenDialog(item)} className="cursor-pointer hover:bg-muted/50">
-                <TableCell className="font-medium break-words whitespace-normal">{item.nome}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        {classifications.length === 0 && (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <Table>
+            <TableBody>
+              <SortableContext
+                items={orderedItems.map(item => item.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {orderedItems.map((item) => (
+                  <SortableItem
+                    key={item.id}
+                    id={item.id}
+                    item={item}
+                    isReorderMode={isReorderMode}
+                    onRowClick={handleOpenDialog}
+                  />
+                ))}
+              </SortableContext>
+            </TableBody>
+          </Table>
+        </DndContext>
+        {orderedItems.length === 0 && (
           <p className="text-center text-muted-foreground py-8">Nenhum item encontrado.</p>
         )}
       </CardContent>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
+        <DialogContent size="sm">
           <DialogHeader>
             <DialogTitle>{currentItem ? 'Editar Item' : 'Adicionar Novo Item'}</DialogTitle>
             <DialogDescription>
@@ -114,41 +260,38 @@ const ClassificationTableManager = ({ tableName, title }) => {
           </DialogHeader>
           <form onSubmit={handleSubmit}>
             <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
+              <div className="grid grid-cols-4 gap-4">
+                <Label htmlFor="name" className="text-right pt-2">
                   Nome
                 </Label>
-                <Input
+                <Textarea
                   id="name"
                   value={itemName}
                   onChange={(e) => setItemName(e.target.value)}
                   className="col-span-3"
                   required
                   disabled={isMutating}
+                  rows="3"
                 />
               </div>
             </div>
-            <DialogFooter className="flex justify-between w-full">
-              <div>
-                {currentItem && (
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    onClick={handleDelete}
-                    disabled={isMutating}
-                  >
-                    {deleteMutation.isPending ? <LoadingSpinner className="mr-2 h-4 w-4" /> : <Trash2 className="mr-2 h-4 w-4" />}
-                    Excluir
-                  </Button>
-                )}
-              </div>
-              <div className="flex gap-2">
-                <Button type="button" variant="outline" onClick={handleCloseDialog} disabled={isMutating}>Cancelar</Button>
-                <Button type="submit" disabled={isMutating}>
-                  {addMutation.isPending || updateMutation.isPending ? <LoadingSpinner className="mr-2 h-4 w-4" /> : null}
-                  Salvar
+            <DialogFooter className="flex flex-col items-center gap-2 pt-4">
+              <Button type="submit" disabled={isMutating} className="w-full">
+                {addMutation.isPending || updateMutation.isPending ? <LoadingSpinner className="mr-2 h-4 w-4" /> : null}
+                Salvar
+              </Button>
+              {currentItem && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDelete}
+                  disabled={isMutating}
+                  className="w-full"
+                >
+                  {deleteMutation.isPending ? <LoadingSpinner className="mr-2 h-4 w-4" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                  Excluir
                 </Button>
-              </div>
+              )}
             </DialogFooter>
           </form>
         </DialogContent>

@@ -3,7 +3,8 @@ import {
   getClassifications,
   addClassification,
   updateClassification,
-  deleteClassification
+  deleteClassification,
+  updateClassificationOrder
 } from '../services/classificationService';
 
 /**
@@ -44,12 +45,24 @@ export const useClassifications = (tableName) => {
     }
   });
 
+  const updateOrderMutation = useMutation({
+    mutationFn: ({ tableName, items }) => updateClassificationOrder(tableName, items),
+    onSuccess: (_, { tableName }) => {
+      queryClient.invalidateQueries({ queryKey: ['classifications', tableName] });
+    },
+    onError: (error) => {
+      // TODO: Handle error
+      console.error('Error updating order:', error);
+    }
+  });
+
   return {
     classifications,
     isLoading,
     isError,
     addMutation,
     updateMutation,
-    deleteMutation
+    deleteMutation,
+    updateOrderMutation
   };
 };
