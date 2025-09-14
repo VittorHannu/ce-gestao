@@ -40,7 +40,15 @@ const UserDetailsPage = () => {
         { key: 'can_view_all_relatos', label: 'Pode ver todos os relatos' },
         { key: 'can_manage_relatos', label: 'Gerenciar Relatos' },
         { key: 'can_view_feedbacks', label: 'Visualizar Feedbacks' },
-        { key: 'can_delete_relatos', label: 'Deletar Relatos' }
+        { key: 'can_delete_relatos', label: 'Deletar Relatos' },
+        { key: 'can_delete_any_comment', label: 'Deletar Qualquer Comentário' }
+      ]
+    },
+    {
+      title: 'Administração',
+      permissions: [
+        { key: 'can_view_audit_logs', label: 'Visualizar Logs de Auditoria' },
+        { key: 'can_manage_classifications', label: 'Gerenciar Classificações' }
       ]
     }
   ];
@@ -51,7 +59,7 @@ const UserDetailsPage = () => {
         setLoading(true);
         const { data, error } = await supabase
           .from('profiles')
-          .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks, can_delete_relatos, can_manage_users, can_view_all_relatos')
+          .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks, can_delete_relatos, can_manage_users, can_view_all_relatos, can_delete_any_comment, can_view_audit_logs, can_manage_classifications')
           .eq('id', userId)
           .single();
 
@@ -66,7 +74,10 @@ const UserDetailsPage = () => {
           can_view_feedbacks: data.can_view_feedbacks,
           can_delete_relatos: data.can_delete_relatos,
           can_manage_users: data.can_manage_users,
-          can_view_all_relatos: data.can_view_all_relatos
+          can_view_all_relatos: data.can_view_all_relatos,
+          can_delete_any_comment: data.can_delete_any_comment,
+          can_view_audit_logs: data.can_view_audit_logs,
+          can_manage_classifications: data.can_manage_classifications
         });
       } catch (err) {
         setError(err);
