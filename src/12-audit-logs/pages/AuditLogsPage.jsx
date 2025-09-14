@@ -191,8 +191,7 @@ const AuditLogsPage = () => {
   const totalPages = data ? Math.ceil(data.count / 20) : 0;
 
   return (
-    <MainLayout>
-      <PageHeader title="Logs de Auditoria" />
+    <MainLayout header={<PageHeader title="Logs de Auditoria" />}>
       <div className="p-4">
         {isLoading && <LoadingSpinner />}
         {isError && <p className="text-red-500">Erro ao carregar logs: {error.message}</p>}

@@ -57,6 +57,8 @@ const NotificationsPage = React.lazy(() => import('@/08-notifications/pages/Noti
 const SettingsPage = React.lazy(() => import('@/10-settings/pages/SettingsPage'));
 const VersionHistoryPage = React.lazy(() => import('@/11-version-history/pages/VersionHistoryPage'));
 const AuditLogsPage = React.lazy(() => import('@/12-audit-logs/pages/AuditLogsPage'));
+const GerenciarClassificacoesPage = React.lazy(() => import('@/05-adm/pages/GerenciarClassificacoesPage'));
+const ManageCategoryPage = React.lazy(() => import('@/05-adm/pages/ManageCategoryPage'));
 
 import '@/00-global/styles/App.css';
 
@@ -82,7 +84,7 @@ function AppWrapper() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks, can_delete_relatos, can_view_audit_logs')
+        .select('id, email, full_name, is_active, can_manage_relatos, can_view_users, can_create_users, can_delete_users, can_view_feedbacks, can_delete_relatos, can_view_audit_logs, can_manage_classifications')
         .eq('id', userId)
         .limit(1);
 
@@ -217,6 +219,8 @@ function AppWrapper() {
         <Route path="/users-management/:userId" element={<ProtectedRoute user={user} requiredPermission="can_view_users"><Suspense fallback={<LoadingSpinner />}><UserDetailsPage /></Suspense></ProtectedRoute>} />
         <Route path="/feedback-reports" element={<ProtectedRoute user={user} requiredPermission="can_view_feedbacks"><Suspense fallback={<LoadingSpinner />}><FeedbackReportsPage /></Suspense></ProtectedRoute>} />
         <Route path="/audit-logs" element={<ProtectedRoute user={user} requiredPermission="can_view_audit_logs"><Suspense fallback={<LoadingSpinner />}><AuditLogsPage /></Suspense></ProtectedRoute>} />
+        <Route path="/adm/classificacoes" element={<ProtectedRoute user={user} requiredPermission="can_manage_classifications"><Suspense fallback={<LoadingSpinner />}><GerenciarClassificacoesPage /></Suspense></ProtectedRoute>} />
+        <Route path="/adm/classificacoes/:tableName" element={<ProtectedRoute user={user} requiredPermission="can_manage_classifications"><Suspense fallback={<LoadingSpinner />}><ManageCategoryPage /></Suspense></ProtectedRoute>} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" />} />
