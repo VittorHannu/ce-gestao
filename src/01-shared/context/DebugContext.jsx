@@ -17,7 +17,8 @@ export const DebugProvider = ({ children }) => {
 
   useEffect(() => {
     const loadEruda = async () => {
-      if (isErudaEnabled) {
+      // Only load Eruda in development mode
+      if (isErudaEnabled && import.meta.env.DEV) {
         try {
           const erudaModule = await import('eruda');
           erudaModule.default.init();
@@ -31,6 +32,7 @@ export const DebugProvider = ({ children }) => {
           erudaRef.current.destroy();
           erudaRef.current = null;
         }
+        // We still want to allow disabling it, even in prod, if it somehow got enabled.
         localStorage.setItem('erudaEnabled', 'false');
       }
     };
