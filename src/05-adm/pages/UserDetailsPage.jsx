@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useToast } from '@/01-shared/hooks/useToast';
 import { supabase } from '@/01-shared/lib/supabase';
 
 import { Checkbox } from '@/01-shared/components/ui/checkbox';
@@ -11,7 +12,7 @@ import PageHeader from '@/01-shared/components/PageHeader';
 const UserDetailsPage = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
-  const { showToast } = useOutletContext();
+  const { toast } = useToast();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -81,14 +82,14 @@ const UserDetailsPage = () => {
         });
       } catch (err) {
         setError(err);
-        showToast(`Erro ao carregar usuário: ${err.message}`, 'error');
+        toast(`Erro ao carregar usuário: ${err.message}`, 'error');
       } finally {
         setLoading(false);
       }
     };
 
     fetchUser();
-  }, [userId, showToast]);
+  }, [userId, toast]);
 
   const handlePermissionChange = (key, value) => {
     setEditedPermissions(prev => ({
@@ -99,18 +100,23 @@ const UserDetailsPage = () => {
 
   const handleSavePermissions = async () => {
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .update(editedPermissions)
-        .eq('id', userId);
+        .eq('id', userId)
+        .select();
 
       if (error) throw error;
 
-      showToast('Permissões atualizadas com sucesso!', 'success');
+      if (!data || data.length === 0) {
+        throw new Error('Não foi possível salvar as permissões. Verifique se você tem permissão para esta ação.');
+      }
+
+      toast('Permissões atualizadas com sucesso!', 'success');
       navigate('/users-management');
     } catch (err) {
       console.error('Erro ao salvar permissões:', err);
-      showToast(`Erro ao salvar permissões: ${err.message}`, 'error');
+      toast(`Erro ao salvar permissões: ${err.message}`, 'error');
     }
   };
 
@@ -126,11 +132,11 @@ const UserDetailsPage = () => {
 
       if (error) throw error;
 
-      showToast(`Usuário ${user.full_name} foi deletado (simulação).`, 'success');
+      toast(`Usuário ${user.full_name} foi deletado (simulação).`, 'success');
       navigate('/users-management');
     } catch (err) {
       console.error('Erro ao deletar usuário:', err);
-      showToast(`Erro ao deletar usuário: ${err.message}`, 'error');
+      toast(`Erro ao deletar usuário: ${err.message}`, 'error');
     } finally {
       setIsDeleteDialogOpen(false);
     }

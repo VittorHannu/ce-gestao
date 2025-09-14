@@ -1,3 +1,10 @@
+## [0.1.24] - 2025-09-14
+
+### Correções (Fixes)
+- **admin**: Corrige bugs na página de detalhes do usuário (`UserDetailsPage.jsx`):
+  - Garante que as notificações de toast sejam exibidas corretamente ao corrigir o uso do hook `useToast`.
+  - Impede que a mensagem de sucesso seja exibida em caso de falha na atualização de permissões, adicionando uma verificação no retorno da API.
+
 ## [0.1.23] - 2025-09-14
 
 ### Correções (Fixes)
