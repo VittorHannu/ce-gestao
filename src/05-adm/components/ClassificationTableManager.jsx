@@ -28,7 +28,7 @@ import { PlusCircle, Trash2 } from 'lucide-react';
 import LoadingSpinner from '../../01-shared/components/LoadingSpinner';
 import { useToast } from '../../01-shared/hooks/useToast';
 
-function SortableItem({ id, item, isReorderMode, onRowClick }) {
+function SortableItem({ id, item, index, isReorderMode, onRowClick }) {
   const {
     attributes,
     listeners,
@@ -58,7 +58,9 @@ function SortableItem({ id, item, isReorderMode, onRowClick }) {
             <Button variant="ghost" size="icon" {...attributes} {...listeners} className="cursor-grab mr-2">
               <GripVertical className="h-5 w-5 text-muted-foreground" />
             </Button>
-          ) : null}
+          ) : (
+            <span className="mr-4 text-muted-foreground w-6 text-center">{index + 1}.</span>
+          )}
           {item.nome}
         </div>
       </TableCell>
@@ -197,106 +199,112 @@ const ClassificationTableManager = ({ tableName }) => {
   if (isError) return <div className="text-red-500">Ocorreu um erro ao buscar os dados.</div>;
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-end">
-        <div className="flex gap-2">
-          {isReorderMode ? (
-            <>
-              <Button variant="outline" onClick={handleCancelReorder}>Cancelar</Button>
-              {isOrderChanged && (
-                <Button onClick={handleSaveChanges}>
-                  {updateOrderMutation.isPending ? <LoadingSpinner className="mr-2 h-4 w-4" /> : null}
-                  Salvar Ordem
+    <>
+      <p className="mb-4 text-sm text-muted-foreground text-center">
+        Total de itens na categoria: {orderedItems.length}
+      </p>
+      <Card className="max-w-lg mx-auto">
+        <CardHeader className="flex flex-row items-center justify-end">
+          <div className="flex gap-2">
+            {isReorderMode ? (
+              <>
+                <Button variant="outline" onClick={handleCancelReorder}>Cancelar</Button>
+                {isOrderChanged && (
+                  <Button onClick={handleSaveChanges}>
+                    {updateOrderMutation.isPending ? <LoadingSpinner className="mr-2 h-4 w-4" /> : null}
+                    Salvar Ordem
+                  </Button>
+                )}
+              </>
+            ) : (
+              <>
+                <Button variant="outline" onClick={() => setIsReorderMode(true)}>Alterar Ordem</Button>
+                <Button onClick={() => handleOpenDialog()}>
+                  <PlusCircle className="mr-2 h-4 w-4" /> Adicionar Item
                 </Button>
-              )}
-            </>
-          ) : (
-            <>
-              <Button variant="outline" onClick={() => setIsReorderMode(true)}>Alterar Ordem</Button>
-              <Button onClick={() => handleOpenDialog()}>
-                <PlusCircle className="mr-2 h-4 w-4" /> Adicionar Item
-              </Button>
-            </>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent>
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <Table>
-            <TableBody>
-              <SortableContext
-                items={orderedItems.map(item => item.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                {orderedItems.map((item) => (
-                  <SortableItem
-                    key={item.id}
-                    id={item.id}
-                    item={item}
-                    isReorderMode={isReorderMode}
-                    onRowClick={handleOpenDialog}
-                  />
-                ))}
-              </SortableContext>
-            </TableBody>
-          </Table>
-        </DndContext>
-        {orderedItems.length === 0 && (
-          <p className="text-center text-muted-foreground py-8">Nenhum item encontrado.</p>
-        )}
-      </CardContent>
-
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent size="sm">
-          <DialogHeader>
-            <DialogTitle>{currentItem ? 'Editar Item' : 'Adicionar Novo Item'}</DialogTitle>
-            <DialogDescription>
-              {currentItem ? 'Edite as informações do item abaixo.' : 'Preencha as informações do novo item abaixo.'}
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleSubmit}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 gap-4">
-                <Label htmlFor="name" className="text-right pt-2">
-                  Nome
-                </Label>
-                <Textarea
-                  id="name"
-                  value={itemName}
-                  onChange={(e) => setItemName(e.target.value)}
-                  className="col-span-3"
-                  required
-                  disabled={isMutating}
-                  rows="3"
-                />
-              </div>
-            </div>
-            <DialogFooter className="flex flex-col items-center gap-2 pt-4">
-              <Button type="submit" disabled={isMutating} className="w-full">
-                {addMutation.isPending || updateMutation.isPending ? <LoadingSpinner className="mr-2 h-4 w-4" /> : null}
-                Salvar
-              </Button>
-              {currentItem && (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={handleDelete}
-                  disabled={isMutating}
-                  className="w-full"
+              </>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <Table>
+              <TableBody>
+                <SortableContext
+                  items={orderedItems.map(item => item.id)}
+                  strategy={verticalListSortingStrategy}
                 >
-                  {deleteMutation.isPending ? <LoadingSpinner className="mr-2 h-4 w-4" /> : <Trash2 className="mr-2 h-4 w-4" />}
-                  Excluir
+                  {orderedItems.map((item, index) => (
+                    <SortableItem
+                      key={item.id}
+                      id={item.id}
+                      item={item}
+                      index={index}
+                      isReorderMode={isReorderMode}
+                      onRowClick={handleOpenDialog}
+                    />
+                  ))}
+                </SortableContext>
+              </TableBody>
+            </Table>
+          </DndContext>
+          {orderedItems.length === 0 && (
+            <p className="text-center text-muted-foreground py-8">Nenhum item encontrado.</p>
+          )}
+        </CardContent>
+
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent size="sm">
+            <DialogHeader>
+              <DialogTitle>{currentItem ? 'Editar Item' : 'Adicionar Novo Item'}</DialogTitle>
+              <DialogDescription>
+                {currentItem ? 'Edite as informações do item abaixo.' : 'Preencha as informações do novo item abaixo.'}
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmit}>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 gap-4">
+                  <Label htmlFor="name" className="text-right pt-2">
+                    Nome
+                  </Label>
+                  <Textarea
+                    id="name"
+                    value={itemName}
+                    onChange={(e) => setItemName(e.target.value)}
+                    className="col-span-3"
+                    required
+                    disabled={isMutating}
+                    rows="3"
+                  />
+                </div>
+              </div>
+              <DialogFooter className="flex flex-col items-center gap-2 pt-4">
+                <Button type="submit" disabled={isMutating} className="w-full">
+                  {addMutation.isPending || updateMutation.isPending ? <LoadingSpinner className="mr-2 h-4 w-4" /> : null}
+                  Salvar
                 </Button>
-              )}
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </Card>
+                {currentItem && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={handleDelete}
+                    disabled={isMutating}
+                    className="w-full"
+                  >
+                    {deleteMutation.isPending ? <LoadingSpinner className="mr-2 h-4 w-4" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                    Excluir
+                  </Button>
+                )}
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </Card>
+    </>
   );
 };
 

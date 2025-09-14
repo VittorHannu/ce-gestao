@@ -85,3 +85,9 @@ export const updateClassificationOrder = async (tableName, items) => {
   results.forEach(result => handleSupabaseError(result.error));
   return results;
 };
+
+export const getAllClassificationCounts = async () => {
+  const { data, error } = await supabase.rpc('get_all_classification_counts');
+  handleSupabaseError(error);
+  return data;
+};
