@@ -1,3 +1,8 @@
+## [0.1.23] - 2025-09-14
+
+### Correções (Fixes)
+- **build**: Remove a ferramenta de depuração `eruda` do build de produção, reduzindo o tamanho final do aplicativo em mais de 500KB e eliminando riscos de segurança.
+
 ## [0.1.22] - 2025-09-14
 
 ### Feat
