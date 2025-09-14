@@ -7,14 +7,14 @@ import {
   PointerSensor,
   TouchSensor,
   useSensor,
-  useSensors,
+  useSensors
 } from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-  useSortable,
+  useSortable
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, ChevronRight, Loader2 } from 'lucide-react';
@@ -34,39 +34,39 @@ function SortableLink({ id, category, count, isLoadingCount, isReorderMode }) {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 1 : 'auto',
+    zIndex: isDragging ? 1 : 'auto'
   };
 
   const linkContent = (
-      <div className="flex items-center justify-between w-full p-4 group-hover:bg-muted/50 transition-colors">
-        <div className="flex items-center gap-2">
-            {isReorderMode && (
-            <span {...attributes} {...listeners} className="cursor-grab touch-none p-2 -ml-2">
-                <GripVertical className="h-5 w-5 text-muted-foreground" />
-            </span>
-            )}
-            <span className="font-medium">{category.name}</span>
-        </div>
-        <div className="flex items-center gap-4">
-            {isLoadingCount ? (
-            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-            ) : (
-            <Badge variant="secondary">{count}</Badge>
-            )}
-            <ChevronRight className="h-5 w-5 text-muted-foreground" />
-        </div>
+    <div className="flex items-center justify-between w-full p-4 group-hover:bg-muted/50 transition-colors">
+      <div className="flex items-center gap-2">
+        {isReorderMode && (
+          <span {...attributes} {...listeners} className="cursor-grab touch-none p-2 -ml-2">
+            <GripVertical className="h-5 w-5 text-muted-foreground" />
+          </span>
+        )}
+        <span className="font-medium">{category.name}</span>
       </div>
+      <div className="flex items-center gap-4">
+        {isLoadingCount ? (
+          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+        ) : (
+          <Badge variant="secondary">{count}</Badge>
+        )}
+        <ChevronRight className="h-5 w-5 text-muted-foreground" />
+      </div>
+    </div>
   );
 
   return (
     <div ref={setNodeRef} style={style} className="group bg-background">
-        {isReorderMode ? (
-            linkContent
-        ) : (
-            <Link to={`/adm/classificacoes/${category.table_name}`} className="w-full">
-                {linkContent}
-            </Link>
-        )}
+      {isReorderMode ? (
+        linkContent
+      ) : (
+        <Link to={`/adm/classificacoes/${category.table_name}`} className="w-full">
+          {linkContent}
+        </Link>
+      )}
     </div>
   );
 }
@@ -90,11 +90,11 @@ const GerenciarClassificacoesPage = () => {
     useSensor(TouchSensor, {
       activationConstraint: {
         delay: 250,
-        tolerance: 5,
-      },
+        tolerance: 5
+      }
     }),
     useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
+      coordinateGetter: sortableKeyboardCoordinates
     })
   );
 
@@ -112,7 +112,7 @@ const GerenciarClassificacoesPage = () => {
   const handleSaveChanges = async () => {
     const itemsToUpdate = orderedItems.map((item, index) => ({
       id: item.id,
-      ordem: index + 1,
+      ordem: index + 1
     }));
     await updateOrderMutation.mutateAsync(itemsToUpdate);
     setIsReorderMode(false);
@@ -135,21 +135,21 @@ const GerenciarClassificacoesPage = () => {
       </p>
       <Card className="max-w-lg mx-auto">
         <CardHeader className="flex flex-row items-center justify-end p-4 border-b">
-            <div className="flex gap-2">
-                {isReorderMode ? (
-                <>
-                    <Button variant="outline" onClick={handleCancelReorder}>Cancelar</Button>
-                    {isOrderChanged && (
-                    <Button onClick={handleSaveChanges} disabled={updateOrderMutation.isPending}>
-                        {updateOrderMutation.isPending && <LoadingSpinner className="mr-2 h-4 w-4" />}
+          <div className="flex gap-2">
+            {isReorderMode ? (
+              <>
+                <Button variant="outline" onClick={handleCancelReorder}>Cancelar</Button>
+                {isOrderChanged && (
+                  <Button onClick={handleSaveChanges} disabled={updateOrderMutation.isPending}>
+                    {updateOrderMutation.isPending && <LoadingSpinner className="mr-2 h-4 w-4" />}
                         Salvar Ordem
-                    </Button>
-                    )}
-                </>
-                ) : (
-                <Button variant="outline" onClick={() => setIsReorderMode(true)}>Alterar Ordem</Button>
+                  </Button>
                 )}
-            </div>
+              </>
+            ) : (
+              <Button variant="outline" onClick={() => setIsReorderMode(true)}>Alterar Ordem</Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent className="p-0">
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>

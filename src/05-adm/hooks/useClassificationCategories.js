@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   getClassificationCategories,
-  updateClassificationCategoryOrder,
+  updateClassificationCategoryOrder
 } from '../services/classificationService';
 import { useToast } from '../../01-shared/hooks/useToast';
 
@@ -12,10 +12,10 @@ export const useClassificationCategories = () => {
   const {
     data: categories,
     isLoading,
-    isError,
+    isError
   } = useQuery({
     queryKey: ['classification_categories'],
-    queryFn: getClassificationCategories,
+    queryFn: getClassificationCategories
   });
 
   const updateOrderMutation = useMutation({
@@ -25,22 +25,22 @@ export const useClassificationCategories = () => {
       toast({
         title: 'Sucesso',
         description: 'Ordem das categorias atualizada com sucesso.',
-        variant: 'success',
+        variant: 'success'
       });
     },
     onError: (error) => {
       toast({
         title: 'Erro',
         description: `Não foi possível atualizar a ordem: ${error.message}`,
-        variant: 'destructive',
+        variant: 'destructive'
       });
-    },
+    }
   });
 
   return {
     categories,
     isLoading,
     isError,
-    updateOrderMutation,
+    updateOrderMutation
   };
 };

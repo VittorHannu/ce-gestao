@@ -4,6 +4,6 @@ import { getAllClassificationCounts } from '../services/classificationService';
 export const useClassificationCounts = () => {
   return useQuery({
     queryKey: ['classificationCounts'],
-    queryFn: getAllClassificationCounts,
+    queryFn: getAllClassificationCounts
   });
 };

@@ -52,7 +52,7 @@ function SortableItem({ id, item, index, isReorderMode, onRowClick }) {
       onClick={() => !isReorderMode && onRowClick(item)}
       className={`${!isReorderMode ? 'cursor-pointer hover:bg-muted/50' : ''} ${isDragging ? 'bg-muted' : ''}`}
     >
-      <TableCell className="font-medium break-words whitespace-normal">
+      <TableCell className="font-medium break-words whitespace-normal py-4">
         <div className="flex items-center">
           {isReorderMode ? (
             <span {...attributes} {...listeners} className="cursor-grab touch-none p-2 mr-2">
