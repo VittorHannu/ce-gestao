@@ -55,9 +55,9 @@ function SortableItem({ id, item, index, isReorderMode, onRowClick }) {
       <TableCell className="font-medium break-words whitespace-normal">
         <div className="flex items-center">
           {isReorderMode ? (
-            <Button variant="ghost" size="icon" {...attributes} {...listeners} className="cursor-grab mr-2">
+            <span {...attributes} {...listeners} className="cursor-grab touch-none p-2 mr-2">
               <GripVertical className="h-5 w-5 text-muted-foreground" />
-            </Button>
+            </span>
           ) : (
             <span className="mr-4 text-muted-foreground w-6 text-center">{index + 1}.</span>
           )}
@@ -258,7 +258,7 @@ const ClassificationTableManager = ({ tableName }) => {
         </CardContent>
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent size="sm">
+          <DialogContent className="!max-w-[calc(100%-2rem)] sm:!max-w-xl lg:!max-w-lg xl:!max-w-md mx-auto">
             <DialogHeader>
               <DialogTitle>{currentItem ? 'Editar Item' : 'Adicionar Novo Item'}</DialogTitle>
               <DialogDescription>
