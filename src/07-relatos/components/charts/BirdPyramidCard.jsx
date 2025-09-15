@@ -112,26 +112,28 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
     <div className="p-6 border rounded-lg bg-white shadow-md">
       <div className="pb-4 mb-4 border-b border-gray-200">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Pirâmide de Bird</h2>
-        <div className="flex justify-between w-full">
-          <div className="flex space-x-2">
+        <div className="flex flex-col md:flex-row md:justify-between w-full gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setShowZeroBars(!showZeroBars)}
-              className={!showZeroBars ? 'bg-gray-200' : ''}
+              className={`flex items-center space-x-2 ${!showZeroBars ? 'bg-gray-200' : ''}`}
             >
               {showZeroBars ? <FilterX className="h-4 w-4" /> : <Filter className="h-4 w-4" />}
+              <span>Ocultar os vazios</span>
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setShowDetailedView(!showDetailedView)}
-              className={showDetailedView ? 'bg-gray-200' : ''}
+              className={`flex items-center space-x-2 ${showDetailedView ? 'bg-gray-200' : ''}`}
             >
               <Layers className="h-4 w-4" />
+              <span>Filtrar por tratativa</span>
             </Button>
           </div>
-          <div className="flex space-x-2">
+          <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
               size="sm"
