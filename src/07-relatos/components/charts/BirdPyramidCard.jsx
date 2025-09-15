@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/01-shared/components/ui/button';
-import { AlignLeft, AlignCenter, Filter, FilterX, Layers } from 'lucide-react';
+import { AlignLeft, AlignCenter, Filter, FilterX, Layers, Info } from 'lucide-react';
+import { Popover, PopoverTrigger, PopoverContent } from '@/01-shared/components/ui/popover';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { fetchRelatosCountByType } from '../../services/relatoStatsService';
@@ -17,7 +18,7 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
   });
   const [showDetailedView, setShowDetailedView] = useState(() => {
     const storedValue = sessionStorage.getItem('birdPyramid_showDetailedView');
-    return storedValue !== null ? JSON.parse(storedValue) : false;
+    return storedValue !== null ? JSON.parse(storedValue) : true;
   });
 
   const getChartData = useCallback(async () => {
@@ -132,6 +133,32 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
               <Layers className="h-4 w-4" />
               <span>Filtrar por tratativa</span>
             </Button>
+            {showDetailedView && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="p-2">
+                    <Info className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto">
+                  <div className="text-sm text-gray-600">
+                    <p className="font-semibold mb-2">Legenda de Status:</p>
+                    <div className="flex items-center mb-1">
+                      <span className="w-4 h-4 bg-green-500 rounded-full mr-2"></span>
+                      <span>Concluído</span>
+                    </div>
+                    <div className="flex items-center mb-1">
+                      <span className="w-4 h-4 bg-amber-500 rounded-full mr-2"></span>
+                      <span>Em Andamento</span>
+                    </div>
+                    <div className="flex items-center mb-1">
+                      <span className="w-4 h-4 bg-red-500 rounded-full mr-2"></span>
+                      <span>Sem Tratativa</span>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
           </div>
           <div className="flex flex-wrap gap-2">
             <Button
@@ -176,7 +203,12 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
                 to={`/relatos/lista?tipo_relato=${encodeURIComponent(item.name)}&startDate=${startDate}&endDate=${endDate}`}
                 className={`w-full flex flex-col ${barAlignment === 'left' ? 'items-start' : 'items-center'} cursor-pointer`}
               >
-                <p className="text-gray-700 font-medium mb-1">{item.name}</p>
+                <p className="text-gray-700 font-medium mb-1">
+                  {item.name}
+                  {showDetailedView && (
+                    <span className="text-sm text-gray-500 font-normal ml-1">({item.value})</span>
+                  )}
+                </p>
                 <div className={`flex items-center ${barAlignment === 'left' ? 'justify-start' : 'justify-center'} w-full`}>
                   {item.value === 0 ? (
                     <span className="ml-2 text-gray-700 font-bold">0</span>
@@ -270,23 +302,6 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
         </div>
       ) : (
         <p className="text-center text-gray-500">Nenhum dado disponível para a Pirâmide de Bird no período selecionado.</p>
-      )}
-      {showDetailedView && (
-        <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-600">
-          <p className="font-semibold mb-2">Legenda de Status:</p>
-          <div className="flex items-center mb-1">
-            <span className="w-4 h-4 bg-green-500 rounded-full mr-2"></span>
-            <span>Concluído</span>
-          </div>
-          <div className="flex items-center mb-1">
-            <span className="w-4 h-4 bg-amber-500 rounded-full mr-2"></span>
-            <span>Em Andamento</span>
-          </div>
-          <div className="flex items-center mb-1">
-            <span className="w-4 h-4 bg-red-500 rounded-full mr-2"></span>
-            <span>Sem Tratativa</span>
-          </div>
-        </div>
       )}
     </div>
   );
