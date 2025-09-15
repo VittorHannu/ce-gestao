@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import * as Tooltip from '@radix-ui/react-tooltip';
-import { cn } from '@/01-shared/utils/utils';
+import { cn } from '@/lib/utils';
 
 import PwaReloadPrompt from './PwaReloadPrompt';
 

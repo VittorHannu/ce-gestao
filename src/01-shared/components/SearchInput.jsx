@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { debounce } from '@/01-shared/utils/utils'; // Importe a função debounce
+import { debounce } from '@/lib/utils';
 
 const SearchInput = ({ value, onChange, placeholder }) => {
   const [searchTerm, setSearchTerm] = useState(value);

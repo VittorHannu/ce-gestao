@@ -2,7 +2,7 @@ import { useRef, useEffect, useMemo } from 'react';
 import { isSameMonth } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-import { cn } from '@/01-shared/utils/utils';
+import { cn } from '@/lib/utils';
 import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
 import { Button } from '@/01-shared/components/ui/button';
 

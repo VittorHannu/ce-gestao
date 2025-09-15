@@ -1,27 +1,111 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Table, TableBody, TableCell, TableRow } from '@/01-shared/components/ui/table';
 import { Textarea } from '@/01-shared/components/ui/textarea';
+import { Popover, PopoverContent, PopoverTrigger } from '@/01-shared/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 import { supabase } from '@/01-shared/lib/supabase';
 import useAutosizeTextArea from '@/01-shared/hooks/useAutosizeTextArea';
+import { Button } from '@/01-shared/components/ui/button';
 
-const RelatoDisplayDetails = ({ relato, responsibles = [], editedDescription, onDescriptionChange, isDirty }) => {
-  const [relatorName, setRelatorName] = useState('Carregando...');
-  const [isEditingDescription, setIsEditingDescription] = useState(false);
+// Helper component for editable date fields
+const EditableDateField = ({ label, fieldKey, value, onFieldChange, isDirty, originalValue }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const isFieldDirty = isDirty && value !== originalValue;
+
+  const handleDateSelect = (date) => {
+    onFieldChange(fieldKey, date.toISOString().split('T')[0]); // formata para YYYY-MM-DD
+    setIsOpen(false);
+  };
+
+  const handleClear = () => {
+    onFieldChange(fieldKey, null);
+    setIsOpen(false);
+  };
+
+  // Adiciona T00:00:00 para garantir que a data seja interpretada no fuso horário local
+  const selectedDate = value ? new Date(`${value.split('T')[0]}T00:00:00`) : null;
+
+  return (
+    <TableRow>
+      <TableCell className="whitespace-normal">
+        <div className={`transition-colors rounded-md ${(isOpen || isFieldDirty) ? 'p-2 bg-yellow-50' : ''}`}>
+          <p className="font-bold">{label}</p>
+          <Popover open={isOpen} onOpenChange={setIsOpen}>
+            <PopoverTrigger asChild>
+              <div className="break-words cursor-pointer min-h-[24px]">
+                {selectedDate ? selectedDate.toLocaleDateString() : <span className="text-gray-500 italic">Não informado</span>}
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={handleDateSelect}
+                initialFocus
+              />
+              <div className="p-2 border-t">
+                <Button variant="ghost" size="sm" className="w-full" onClick={handleClear}>
+                  Limpar
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+};
+
+
+// Helper component for editable fields
+const EditableField = ({ label, fieldKey, value, onFieldChange, isDirty, originalValue }) => {
+  const [isEditing, setIsEditing] = useState(false);
   const textAreaRef = useRef(null);
 
-  useAutosizeTextArea(textAreaRef.current, editedDescription);
+  useAutosizeTextArea(textAreaRef.current, value);
 
   useEffect(() => {
-    if (isEditingDescription && textAreaRef.current) {
+    if (isEditing && textAreaRef.current) {
       const textarea = textAreaRef.current;
       const length = textarea.value.length;
-      // Use a short timeout to ensure the focus and selection happens after the element is fully ready
       setTimeout(() => {
         textarea.focus();
         textarea.setSelectionRange(length, length);
       }, 0);
     }
-  }, [isEditingDescription]);
+  }, [isEditing]);
+
+  const isFieldDirty = isDirty && (value !== (originalValue || ''));
+
+  return (
+    <TableRow>
+      <TableCell className="whitespace-normal">
+        <div className={`transition-colors rounded-md ${(isEditing || isFieldDirty) ? 'p-2 bg-yellow-50' : ''}`}>
+          <p className="font-bold">{label}</p>
+          {isEditing ? (
+            <Textarea
+              ref={textAreaRef}
+              value={value}
+              onChange={(e) => onFieldChange(fieldKey, e.target.value)}
+              onBlur={() => setIsEditing(false)}
+              autoFocus
+              variant="unstyled"
+              className="w-full bg-transparent focus:outline-none"
+            />
+          ) : (
+            <div className="break-words cursor-pointer min-h-[24px]" onClick={() => setIsEditing(true)}>
+              {value || <span className="text-gray-500 italic">Não informado</span>}
+            </div>
+          )}
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+};
+
+
+const RelatoDisplayDetails = ({ relato, responsibles = [], editedFields, onFieldChange, isDirty }) => {
+  const [relatorName, setRelatorName] = useState('Carregando...');
 
   useEffect(() => {
     const fetchRelatorName = async () => {
@@ -29,27 +113,18 @@ const RelatoDisplayDetails = ({ relato, responsibles = [], editedDescription, on
         setRelatorName('Anônimo');
         return;
       }
-
       if (relato.user_id) {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('id', relato.user_id)
-          .single();
-
+        const { data, error } = await supabase.from('profiles').select('full_name').eq('id', relato.user_id).single();
         if (error) {
           console.error('Erro ao buscar nome do relator:', error);
           setRelatorName('Erro ao carregar');
-        } else if (data) {
-          setRelatorName(data.full_name || 'Não informado');
         } else {
-          setRelatorName('Não informado');
+          setRelatorName(data?.full_name || 'Não informado');
         }
       } else {
         setRelatorName('Não informado');
       }
     };
-
     fetchRelatorName();
   }, [relato.is_anonymous, relato.user_id]);
 
@@ -67,13 +142,8 @@ const RelatoDisplayDetails = ({ relato, responsibles = [], editedDescription, on
     return 'Sem Tratativa';
   };
 
-  if (!relato) {
-    return <p>Nenhum relato para exibir.</p>;
-  }
-
   const renderRow = (label, value) => {
     const displayValue = value === null || value === undefined || value === '' ? <span className="text-gray-500 italic">Não informado</span> : value;
-    
     return (
       <TableRow>
         <TableCell className="whitespace-normal">
@@ -87,13 +157,13 @@ const RelatoDisplayDetails = ({ relato, responsibles = [], editedDescription, on
   };
 
   const getStatusText = (status) => {
-    const statusMap = {
-      APROVADO: 'Aprovado',
-      PENDENTE: 'Pendente',
-      REPROVADO: 'Reprovado'
-    };
+    const statusMap = { APROVADO: 'Aprovado', PENDENTE: 'Pendente', REPROVADO: 'Reprovado' };
     return statusMap[status] || status;
   };
+
+  if (!relato || !editedFields) {
+    return <p>Carregando detalhes do relato...</p>;
+  }
 
   const responsibleNames = responsibles.map(r => formatFullName(r.full_name)).join(', ') || null;
 
@@ -101,49 +171,62 @@ const RelatoDisplayDetails = ({ relato, responsibles = [], editedDescription, on
     <Table>
       <TableBody>
         {renderRow('Código do Relato', relato.relato_code || relato.id)}
-        {renderRow('Data da Ocorrência', new Date(relato.data_ocorrencia).toLocaleDateString())}
+        {renderRow('Status de Aprovação', getStatusText(relato.status))}
+        <EditableDateField 
+          label="Data da Ocorrência" 
+          fieldKey="data_ocorrencia" 
+          value={editedFields.data_ocorrencia} 
+          onFieldChange={onFieldChange} 
+          isDirty={isDirty} 
+          originalValue={relato.data_ocorrencia} 
+        />
         {renderRow('Hora Aproximada', relato.hora_aproximada_ocorrencia)}
-        {renderRow('Local da Ocorrência', relato.local_ocorrencia)}
+        
+        <EditableField label="Local da Ocorrência" fieldKey="local_ocorrencia" value={editedFields.local_ocorrencia} onFieldChange={onFieldChange} isDirty={isDirty} originalValue={relato.local_ocorrencia} />
+        
         <TableRow className="border-b-0"><TableCell className="py-4"></TableCell></TableRow>
         
-        <TableRow>
-          <TableCell className="whitespace-normal">
-            <div className={`transition-colors rounded-md ${(isEditingDescription || isDirty) ? 'p-2 bg-yellow-50' : ''}`}>
-              <p className="font-bold">Descrição</p>
-              {isEditingDescription ? (
-                <Textarea
-                  ref={textAreaRef}
-                  value={editedDescription}
-                  onChange={(e) => onDescriptionChange(e.target.value)}
-                  onBlur={() => setIsEditingDescription(false)}
-                  autoFocus
-                  variant="unstyled"
-                  className="w-full bg-transparent focus:outline-none"
-                />
-              ) : (
-                <div className="break-words cursor-pointer" onClick={() => setIsEditingDescription(true)}>
-                  {editedDescription || <span className="text-gray-500 italic">Não informado</span>}
-                </div>
-              )}
-            </div>
-          </TableCell>
-        </TableRow>
-
-        {renderRow('Riscos Identificados', relato.riscos_identificados)}
-        {renderRow('Danos Ocorridos', relato.danos_ocorridos)}
+        <EditableField label="Descrição" fieldKey="descricao" value={editedFields.descricao} onFieldChange={onFieldChange} isDirty={isDirty} originalValue={relato.descricao} />
+        <EditableField label="Riscos Identificados" fieldKey="riscos_identificados" value={editedFields.riscos_identificados} onFieldChange={onFieldChange} isDirty={isDirty} originalValue={relato.riscos_identificados} />
+        <EditableField label="Danos Ocorridos" fieldKey="danos_ocorridos" value={editedFields.danos_ocorridos} onFieldChange={onFieldChange} isDirty={isDirty} originalValue={relato.danos_ocorridos} />
+        
         <TableRow className="border-b-0"><TableCell className="py-4"></TableCell></TableRow>
+        
         {renderRow('Status da Tratativa', getTreatmentStatusText())}
         {renderRow('Responsáveis', responsibleNames)}
-        {renderRow('Planejamento/Cronologia da Solução', relato.planejamento_cronologia_solucao)}
-        {renderRow('Data de Conclusão da Solução', relato.data_conclusao_solucao ? new Date(relato.data_conclusao_solucao).toLocaleDateString() : null)}
+
+        <EditableField label="Planejamento/Cronologia da Solução" fieldKey="planejamento_cronologia_solucao" value={editedFields.planejamento_cronologia_solucao} onFieldChange={onFieldChange} isDirty={isDirty} originalValue={relato.planejamento_cronologia_solucao} />
+
+                <EditableDateField 
+          label="Data de Conclusão da Solução" 
+          fieldKey="data_conclusao_solucao" 
+          value={editedFields.data_conclusao_solucao} 
+          onFieldChange={onFieldChange} 
+          isDirty={isDirty} 
+          originalValue={relato.data_conclusao_solucao} 
+        />
         {renderRow('Concluído Sem Data', relato.concluido_sem_data ? 'Sim' : 'Não')}
         <TableRow className="border-b-0"><TableCell className="py-4"></TableCell></TableRow>
         {renderRow('Tipo de Relato', relato.tipo_relato)}
         <TableRow className="border-b-0"><TableCell className="py-4"></TableCell></TableRow>
-        {renderRow('Relator', relatorName)}
-        {renderRow('Anônimo', relato.is_anonymous ? 'Sim' : 'Não')}
-        {renderRow('Data de Criação', new Date(relato.created_at).toLocaleString())}
-        {renderRow('Status de Aprovação', getStatusText(relato.status))}
+        <TableRow>
+          <TableCell className="whitespace-normal">
+            <div className="flex flex-col gap-2">
+              <div>
+                <p className="font-bold">Relator</p>
+                <div className="break-words text-sm">{relatorName}</div>
+              </div>
+              <div>
+                <p className="font-bold">Anônimo</p>
+                <div className="break-words text-sm">{relato.is_anonymous ? 'Sim' : 'Não'}</div>
+              </div>
+              <div>
+                <p className="font-bold">Data de Criação</p>
+                <div className="break-words text-sm">{new Date(relato.created_at).toLocaleString()}</div>
+              </div>
+            </div>
+          </TableCell>
+        </TableRow>
       </TableBody>
     </Table>
   );

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { cn } from '@/01-shared/utils/utils';
+import { cn } from '@/lib/utils';
 
 function Table({
   className,

@@ -2,7 +2,7 @@ import React from 'react';
 import { useDebug } from '@/01-shared/context/DebugContext';
 import SettingsItem from '@/01-shared/components/settings/SettingsItem';
 import { Switch } from '@/components/ui/switch';
-import { Bug, MessageSquareWarning } from 'lucide-react';
+
 
 const DebugSettings = () => {
   const { isErudaEnabled, setIsErudaEnabled, isDebugLogsEnabled, _setIsDebugLogsEnabled } = useDebug();

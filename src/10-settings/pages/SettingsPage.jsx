@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { User, Camera, LogOut, Mail, Key, MessageSquare, List } from 'lucide-react';
+import { User, Camera, LogOut, Mail, Key } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/01-shared/lib/supabase';
 
@@ -23,7 +23,7 @@ function SettingsPage() {
   const fileInputRef = useRef(null);
   const [isFeedbackFormOpen, setIsFeedbackFormOpen] = useState(false);
 
-  const { data: userProfile, isLoading: isProfileLoading, refetch } = useUserProfile();
+  const { data: userProfile, isLoading: isProfileLoading } = useUserProfile();
 
   const { mutate: updateAvatar, isLoading: isUploading } = useMutation({
     mutationFn: async (file) => {

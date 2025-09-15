@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { cva } from 'class-variance-authority';
 
-import { cn } from '@/01-shared/utils/utils';
+import { cn } from '@/lib/utils';
 
 const textareaVariants = cva(
   'flex w-full', // Common base styles

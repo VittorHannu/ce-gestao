@@ -23,7 +23,7 @@ import * as React from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDownIcon } from 'lucide-react';
 
-import { cn } from '@/01-shared/utils/utils';
+import { cn } from '@/lib/utils';
 
 /**
  * @typedef {Object} AccordionProps

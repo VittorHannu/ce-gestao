@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { Button } from '@/01-shared/components/ui/button';
@@ -27,34 +27,65 @@ const RelatoDetailsPage = () => {
     isLoadingProfile
   } = useRelatoManagement(id);
 
-  const [editedDescription, setEditedDescription] = useState('');
+  const [editedFields, setEditedFields] = useState(null);
   const [isDirty, setIsDirty] = useState(false);
+
+  const editableFieldKeys = useMemo(() => [
+    'data_ocorrencia',
+    'descricao', 
+    'local_ocorrencia', 
+    'riscos_identificados', 
+    'danos_ocorridos', 
+    'planejamento_cronologia_solucao',
+    'data_conclusao_solucao'
+  ], []);
 
   useEffect(() => {
     if (relato) {
-      setEditedDescription(relato.descricao || '');
-    }
-  }, [relato]);
-
-  const handleDescriptionChange = (newDescription) => {
-    setEditedDescription(newDescription);
-    if (newDescription !== relato.descricao) {
-      setIsDirty(true);
-    } else {
+      const initialFields = {};
+      editableFieldKeys.forEach(key => {
+        initialFields[key] = relato[key] || '';
+      });
+      setEditedFields(initialFields);
       setIsDirty(false);
     }
+  }, [relato, editableFieldKeys]);
+
+  const handleFieldChange = (field, value) => {
+    setEditedFields(prev => ({ ...prev, [field]: value }));
+    setIsDirty(true);
   };
 
   const handleSave = async () => {
-    const success = await handleUpdateRelato({ descricao: editedDescription });
-    if (success) {
-      setIsDirty(false);
+    const changes = {};
+    if (!editedFields) return;
+
+    editableFieldKeys.forEach(key => {
+      // Check if the edited field is different from the original relato field
+      if (editedFields[key] !== (relato[key] || '')) {
+        changes[key] = editedFields[key];
+      }
+    });
+
+    if (Object.keys(changes).length > 0) {
+      const success = await handleUpdateRelato(changes);
+      if (success) {
+        // The useEffect will reset the fields based on the refetched relato data,
+        // so we just need to set dirty to false.
+        setIsDirty(false);
+      }
+    } else {
+      setIsDirty(false); // No actual changes were made, so just reset dirty state
     }
   };
 
   const handleCancel = () => {
     if (relato) {
-      setEditedDescription(relato.descricao || '');
+      const initialFields = {};
+      editableFieldKeys.forEach(key => {
+        initialFields[key] = relato[key] || '';
+      });
+      setEditedFields(initialFields);
     }
     setIsDirty(false);
   };
@@ -89,8 +120,8 @@ const RelatoDetailsPage = () => {
             <RelatoDisplayDetails
               relato={relato}
               responsibles={currentResponsibles}
-              editedDescription={editedDescription}
-              onDescriptionChange={handleDescriptionChange}
+              editedFields={editedFields}
+              onFieldChange={handleFieldChange}
               isDirty={isDirty}
             />
 

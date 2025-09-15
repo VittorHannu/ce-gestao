@@ -34,5 +34,5 @@ if (import.meta.env.VITE_SUPABASE_TUNNEL_URL) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  global: { headers: { 'ngrok-skip-browser-warning': 'true' } },
+  global: { headers: { 'ngrok-skip-browser-warning': 'true' } }
 });

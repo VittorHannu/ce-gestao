@@ -53,7 +53,7 @@ const FeedbackReportsPage = React.lazy(() => import('@/07-relatos/pages/Feedback
 const RelatosReprovadosPage = React.lazy(() => import('@/07-relatos/pages/RelatosReprovadosPage'));
 const RelatoLogsPage = React.lazy(() => import('@/07-relatos/pages/RelatoLogsPage'));
 const RelatosAcidentesGravesPage = React.lazy(() => import('@/07-relatos/pages/RelatosAcidentesGravesPage'));
-const NotificationsPage = React.lazy(() => import('@/08-notifications/pages/NotificationsPage'));
+
 const SettingsPage = React.lazy(() => import('@/10-settings/pages/SettingsPage'));
 const VersionHistoryPage = React.lazy(() => import('@/11-version-history/pages/VersionHistoryPage'));
 const AuditLogsPage = React.lazy(() => import('@/12-audit-logs/pages/AuditLogsPage'));
