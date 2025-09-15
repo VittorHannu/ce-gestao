@@ -1,9 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Table, TableBody, TableCell, TableRow } from '@/01-shared/components/ui/table';
+import { Textarea } from '@/01-shared/components/ui/textarea';
 import { supabase } from '@/01-shared/lib/supabase';
+import useAutosizeTextArea from '@/01-shared/hooks/useAutosizeTextArea';
 
-const RelatoDisplayDetails = ({ relato, responsibles = [] }) => {
+const RelatoDisplayDetails = ({ relato, responsibles = [], editedDescription, onDescriptionChange }) => {
   const [relatorName, setRelatorName] = useState('Carregando...');
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const textAreaRef = useRef(null);
+
+  useAutosizeTextArea(textAreaRef.current, editedDescription);
+
+  useEffect(() => {
+    if (isEditingDescription && textAreaRef.current) {
+      const textarea = textAreaRef.current;
+      const length = textarea.value.length;
+      // Use a short timeout to ensure the focus and selection happens after the element is fully ready
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(length, length);
+      }, 0);
+    }
+  }, [isEditingDescription]);
 
   useEffect(() => {
     const fetchRelatorName = async () => {
@@ -55,6 +73,7 @@ const RelatoDisplayDetails = ({ relato, responsibles = [] }) => {
 
   const renderRow = (label, value) => {
     const displayValue = value === null || value === undefined || value === '' ? <span className="text-gray-500 italic">Não informado</span> : value;
+    
     return (
       <TableRow>
         <TableCell className="whitespace-normal">
@@ -86,7 +105,30 @@ const RelatoDisplayDetails = ({ relato, responsibles = [] }) => {
         {renderRow('Hora Aproximada', relato.hora_aproximada_ocorrencia)}
         {renderRow('Local da Ocorrência', relato.local_ocorrencia)}
         <TableRow className="border-b-0"><TableCell className="py-4"></TableCell></TableRow>
-        {renderRow('Descrição', relato.descricao)}
+        
+        <TableRow>
+          <TableCell className="whitespace-normal">
+            <div className={`transition-colors rounded-md ${isEditingDescription ? 'p-2 bg-yellow-50' : ''}`}>
+              <p className="font-bold">Descrição</p>
+              {isEditingDescription ? (
+                <Textarea
+                  ref={textAreaRef}
+                  value={editedDescription}
+                  onChange={(e) => onDescriptionChange(e.target.value)}
+                  onBlur={() => setIsEditingDescription(false)}
+                  autoFocus
+                  variant="unstyled"
+                  className="w-full bg-transparent focus:outline-none"
+                />
+              ) : (
+                <div className="break-words cursor-pointer" onClick={() => setIsEditingDescription(true)}>
+                  {editedDescription || <span className="text-gray-500 italic">Não informado</span>}
+                </div>
+              )}
+            </div>
+          </TableCell>
+        </TableRow>
+
         {renderRow('Riscos Identificados', relato.riscos_identificados)}
         {renderRow('Danos Ocorridos', relato.danos_ocorridos)}
         <TableRow className="border-b-0"><TableCell className="py-4"></TableCell></TableRow>
