@@ -34,7 +34,7 @@ import { PWAUpdateProvider } from './01-shared/context/PWAUpdateContext.jsx';
 
 const ApresentacaoPage = React.lazy(() => import('@/09-presentation/pages/ApresentacaoPage'));
 const LoginPage = React.lazy(() => import('@/03-auth/pages/LoginPage'));
-const ProfilePage = React.lazy(() => import('@/04-profile/pages/ProfilePage'));
+
 const UpdatePasswordPage = React.lazy(() => import('@/03-auth/pages/UpdatePasswordPage'));
 const UpdatePasswordProfilePage = React.lazy(() => import('@/04-profile/pages/UpdatePasswordProfilePage'));
 const UpdateEmailPage = React.lazy(() => import('@/04-profile/pages/UpdateEmailPage'));
@@ -198,10 +198,9 @@ function AppWrapper() {
     <Routes>
       <Route element={<LayoutWithoutHeader user={user} onLogout={handleLogout} />}>
         <Route path="/" element={<Navigate to="/relatos" />} />
-        <Route path="/perfil" element={<Suspense fallback={<LoadingSpinner />}><ProfilePage /></Suspense>} />
-        <Route path="/perfil/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordProfilePage /></Suspense>} />
-        <Route path="/perfil/update-email" element={<Suspense fallback={<LoadingSpinner />}><UpdateEmailPage /></Suspense>} />
-        <Route path="/notifications" element={<Suspense fallback={<LoadingSpinner />}><NotificationsPage /></Suspense>} />
+        
+        <Route path="/settings/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordProfilePage /></Suspense>} />
+        <Route path="/settings/update-email" element={<Suspense fallback={<LoadingSpinner />}><UpdateEmailPage /></Suspense>} />
         <Route path="/settings" element={<Suspense fallback={<LoadingSpinner />}><SettingsPage /></Suspense>} />
         <Route path="/version-history" element={<Suspense fallback={<LoadingSpinner />}><VersionHistoryPage /></Suspense>} />
         <Route path="/relatos" element={<Suspense fallback={<LoadingSpinner />}><RelatosPage /></Suspense>} />

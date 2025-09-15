@@ -9,7 +9,7 @@ const BottomNavBar = ({ user }) => {
   const navItems = [
     { to: '/relatos', icon: <FontAwesomeIcon icon={faShield} size="lg" />, label: 'Relatos' },
     user?.can_view_users && { to: '/users-management', icon: <FontAwesomeIcon icon={faUsers} size="lg" />, label: 'Usuários' },
-    { to: '/perfil', icon: <FontAwesomeIcon icon={faUser} size="lg" />, label: 'Perfil' }
+    { to: '/settings', icon: <FontAwesomeIcon icon={faUser} size="lg" />, label: 'Perfil' }
   ].filter(Boolean);
 
   return (

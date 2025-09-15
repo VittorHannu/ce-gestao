@@ -8,7 +8,7 @@ const DesktopSidebar = ({ user }) => {
     { to: '/', icon: <FontAwesomeIcon icon={faHome} className="mr-3" />, label: 'Início' },
     { to: '/relatos', icon: <FontAwesomeIcon icon={faShield} className="mr-3" />, label: 'Relatos' },
     user?.can_view_users && { to: '/users-management', icon: <FontAwesomeIcon icon={faUsers} className="mr-3" />, label: 'Usuários' },
-    { to: '/perfil', icon: <FontAwesomeIcon icon={faUser} className="mr-3" />, label: 'Perfil' },
+    { to: '/settings', icon: <FontAwesomeIcon icon={faUser} className="mr-3" />, label: 'Perfil' },
     { to: '/apresentacao', icon: <FontAwesomeIcon icon={faBook} className="mr-3" />, label: 'Apresentação' }
   ].filter(Boolean);
 
