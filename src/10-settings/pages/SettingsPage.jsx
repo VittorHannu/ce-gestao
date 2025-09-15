@@ -155,9 +155,11 @@ function SettingsPage() {
             )}
           </SettingsGroup>
 
-          <SettingsGroup title="Depuração">
-            <DebugSettings />
-          </SettingsGroup>
+          {import.meta.env.DEV && (
+            <SettingsGroup title="Depuração">
+              <DebugSettings />
+            </SettingsGroup>
+          )}
 
           <SettingsGroup title="Sobre">
             <PwaUpdateSettings />
