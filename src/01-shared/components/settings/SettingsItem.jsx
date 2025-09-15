@@ -2,15 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 
-const SettingsItem = ({ icon: Icon, iconColor, label, path, value, isLast, onClick }) => {
-  const content = (
+const SettingsItem = ({ label, path, value, isLast, onClick, description }) => {
+  const content = description ? (
+    <div className="flex flex-col">
+      <span className="text-gray-800 dark:text-gray-200 font-medium">{label}</span>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{description}</p>
+    </div>
+  ) : (
     <>
       <div className="flex items-center">
-        {Icon && (
-          <div className={`w-7 h-7 rounded-md flex items-center justify-center mr-4 ${iconColor}`}>
-            <Icon className="w-5 h-5 text-white" />
-          </div>
-        )}
         <span className="text-gray-800 dark:text-gray-200 font-medium">{label}</span>
       </div>
       <div className="flex items-center">

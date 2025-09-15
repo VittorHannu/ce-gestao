@@ -37,15 +37,11 @@ const DebugSettings = () => {
   return (
     <>
       <SettingsItem
-        icon={Bug}
-        iconColor="bg-red-500"
         label="Console (Eruda)"
         value={ErudaToggleComponent}
         isLast={false}
       />
       <SettingsItem
-        icon={MessageSquareWarning}
-        iconColor="bg-blue-500"
         label="Logs de Depuração"
         value={LogsToggleComponent}
         isLast={true}

@@ -125,24 +125,6 @@ function SettingsPage() {
             </div>
           )}
 
-          <SettingsGroup title="Aplicativo">
-            <PwaUpdateSettings />
-            <SettingsItem
-              label="Enviar Feedback / Relatar Erro"
-              onClick={() => setIsFeedbackFormOpen(true)}
-            />
-            {userProfile?.can_view_feedbacks && (
-              <SettingsItem
-                label="Ver Relatórios de Feedback"
-                path="/feedback-reports"
-              />
-            )}
-          </SettingsGroup>
-
-          <SettingsGroup title="Depuração">
-            <DebugSettings />
-          </SettingsGroup>
-
           {(userProfile?.can_view_users || userProfile?.can_view_audit_logs) && (
             <SettingsGroup title="Administração">
               {userProfile?.can_view_users && (
@@ -160,7 +142,25 @@ function SettingsPage() {
             </SettingsGroup>
           )}
 
+          <SettingsGroup title="Aplicativo">
+            <SettingsItem
+              label="Enviar Feedback / Relatar Erro"
+              onClick={() => setIsFeedbackFormOpen(true)}
+            />
+            {userProfile?.can_view_feedbacks && (
+              <SettingsItem
+                label="Ver Relatórios de Feedback"
+                path="/feedback-reports"
+              />
+            )}
+          </SettingsGroup>
+
+          <SettingsGroup title="Depuração">
+            <DebugSettings />
+          </SettingsGroup>
+
           <SettingsGroup title="Sobre">
+            <PwaUpdateSettings />
             <SettingsItem
               label={'Versão do App'}
               value={`${import.meta.env.VITE_APP_VERSION}`}
