@@ -91,6 +91,7 @@ const RelatoDetailsPage = () => {
               responsibles={currentResponsibles}
               editedDescription={editedDescription}
               onDescriptionChange={handleDescriptionChange}
+              isDirty={isDirty}
             />
 
             <div className="mt-6 flex justify-center">

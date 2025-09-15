@@ -4,7 +4,7 @@ import { Textarea } from '@/01-shared/components/ui/textarea';
 import { supabase } from '@/01-shared/lib/supabase';
 import useAutosizeTextArea from '@/01-shared/hooks/useAutosizeTextArea';
 
-const RelatoDisplayDetails = ({ relato, responsibles = [], editedDescription, onDescriptionChange }) => {
+const RelatoDisplayDetails = ({ relato, responsibles = [], editedDescription, onDescriptionChange, isDirty }) => {
   const [relatorName, setRelatorName] = useState('Carregando...');
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const textAreaRef = useRef(null);
@@ -108,7 +108,7 @@ const RelatoDisplayDetails = ({ relato, responsibles = [], editedDescription, on
         
         <TableRow>
           <TableCell className="whitespace-normal">
-            <div className={`transition-colors rounded-md ${isEditingDescription ? 'p-2 bg-yellow-50' : ''}`}>
+            <div className={`transition-colors rounded-md ${(isEditingDescription || isDirty) ? 'p-2 bg-yellow-50' : ''}`}>
               <p className="font-bold">Descrição</p>
               {isEditingDescription ? (
                 <Textarea
