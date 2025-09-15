@@ -5,20 +5,14 @@ import SettingsItem from '@/01-shared/components/settings/SettingsItem';
 function PwaUpdateSettings() {
   const { isUpdateAvailable } = usePWAUpdate();
 
-  if (isUpdateAvailable) {
-    return (
-      <SettingsItem
-        label="Atualização Disponível"
-        description="Feche e abra o aplicativo para aplicar a nova versão."
-        isLast={false}
-      />
-    );
+  if (!isUpdateAvailable) {
+    return null;
   }
 
   return (
     <SettingsItem
-      label="Status da Versão"
-      description="Seu aplicativo está atualizado."
+      label="Atualização Disponível"
+      description="Feche e abra o aplicativo para aplicar a nova versão."
       isLast={false}
     />
   );
