@@ -58,15 +58,6 @@ export const useRelatoManagement = (relatoId) => {
     try {
       const { responsaveis, ...relatoData } = formData;
 
-      // Get original relato before update to compare changes
-      const { data: originalRelato, error: fetchError } = await supabase
-        .from('relatos')
-        .select('*')
-        .eq('id', relatoId)
-        .single();
-
-      if (fetchError) throw fetchError;
-
       // FIX: O banco de dados não aceita string vazia para campos de tempo, converte para null.
       if (relatoData.hora_aproximada_ocorrencia === '') {
         relatoData.hora_aproximada_ocorrencia = null;
@@ -107,7 +98,7 @@ export const useRelatoManagement = (relatoId) => {
     } finally {
       setIsSaving(false);
     }
-  }, [relatoId, toast, fetchRelato, userProfile]);
+  }, [relatoId, toast, fetchRelato]);
 
   
 

@@ -8,13 +8,13 @@ import { useLastAccidentDate } from '../hooks/useLastAccidentDate';
 
 import { CheckCircle, Clock, XCircle, Plus, User, AlertTriangle, List, Bell, Settings } from 'lucide-react';
 
-import RelatoStatsCard from '../components/RelatoStatsCard';
-import TotalReportsCard from '../components/TotalReportsCard';
+import RelatoStatsCard from '../components/stats/RelatoStatsCard';
+import TotalReportsCard from '../components/stats/TotalReportsCard';
 import MainLayout from '@/01-shared/components/MainLayout';
 import SettingsGroup from '@/01-shared/components/settings/SettingsGroup';
 import SettingsItem from '@/01-shared/components/settings/SettingsItem';
 import CompactDateSelector from '@/01-shared/components/CompactDateSelector';
-import DaysWithoutAccidentsCard from '../components/DaysWithoutAccidentsCard';
+import DaysWithoutAccidentsCard from '../components/stats/DaysWithoutAccidentsCard';
 import { useDateFilter } from '@/01-shared/hooks/useDateFilter';
 import BirdPyramidCard from '../components/charts/BirdPyramidCard';
 

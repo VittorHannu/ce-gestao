@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { useRecordeSemAcidentes } from '../hooks/useRecordeSemAcidentes';
+import { useRecordeSemAcidentes } from '../../hooks/useRecordeSemAcidentes';
 
 const DaysWithoutAccidentsCard = () => {
   const { data: recordeData, isLoading } = useRecordeSemAcidentes();

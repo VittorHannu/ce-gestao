@@ -20,7 +20,7 @@ O fluxo de trabalho obrigatório é:
 
 *   **Qualidade de Código**: Aderir estritamente aos padrões de código, formatação e arquitetura existentes no projeto.
 *   **Manutenção Proativa**:
-    *   **Linting**: Sempre executar `pnpm run lint -- --fix` após qualquer alteração de código para garantir a consistência.
+    *   **Linting**: Sempre executar `pnpm run lint --fix` após qualquer alteração de código para garantir a consistência.
     *   **Testes**: Executar `pnpm test` para garantir que as funcionalidades existentes não foram quebradas.
     *   **Build**: Verificar se o projeto compila sem erros com `pnpm run build`.
 *   **Gestão de Versão e Release (Git)**:

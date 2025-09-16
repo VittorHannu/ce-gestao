@@ -41,16 +41,13 @@ const UpdateEmailPage = React.lazy(() => import('@/04-profile/pages/UpdateEmailP
 const ConfirmEmailChangePage = React.lazy(() => import('@/03-auth/pages/ConfirmEmailChangePage'));
 const RelatosPage = React.lazy(() => import('@/07-relatos/pages/RelatosPage'));
 const CreateRelatoPage = React.lazy(() => import('@/07-relatos/pages/CreateRelatoPage'));
-const RelatosAprovacaoPage = React.lazy(() => import('@/07-relatos/pages/RelatosAprovacaoPage'));
 const RelatosListaPage = React.lazy(() => import('@/07-relatos/pages/RelatosListaPage'));
 const RelatoDetailsPage = React.lazy(() => import('@/07-relatos/pages/RelatoDetailsPage'));
-
-const RelatosAtribuidosPage = React.lazy(() => import('@/07-relatos/pages/RelatosAtribuidosPage'));
 const UsersPage = React.lazy(() => import('@/05-adm/pages/UsersPage'));
 const CreateUserPage = React.lazy(() => import('@/05-adm/pages/CreateUserPage'));
 const UserDetailsPage = React.lazy(() => import('@/05-adm/pages/UserDetailsPage'));
 const FeedbackReportsPage = React.lazy(() => import('@/07-relatos/pages/FeedbackReportsPage'));
-const RelatosReprovadosPage = React.lazy(() => import('@/07-relatos/pages/RelatosReprovadosPage'));
+
 const RelatoLogsPage = React.lazy(() => import('@/07-relatos/pages/RelatoLogsPage'));
 const RelatosAcidentesGravesPage = React.lazy(() => import('@/07-relatos/pages/RelatosAcidentesGravesPage'));
 
@@ -205,12 +202,11 @@ function AppWrapper() {
         <Route path="/version-history" element={<Suspense fallback={<LoadingSpinner />}><VersionHistoryPage /></Suspense>} />
         <Route path="/relatos" element={<Suspense fallback={<LoadingSpinner />}><RelatosPage /></Suspense>} />
         <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage /></Suspense>} />
-        <Route path="/relatos/aprovacao" element={<ProtectedRoute user={user} requiredPermission="can_manage_relatos"><Suspense fallback={<LoadingSpinner />}><RelatosAprovacaoPage /></Suspense></ProtectedRoute>} />
+        <Route path="/relatos/aprovacao" element={<Navigate to="/relatos/lista?status=pendente" />} />
         <Route path="/relatos/lista" element={<Suspense fallback={<LoadingSpinner />}><RelatosListaPage /></Suspense>} />
         <Route path="/relatos/detalhes/:id" element={<Suspense fallback={<LoadingSpinner />}><RelatoDetailsPage /></Suspense>} />
-        
-        <Route path="/relatos/atribuidos" element={<Suspense fallback={<LoadingSpinner />}><RelatosAtribuidosPage /></Suspense>} />
-        <Route path="/relatos/reprovados" element={<Suspense fallback={<LoadingSpinner />}><RelatosReprovadosPage /></Suspense>} />
+        <Route path="/relatos/atribuidos" element={<Navigate to="/relatos/lista?assigned_to_me=true" />} />
+        <Route path="/relatos/reprovados" element={<Navigate to="/relatos/lista?status=reprovado" />} />
         <Route path="/relatos/logs/:id" element={<Suspense fallback={<LoadingSpinner />}><RelatoLogsPage /></Suspense>} />
         <Route path="/relatos/acidentes-graves" element={<Suspense fallback={<LoadingSpinner />}><RelatosAcidentesGravesPage /></Suspense>} />
         <Route path="/users-management" element={<ProtectedRoute user={user} requiredPermission="can_view_users"><Suspense fallback={<LoadingSpinner />}><UsersPage /></Suspense></ProtectedRoute>} />

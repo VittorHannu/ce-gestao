@@ -7,6 +7,7 @@ import { supabase } from '@/01-shared/lib/supabase';
 import { useToast } from '@/01-shared/hooks/useToast';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import RelatoCard from '../components/RelatoCard';
+import RelatoAprovacaoCard from '../components/RelatoAprovacaoCard';
 import PageHeader from '@/01-shared/components/PageHeader';
 import SearchInput from '@/01-shared/components/SearchInput';
 import { Button } from '@/01-shared/components/ui/button';
@@ -20,8 +21,10 @@ const PAGE_SIZE = 10;
 const fetchRelatosPage = async ({ pageParam = 1, queryKey }) => {
   const [_key, filters] = queryKey;
   const {
-    searchTerm, statusFilter, responsibleFilter, startDate, endDate, tipoRelatoFilter, onlyMineFilter
+    searchTerm, statusFilter, responsibleFilter, startDate, endDate, tipoRelatoFilter, onlyMineFilter, assignedToMeFilter
   } = filters;
+
+  const { data: { user } } = await supabase.auth.getUser();
 
   const { data, error } = await supabase.rpc('search_relatos_unaccented', {
     p_search_term: searchTerm,
@@ -31,6 +34,7 @@ const fetchRelatosPage = async ({ pageParam = 1, queryKey }) => {
     p_end_date: endDate,
     p_tipo_relato_filter: tipoRelatoFilter,
     p_only_mine: onlyMineFilter,
+    p_assigned_to_user_id: assignedToMeFilter ? user?.id : null,
     p_page_number: pageParam,
     p_page_size: PAGE_SIZE
   });
@@ -56,8 +60,8 @@ const RelatosListaPage = () => {
   const statusFilterParam = queryParams.get('status');
   const tipoRelatoFilter = queryParams.get('tipo_relato');
   const onlyMineFilter = queryParams.get('only_mine') === 'true';
+  const assignedToMeFilter = queryParams.get('assigned_to_me') === 'true';
 
-  // Default to 'aprovado' if no status filter is provided, to show only approved reports on the main list.
   const statusFilter = statusFilterParam || 'aprovado';
 
   const { data: userProfile } = useUserProfile();
@@ -67,18 +71,20 @@ const RelatosListaPage = () => {
 
   const getTitle = () => {
     if (onlyMineFilter) return 'Relatos Criados por Você';
+    if (assignedToMeFilter) return 'Relatos Atribuídos a Você';
     if (tipoRelatoFilter) return `Relatos de ${tipoRelatoFilter}`;
     switch (statusFilter) {
     case 'aprovado': return 'Todos os Relatos';
     case 'concluido': return 'Relatos Concluídos';
     case 'em_andamento': return 'Relatos Em Andamento';
     case 'sem_tratativa': return 'Relatos Sem Tratativa';
-    // This default case will now be less common due to the default filter above.
+    case 'pendente': return 'Relatos Pendentes de Aprovação';
+    case 'reprovado': return 'Relatos Reprovados';
     default: return 'Lista de Relatos';
     }
   };
 
-  const filters = { searchTerm, statusFilter, responsibleFilter, startDate, endDate, tipoRelatoFilter, onlyMineFilter };
+  const filters = { searchTerm, statusFilter, responsibleFilter, startDate, endDate, tipoRelatoFilter, onlyMineFilter, assignedToMeFilter };
 
   const {
     data,
@@ -86,13 +92,13 @@ const RelatosListaPage = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    status
+    status,
+    refetch
   } = useInfiniteQuery({
     queryKey: ['relatos', filters],
     queryFn: fetchRelatosPage,
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-      // If the last page had fewer items than PAGE_SIZE, there are no more pages.
       return lastPage.length === PAGE_SIZE ? allPages.length + 1 : undefined;
     }
   });
@@ -104,9 +110,6 @@ const RelatosListaPage = () => {
   }, [inView, hasNextPage, fetchNextPage]);
 
   const handleSaveClassification = async (relatoId) => {
-    // This logic remains mostly the same, but it will need to update the react-query cache
-    // For now, we will just refetch, but a more optimized approach would be to update the cache directly
-    // This is a more advanced topic for later.
     const newType = selectedTypes[relatoId];
     const typeToSave = newType === 'CLEAR_SELECTION' ? null : newType;
 
@@ -114,13 +117,25 @@ const RelatosListaPage = () => {
     try {
       await updateRelatoType(relatoId, typeToSave);
       toast({ title: 'Relato classificado com sucesso!' });
-      // Invalidate the query to refetch the data, which is the correct
-      // way to update the list when using React Query.
       queryClient.invalidateQueries({ queryKey: ['relatos'] });
     } catch (err) {
       toast({ title: 'Erro ao classificar relato', description: err.message, variant: 'destructive' });
     } finally {
       setClassifyingId(null);
+    }
+  };
+
+  const handleUpdateStatus = async (id, newStatus) => {
+    const { error } = await supabase
+      .from('relatos')
+      .update({ status: newStatus })
+      .eq('id', id);
+
+    if (error) {
+      toast({ title: 'Erro ao atualizar o status', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: `Relato ${newStatus.toLowerCase()} com sucesso!` });
+      refetch();
     }
   };
 
@@ -144,7 +159,6 @@ const RelatosListaPage = () => {
         ) : status === 'error' ? (
           <div className="container mx-auto p-4 text-red-500 flex flex-col items-center justify-center">
             <p className="mb-4">Erro ao carregar dados: {error.message}</p>
-            {/* A refetch button could be added here */}
           </div>
         ) : relatos.length === 0 ? (
           <div className="text-center py-10">
@@ -156,38 +170,44 @@ const RelatosListaPage = () => {
               {data.pages.map((page, i) => (
                 <Fragment key={i}>
                   {page.map(relato => (
-                    <div key={relato.id} className="p-4 border rounded-lg bg-white">
-                      <RelatoCard relato={relato} />
-                      {tipoRelatoFilter && (
-                        <div className="flex items-center gap-2 mt-4">
-                          <Select
-                            onValueChange={(value) => setSelectedTypes(prev => ({ ...prev, [relato.id]: value }))}
-                            value={selectedTypes[relato.id]}
-                            disabled={classifyingId === relato.id || !canManageRelatos}
-                          >
-                            <SelectTrigger className="w-[180px] bg-gray-100">
-                              <SelectValue placeholder={tipoRelatoFilter === 'Sem Classificação' ? 'Classificar Tipo' : 'Mudar Classificação'} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="CLEAR_SELECTION">Nenhum</SelectItem>
-                              <SelectItem value="Fatal">Fatal</SelectItem>
-                              <SelectItem value="Severo">Severo</SelectItem>
-                              <SelectItem value="Acidente com afastamento">Acidente com afastamento</SelectItem>
-                              <SelectItem value="Acidente sem afastamento">Acidente sem afastamento</SelectItem>
-                              <SelectItem value="Primeiros socorros">Primeiros socorros</SelectItem>
-                              <SelectItem value="Quase acidente">Quase acidente</SelectItem>
-                              <SelectItem value="Condição insegura">Condição insegura</SelectItem>
-                              <SelectItem value="Comportamento inseguro">Comportamento inseguro</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          {canManageRelatos && selectedTypes[relato.id] && selectedTypes[relato.id] !== 'CLEAR_SELECTION' && (
-                            <Button
-                              onClick={() => handleSaveClassification(relato.id)}
-                              disabled={classifyingId === relato.id || selectedTypes[relato.id] === relato.tipo_relato}
-                              className="ml-2"
-                            >
-                              {classifyingId === relato.id ? 'Salvando...' : 'Salvar'}
-                            </Button>
+                    <div key={relato.id}>
+                      {statusFilter === 'pendente' ? (
+                        <RelatoAprovacaoCard relato={relato} onUpdateStatus={handleUpdateStatus} />
+                      ) : (
+                        <div className="p-4 border rounded-lg bg-white">
+                          <RelatoCard relato={relato} />
+                          {tipoRelatoFilter && (
+                            <div className="flex items-center gap-2 mt-4">
+                              <Select
+                                onValueChange={(value) => setSelectedTypes(prev => ({ ...prev, [relato.id]: value }))}
+                                value={selectedTypes[relato.id]}
+                                disabled={classifyingId === relato.id || !canManageRelatos}
+                              >
+                                <SelectTrigger className="w-[180px] bg-gray-100">
+                                  <SelectValue placeholder={tipoRelatoFilter === 'Sem Classificação' ? 'Classificar Tipo' : 'Mudar Classificação'} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="CLEAR_SELECTION">Nenhum</SelectItem>
+                                  <SelectItem value="Fatal">Fatal</SelectItem>
+                                  <SelectItem value="Severo">Severo</SelectItem>
+                                  <SelectItem value="Acidente com afastamento">Acidente com afastamento</SelectItem>
+                                  <SelectItem value="Acidente sem afastamento">Acidente sem afastamento</SelectItem>
+                                  <SelectItem value="Primeiros socorros">Primeiros socorros</SelectItem>
+                                  <SelectItem value="Quase acidente">Quase acidente</SelectItem>
+                                  <SelectItem value="Condição insegura">Condição insegura</SelectItem>
+                                  <SelectItem value="Comportamento inseguro">Comportamento inseguro</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              {canManageRelatos && selectedTypes[relato.id] && selectedTypes[relato.id] !== 'CLEAR_SELECTION' && (
+                                <Button
+                                  onClick={() => handleSaveClassification(relato.id)}
+                                  disabled={classifyingId === relato.id || selectedTypes[relato.id] === relato.tipo_relato}
+                                  className="ml-2"
+                                >
+                                  {classifyingId === relato.id ? 'Salvando...' : 'Salvar'}
+                                </Button>
+                              )}
+                            </div>
                           )}
                         </div>
                       )}

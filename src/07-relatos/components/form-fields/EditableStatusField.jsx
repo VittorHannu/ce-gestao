@@ -9,7 +9,7 @@ import { Textarea } from '@/01-shared/components/ui/textarea';
 const statusOptions = {
   PENDENTE: 'Pendente',
   APROVADO: 'Aprovado',
-  REPROVADO: 'Reprovado',
+  REPROVADO: 'Reprovado'
 };
 
 export default function EditableStatusField({ label, fieldKey, value, onFieldChange, isDirty, originalValue, canManage }) {

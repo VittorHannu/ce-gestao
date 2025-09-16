@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { Button } from '@/01-shared/components/ui/button';
@@ -8,7 +8,7 @@ import MainLayout from '@/01-shared/components/MainLayout';
 import { useRelatoManagement } from '../hooks/useRelatoManagement';
 import RelatoLogs from '../components/RelatoLogs';
 import { DocumentTextIcon, ChatBubbleLeftRightIcon, ClockIcon } from '@heroicons/react/24/solid';
-import RelatoForm from '../components/RelatoForm';
+import RelatoForm from '../components/form-fields/RelatoForm';
 
 const editableFieldKeys = [
   'status',
@@ -19,7 +19,7 @@ const editableFieldKeys = [
   'riscos_identificados',
   'danos_ocorridos',
   'planejamento_cronologia_solucao',
-  'data_conclusao_solucao',
+  'data_conclusao_solucao'
 ];
 
 const RelatoDetailsPage = () => {
@@ -70,7 +70,7 @@ const RelatoDetailsPage = () => {
     });
 
     if (editedFields.reproval_reason) {
-        changes.reproval_reason = editedFields.reproval_reason;
+      changes.reproval_reason = editedFields.reproval_reason;
     }
 
     if (Object.keys(changes).length > 0) {

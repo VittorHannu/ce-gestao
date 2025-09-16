@@ -7,39 +7,40 @@ const formatLogDetails = (log) => {
   const { action, old_record, new_record } = log;
 
   switch (action) {
-    case 'INSERT':
-      return <span className="ml-1">criou o relato.</span>;
-    case 'DELETE':
-      return <span className="ml-1">excluiu o relato.</span>;
-    case 'UPDATE':
-      if (!old_record || !new_record) {
-        return <span className="ml-1">atualizou o relato.</span>;
-      }
-      const changes = Object.keys(new_record).reduce((acc, key) => {
-        if (old_record[key] !== new_record[key]) {
-          acc.push(
-            <li key={key}>
+  case 'INSERT':
+    return <span className="ml-1">criou o relato.</span>;
+  case 'DELETE':
+    return <span className="ml-1">excluiu o relato.</span>;
+  case 'UPDATE': {
+    if (!old_record || !new_record) {
+      return <span className="ml-1">atualizou o relato.</span>;
+    }
+    const changes = Object.keys(new_record).reduce((acc, key) => {
+      if (old_record[key] !== new_record[key]) {
+        acc.push(
+          <li key={key}>
               O campo <span className="font-mono text-blue-600">{key}</span> foi alterado de{' '}
-              <span className="font-mono text-red-600">{String(old_record[key])}</span> para{' '}
-              <span className="font-mono text-green-600">{String(new_record[key])}</span>.
-            </li>
-          );
-        }
-        return acc;
-      }, []);
-
-      if (changes.length === 0) {
-        return <span className="ml-1">atualizou o relato sem alterações visíveis.</span>;
+            <span className="font-mono text-red-600">{String(old_record[key])}</span> para{' '}
+            <span className="font-mono text-green-600">{String(new_record[key])}</span>.
+          </li>
+        );
       }
+      return acc;
+    }, []);
 
-      return (
-        <div className="ml-1 mt-2 p-2 bg-gray-100 rounded-md text-xs">
-          <p className="font-semibold">Alterações:</p>
-          <ul className="list-disc list-inside ml-2">{changes}</ul>
-        </div>
-      );
-    default:
-      return <span className="ml-1">realizou uma ação desconhecida.</span>;
+    if (changes.length === 0) {
+      return <span className="ml-1">atualizou o relato sem alterações visíveis.</span>;
+    }
+
+    return (
+      <div className="ml-1 mt-2 p-2 bg-gray-100 rounded-md text-xs">
+        <p className="font-semibold">Alterações:</p>
+        <ul className="list-disc list-inside ml-2">{changes}</ul>
+      </div>
+    );
+  }
+  default:
+    return <span className="ml-1">realizou uma ação desconhecida.</span>;
   }
 };
 

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableRow } from '@/01-shared/components/ui/table';
 import { supabase } from '@/01-shared/lib/supabase';
-import EditableField from './form-fields/EditableField';
-import EditableDateField from './form-fields/EditableDateField';
-import EditableTimeField from './form-fields/EditableTimeField';
-import EditableStatusField from './form-fields/EditableStatusField';
+import EditableField from './EditableField';
+import EditableDateField from './EditableDateField';
+import EditableTimeField from './EditableTimeField';
+import EditableStatusField from './EditableStatusField';
 
 const fieldLabels = {
   status: 'Status de Aprovação',
@@ -15,7 +15,7 @@ const fieldLabels = {
   riscos_identificados: 'Riscos Identificados',
   danos_ocorridos: 'Danos Ocorridos',
   planejamento_cronologia_solucao: 'Planejamento da Solução',
-  data_conclusao_solucao: 'Data de Conclusão',
+  data_conclusao_solucao: 'Data de Conclusão'
 };
 
 const fieldComponents = {
@@ -27,7 +27,7 @@ const fieldComponents = {
   riscos_identificados: EditableField,
   danos_ocorridos: EditableField,
   planejamento_cronologia_solucao: EditableField,
-  data_conclusao_solucao: EditableDateField,
+  data_conclusao_solucao: EditableDateField
 };
 
 const RelatoForm = ({ relato, editedFields, onFieldChange, isDirty, canManageRelatos, responsibles = [] }) => {
