@@ -9,6 +9,33 @@ import MainLayout from '@/01-shared/components/MainLayout';
 import { useRelatoManagement } from '../hooks/useRelatoManagement';
 import RelatoLogs from '../components/RelatoLogs';
 import { DocumentTextIcon, ChatBubbleLeftRightIcon, ClockIcon } from '@heroicons/react/24/solid';
+import CompleteRelatoActions from '@/07-relatos/components/CompleteRelatoActions';
+
+// These definitions are now shared between RelatoDisplayDetails and CompleteRelatoActions
+// so we define them in the parent component.
+import { EditableField, EditableDateField, EditableTimeField } from '../components/CompleteRelatoActions'; // Assuming they are exported
+
+const fieldLabels = {
+  data_ocorrencia: 'Data da Ocorrência',
+  hora_aproximada_ocorrencia: 'Hora Aproximada',
+  local_ocorrencia: 'Local da Ocorrência',
+  descricao: 'Descrição',
+  riscos_identificados: 'Riscos Identificados',
+  danos_ocorridos: 'Danos Ocorridos',
+  planejamento_cronologia_solucao: 'Planejamento da Solução',
+  data_conclusao_solucao: 'Data de Conclusão',
+};
+
+const fieldComponents = {
+  data_ocorrencia: EditableDateField,
+  hora_aproximada_ocorrencia: EditableTimeField,
+  local_ocorrencia: EditableField,
+  descricao: EditableField,
+  riscos_identificados: EditableField,
+  danos_ocorridos: EditableField,
+  planejamento_cronologia_solucao: EditableField,
+  data_conclusao_solucao: EditableDateField,
+};
 
 const RelatoDetailsPage = () => {
   const { id } = useParams();
@@ -30,25 +57,29 @@ const RelatoDetailsPage = () => {
 
   const [editedFields, setEditedFields] = useState(null);
   const [isDirty, setIsDirty] = useState(false);
+  const [filledFields, setFilledFields] = useState([]);
+  const [missingFields, setMissingFields] = useState([]);
 
-  const editableFieldKeys = useMemo(() => [
-    'data_ocorrencia',
-    'hora_aproximada_ocorrencia',
-    'descricao',
-    'local_ocorrencia',
-    'riscos_identificados',
-    'danos_ocorridos',
-    'planejamento_cronologia_solucao',
-    'data_conclusao_solucao'
-  ], []);
+  const editableFieldKeys = useMemo(() => Object.keys(fieldLabels), []);
 
   useEffect(() => {
     if (relato) {
       const initialFields = {};
+      const filled = [];
+      const missing = [];
+      
       editableFieldKeys.forEach(key => {
         initialFields[key] = relato[key] || '';
+        if (relato[key]) {
+          filled.push(key);
+        } else {
+          missing.push(key);
+        }
       });
+
       setEditedFields(initialFields);
+      setFilledFields(filled);
+      setMissingFields(missing);
       setIsDirty(false);
     }
   }, [relato, editableFieldKeys]);
@@ -112,13 +143,16 @@ const RelatoDetailsPage = () => {
     case 'details':
     default:
       return (
-        <div className="p-4 bg-white rounded-lg shadow-sm">
+        <>
           <RelatoDisplayDetails
             relato={relato}
             responsibles={currentResponsibles}
             editedFields={editedFields}
             onFieldChange={handleFieldChange}
             isDirty={isDirty}
+            fieldsToDisplay={filledFields}
+            fieldComponents={fieldComponents}
+            fieldLabels={fieldLabels}
           />
           <div className="mt-6 flex justify-center">
             {canDeleteRelatos && (
@@ -138,7 +172,14 @@ const RelatoDetailsPage = () => {
               </Button>
             )}
           </div>
-        </div>
+          <CompleteRelatoActions
+            missingFields={missingFields}
+            editedFields={editedFields}
+            onFieldChange={handleFieldChange}
+            isDirty={isDirty}
+            originalRelato={relato}
+          />
+        </>
       );
     }
   };
