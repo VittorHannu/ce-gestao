@@ -12,6 +12,7 @@ import { Table, TableBody } from '@/01-shared/components/ui/table';
 import ClickableTableRow from '@/01-shared/components/ClickableTableRow';
 import SectionEditModal from '../components/modals/SectionEditModal';
 import { supabase } from '@/01-shared/lib/supabase';
+import { useToast } from '@/01-shared/hooks/useToast';
 import { cn } from '@/lib/utils';
 
 // Helper to create a clickable section
@@ -33,6 +34,10 @@ const RelatoDetailsPage = () => {
   const [activeTab, setActiveTab] = useState('details');
   const [relatorName, setRelatorName] = useState('Carregando...');
   const [modalState, setModalState] = useState({ isOpen: false, config: null, title: '' });
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const imageInputRef = React.useRef(null);
+  const { toast } = useToast();
 
   const {
     relato,
@@ -115,6 +120,75 @@ const RelatoDetailsPage = () => {
     return success;
   };
 
+  const handleImageUpload = async () => {
+    console.log('--- Início do Upload ---');
+    if (!selectedImage) {
+      console.log('1. Upload cancelado: Nenhuma imagem selecionada.');
+      return;
+    }
+    console.log('1. Imagem selecionada:', selectedImage);
+
+    setIsUploading(true);
+    try {
+      console.log('2. Verificando dados necessários...');
+      if (!userProfile || !userProfile.id) throw new Error('Perfil do usuário não carregado.');
+      if (!relato || !relato.id) throw new Error('Dados do relato não carregados.');
+      console.log('2.1. userProfile.id:', userProfile.id);
+      console.log('2.2. relato.id:', relato.id);
+
+      // 3. Gerar um nome de arquivo único para evitar conflitos
+      console.log('3. Gerando nome do arquivo...');
+      const fileExtension = selectedImage.name.split('.').pop();
+      const fileName = `${userProfile.id}/${relato.id}/${Date.now()}.${fileExtension}`;
+      console.log('3.1. Nome do arquivo gerado:', fileName);
+
+      // 4. Chamar a Edge Function para obter a URL pré-assinada
+      console.log('4. Chamando a Edge Function get-presigned-image-url...');
+      const { data: functionData, error: functionError } = await supabase.functions.invoke(
+        'get-presigned-image-url',
+        { body: { fileName, fileType: selectedImage.type } }
+      );
+
+      if (functionError) throw new Error(`Erro da Edge Function: ${functionError.message}`);
+      console.log('4.1. URL pré-assinada recebida.');
+      
+      const { presignedUrl } = functionData;
+
+      // 5. Fazer o upload da imagem para o R2 usando a URL recebida
+      console.log('5. Enviando imagem para o R2...');
+      const uploadResponse = await fetch(presignedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': selectedImage.type },
+        body: selectedImage,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error('Falha ao fazer upload da imagem para o R2.');
+      }
+      console.log('5.1. Imagem enviada com sucesso para o R2.');
+
+      // 6. Salvar a URL final da imagem no relato
+      console.log('6. Salvando URL no banco de dados...');
+      const imageUrl = `https://e8eb74368ec81db9e24c3e93e1259a7d.r2.cloudflarestorage.com/sgi-copa-relatos/${fileName}`;
+      const success = await handleUpdateRelato({ image_url: imageUrl }, canManageRelatos);
+
+      if (success) {
+        console.log('6.1. URL salva com sucesso!');
+        toast({ title: "Sucesso!", description: "Imagem enviada e associada ao relato." });
+        setSelectedImage(null); // Limpa a preview
+      } else {
+        throw new Error('Falha ao salvar a URL da imagem no relato.');
+      }
+
+    } catch (error) {
+      console.error('ERRO NO PROCESSO DE UPLOAD:', error);
+      toast({ title: "Erro no Upload", description: error.message, variant: 'destructive' });
+    } finally {
+      setIsUploading(false);
+      console.log('--- Fim do Upload ---');
+    }
+  };
+
   useEffect(() => {
     const fetchRelatorName = async () => {
       if (!relato) return;
@@ -152,6 +226,45 @@ const RelatoDetailsPage = () => {
 
     return (
       <div className="space-y-4">
+        {/* Seção de Imagem */}
+        <div className="p-4 bg-white rounded-lg shadow-sm">
+          <h3 className="text-lg font-semibold mb-2 px-4">Imagem</h3>
+          <div className="p-4">
+            {relato.image_url ? (
+              <img src={relato.image_url} alt="Imagem do relato" className="w-full h-auto rounded-lg mb-4" />
+            ) : (
+              <p className="text-gray-500 mb-4">Nenhuma imagem associada a este relato.</p>
+            )}
+
+            {selectedImage && (
+              <div className="mb-4">
+                <p className="font-semibold mb-2">Nova imagem selecionada:</p>
+                <img src={URL.createObjectURL(selectedImage)} alt="Preview" className="w-full h-auto rounded-lg" />
+              </div>
+            )}
+
+            <input 
+              type="file" 
+              ref={imageInputRef} 
+              onChange={(e) => setSelectedImage(e.target.files[0])} 
+              className="hidden" 
+              accept="image/*"
+            />
+
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => imageInputRef.current.click()}>
+                {relato.image_url ? 'Alterar Imagem' : 'Adicionar Imagem'}
+              </Button>
+
+              {selectedImage && (
+                <Button onClick={handleImageUpload} disabled={isUploading}>
+                  {isUploading ? 'Enviando...' : 'Salvar Imagem'}
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+
         {Object.entries(sectionsConfig).map(([key, section]) => (
           <ClickableSection key={key} onClick={() => openModal(key)} isEditable={section.fields.some(f => f.editable)}>
             <h3 className="text-lg font-semibold mb-2 px-4">{section.title}</h3>
