@@ -16,7 +16,7 @@ export const useRelatoManagement = (relatoId) => {
   const [error, setError] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isReproving, setIsReproving] = useState(false);
+  
 
   const fetchRelato = useCallback(async () => {
     setLoading(true);
@@ -58,9 +58,23 @@ export const useRelatoManagement = (relatoId) => {
     try {
       const { responsaveis, ...relatoData } = formData;
 
+      // Get original relato before update to compare changes
+      const { data: originalRelato, error: fetchError } = await supabase
+        .from('relatos')
+        .select('*')
+        .eq('id', relatoId)
+        .single();
+
+      if (fetchError) throw fetchError;
+
       // FIX: O banco de dados não aceita string vazia para campos de tempo, converte para null.
       if (relatoData.hora_aproximada_ocorrencia === '') {
         relatoData.hora_aproximada_ocorrencia = null;
+      }
+
+      // Clear reproval_reason if status is not REPROVADO
+      if (relatoData.status && relatoData.status !== 'REPROVADO') {
+        relatoData.reproval_reason = null;
       }
 
       // 1. Atualiza os campos de texto na tabela principal 'relatos'
@@ -71,7 +85,10 @@ export const useRelatoManagement = (relatoId) => {
 
       if (updateError) throw updateError;
 
-      // 2. Se o usuário pode gerenciar e a lista de responsáveis existe, chama a função RPC
+      
+
+
+      // 3. Se o usuário pode gerenciar e a lista de responsáveis existe, chama a função RPC
       if (canManageRelatos && responsaveis) {
         const { error: rpcError } = await supabase.rpc('update_relato_responsaveis', {
           p_relato_id: relatoId,
@@ -90,65 +107,9 @@ export const useRelatoManagement = (relatoId) => {
     } finally {
       setIsSaving(false);
     }
-  }, [relatoId, toast, fetchRelato]);
-
-  const handleReproveRelato = useCallback(async (reproveReason) => {
-    setIsReproving(true);
-    try {
-      const { error: updateError } = await supabase
-        .from('relatos')
-        .update({ status: 'REPROVADO' })
-        .eq('id', relatoId);
-
-      if (updateError) throw updateError;
-
-      // Log the action
-      await supabase.from('relato_logs').insert({
-        relato_id: relatoId,
-        user_id: userProfile?.id,
-        action_type: 'REPROVADO',
-        details: { reason: reproveReason }
-      });
-
-      toast({ title: 'Relato reprovado com sucesso!' });
-      fetchRelato();
-      return true;
-    } catch (err) {
-      handleServiceError('handleReproveRelato', err, toast);
-      return false;
-    } finally {
-      setIsReproving(false);
-    }
   }, [relatoId, toast, fetchRelato, userProfile]);
 
-  const handleReapproveRelato = useCallback(async () => {
-    setIsSaving(true); // Using isSaving for reapprove as well
-    try {
-      const { error: updateError } = await supabase
-        .from('relatos')
-        .update({ status: 'PENDENTE' }) // Or 'APROVADO' depending on desired flow
-        .eq('id', relatoId);
-
-      if (updateError) throw updateError;
-
-      // Log the action
-      await supabase.from('relato_logs').insert({
-        relato_id: relatoId,
-        user_id: userProfile?.id,
-        action_type: 'REAPROVADO',
-        details: {}
-      });
-
-      toast({ title: 'Relato reaprovado com sucesso!' });
-      fetchRelato();
-      return true;
-    } catch (err) {
-      handleServiceError('handleReapproveRelato', err, toast);
-      return false;
-    } finally {
-      setIsSaving(false);
-    }
-  }, [relatoId, toast, fetchRelato, userProfile]);
+  
 
   const handleDeleteRelato = useCallback(async () => {
     setIsDeleting(true);
@@ -167,12 +128,7 @@ export const useRelatoManagement = (relatoId) => {
         .eq('relato_id', relatoId);
       if (responsiblesError) throw responsiblesError;
 
-      // Delete logs
-      const { error: logsError } = await supabase
-        .from('relato_logs')
-        .delete()
-        .eq('relato_id', relatoId);
-      if (logsError) throw logsError;
+      
 
       // Finally, delete the relato
       const { error: deleteError } = await supabase
@@ -207,12 +163,9 @@ export const useRelatoManagement = (relatoId) => {
     error,
     isSaving,
     isDeleting,
-    isReproving,
     userProfile,
     isLoadingProfile,
     handleUpdateRelato,
-    handleReproveRelato,
-    handleReapproveRelato,
     handleDeleteRelato,
     setRelato,
     setCurrentResponsibles,

@@ -80,18 +80,7 @@ const CreateRelatoPage = () => {
           if (responsaveisError) throw responsaveisError;
         }
 
-        const { error: logError } = await supabase
-          .from('relato_logs')
-          .insert({
-            relato_id: newRelato.id,
-            user_id: user.id,
-            action_type: 'CREATE',
-            details: { ...relatoData, responsaveis: responsaveis }
-          });
-
-        if (logError) {
-          console.error('Erro ao registrar log de criação:', logError);
-        }
+        
       }
 
       toast({ title: 'Relato enviado com sucesso!', type: 'success' });

@@ -10,7 +10,8 @@ const RelatoDisplayDetails = ({
   isDirty,
   fieldsToDisplay = [],
   fieldComponents = {},
-  fieldLabels = {}
+  fieldLabels = {},
+  canManageRelatos
 }) => {
   const [relatorName, setRelatorName] = useState('Carregando...');
 
@@ -72,6 +73,7 @@ const RelatoDisplayDetails = ({
         onFieldChange={onFieldChange}
         isDirty={isDirty}
         originalValue={relato[fieldKey]}
+        canManage={canManageRelatos}
       />
     );
   };
@@ -114,7 +116,7 @@ const RelatoDisplayDetails = ({
         <Table>
           <TableBody>
             {renderStaticRow('Código do Relato', relato.relato_code || relato.id)}
-            {renderStaticRow('Status de Aprovação', getStatusText(relato.status))}
+            {fieldsToDisplay.includes('status') ? renderField('status') : renderStaticRow('Status de Aprovação', getStatusText(relato.status))}
             {renderStaticRow('Tipo de Relato', relato.tipo_relato)}
           </TableBody>
         </Table>

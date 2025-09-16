@@ -13,9 +13,10 @@ import CompleteRelatoActions from '@/07-relatos/components/CompleteRelatoActions
 
 // These definitions are now shared between RelatoDisplayDetails and CompleteRelatoActions
 // so we define them in the parent component.
-import { EditableField, EditableDateField, EditableTimeField } from '../components/CompleteRelatoActions'; // Assuming they are exported
+import { EditableField, EditableDateField, EditableTimeField, EditableStatusField } from '../components/CompleteRelatoActions';
 
 const fieldLabels = {
+  status: 'Status',
   data_ocorrencia: 'Data da Ocorrência',
   hora_aproximada_ocorrencia: 'Hora Aproximada',
   local_ocorrencia: 'Local da Ocorrência',
@@ -27,6 +28,7 @@ const fieldLabels = {
 };
 
 const fieldComponents = {
+  status: EditableStatusField,
   data_ocorrencia: EditableDateField,
   hora_aproximada_ocorrencia: EditableTimeField,
   local_ocorrencia: EditableField,
@@ -99,8 +101,12 @@ const RelatoDetailsPage = () => {
       }
     });
 
+    if (editedFields.reproval_reason) {
+        changes.reproval_reason = editedFields.reproval_reason;
+    }
+
     if (Object.keys(changes).length > 0) {
-      const success = await handleUpdateRelato(changes);
+      const success = await handleUpdateRelato(changes, canManageRelatos);
       if (success) {
         setIsDirty(false);
       }
@@ -121,6 +127,7 @@ const RelatoDetailsPage = () => {
   };
 
   const canDeleteRelatos = userProfile?.can_delete_relatos;
+  const canManageRelatos = userProfile?.can_manage_relatos;
 
   if (loading || isLoadingProfile) {
     return <LoadingSpinner />;
@@ -153,6 +160,7 @@ const RelatoDetailsPage = () => {
             fieldsToDisplay={filledFields}
             fieldComponents={fieldComponents}
             fieldLabels={fieldLabels}
+            canManageRelatos={canManageRelatos}
           />
           <div className="mt-6 flex justify-center">
             {canDeleteRelatos && (
@@ -178,6 +186,7 @@ const RelatoDetailsPage = () => {
             onFieldChange={handleFieldChange}
             isDirty={isDirty}
             originalRelato={relato}
+            canManageRelatos={canManageRelatos}
           />
         </>
       );

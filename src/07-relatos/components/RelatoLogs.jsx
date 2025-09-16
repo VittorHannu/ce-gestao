@@ -4,90 +4,72 @@ import { useToast } from '@/01-shared/hooks/useToast';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 
 const formatLogDetails = (log) => {
-  switch (log.action_type) {
-  case 'CREATE':
-    return (
-      <div className="ml-1 mt-2 p-2 bg-gray-100 rounded-md text-xs">
-        <p className="font-semibold">Relato criado com os seguintes dados:</p>
-        <ul className="list-disc list-inside ml-2">
-          {Object.entries(log.details).map(([key, value]) => {
-            if (['is_anonymous', 'data_conclusao_solucao', 'planejamento_cronologia_solucao', 'responsaveis'].includes(key)) return null;
-            return (
-              <li key={key}>
-                <span className="font-medium">{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</span> {String(value)}
-              </li>
-            );
-          })}
-          {log.details.responsaveis && log.details.responsaveis.length > 0 && (
-            <li>
-              <span className="font-medium">Responsáveis:</span> {log.details.responsaveis.join(', ')}
+  const { action, old_record, new_record } = log;
+
+  switch (action) {
+    case 'INSERT':
+      return <span className="ml-1">criou o relato.</span>;
+    case 'DELETE':
+      return <span className="ml-1">excluiu o relato.</span>;
+    case 'UPDATE':
+      if (!old_record || !new_record) {
+        return <span className="ml-1">atualizou o relato.</span>;
+      }
+      const changes = Object.keys(new_record).reduce((acc, key) => {
+        if (old_record[key] !== new_record[key]) {
+          acc.push(
+            <li key={key}>
+              O campo <span className="font-mono text-blue-600">{key}</span> foi alterado de{' '}
+              <span className="font-mono text-red-600">{String(old_record[key])}</span> para{' '}
+              <span className="font-mono text-green-600">{String(new_record[key])}</span>.
             </li>
-          )}
-        </ul>
-      </div>
-    );
-  case 'UPDATE':
-    if (log.details?.field && log.details?.new_value !== undefined) {
+          );
+        }
+        return acc;
+      }, []);
+
+      if (changes.length === 0) {
+        return <span className="ml-1">atualizou o relato sem alterações visíveis.</span>;
+      }
+
       return (
-        <span className="ml-1">
-            alterou o campo &apos;<span className="font-mono text-blue-600">{log.details.field}</span>&apos; para 
-            &apos;<span className="font-mono text-green-600">{String(log.details.new_value)}</span>&apos;.
-        </span>
+        <div className="ml-1 mt-2 p-2 bg-gray-100 rounded-md text-xs">
+          <p className="font-semibold">Alterações:</p>
+          <ul className="list-disc list-inside ml-2">{changes}</ul>
+        </div>
       );
-    } else {
-      return <span className="ml-1">atualizou o relato.</span>;
-    }
-  case 'STATUS_CHANGE':
-    return (
-      <span className="ml-1">
-          alterou o status de 
-          &apos;<span className="font-mono text-red-600">{log.details.old_status}</span>&apos; para 
-          &apos;<span className="font-mono text-green-600">{log.details.new_status}</span>&apos;.
-      </span>
-    );
-  case 'ADD_RESPONSIBLE':
-    return (
-      <span className="ml-1">
-          adicionou &apos;<span className="font-medium">{log.details.responsible_name}</span>&apos; como responsável.
-      </span>
-    );
-  case 'REMOVE_RESPONSIBLE':
-    return (
-      <span className="ml-1">
-          removeu &apos;<span className="font-medium">{log.details.responsible_name}</span>&apos; como responsável.
-      </span>
-    );
-  default:
-    return <span className="ml-1">realizou uma ação desconhecida.</span>;
+    default:
+      return <span className="ml-1">realizou uma ação desconhecida.</span>;
   }
 };
 
 const RelatoLogs = ({ relatoId }) => {
   const { toast } = useToast();
-  const [relatoLogs, setRelatoLogs] = useState([]);
+  const [auditLogs, setAuditLogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchRelatoLogs = useCallback(async () => {
+  const fetchAuditLogs = useCallback(async () => {
     if (!relatoId) return;
     setLoading(true);
     const { data, error } = await supabase
-      .from('relato_logs')
+      .from('audit_logs')
       .select('*, profiles(full_name, email)')
-      .eq('relato_id', relatoId)
+      .eq('record_id', relatoId)
+      .eq('table_name', 'relatos')
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Erro ao buscar logs do relato:', error);
+      console.error('Erro ao buscar logs de auditoria:', error);
       toast({ title: 'Erro ao carregar histórico do relato.', variant: 'destructive' });
     } else {
-      setRelatoLogs(data);
+      setAuditLogs(data);
     }
     setLoading(false);
   }, [relatoId, toast]);
 
   useEffect(() => {
-    fetchRelatoLogs();
-  }, [fetchRelatoLogs]);
+    fetchAuditLogs();
+  }, [fetchAuditLogs]);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -95,11 +77,11 @@ const RelatoLogs = ({ relatoId }) => {
 
   return (
     <div className="mt-4 p-4 border rounded-lg bg-white">
-      {relatoLogs.length === 0 ? (
+      {auditLogs.length === 0 ? (
         <p className="text-gray-600">Nenhuma alteração registrada ainda.</p>
       ) : (
         <ul className="space-y-3">
-          {relatoLogs.map((log) => (
+          {auditLogs.map((log) => (
             <li key={log.id} className="p-3 bg-gray-50 rounded-md shadow-sm">
               <div className="text-sm text-gray-800">
                 <span className="font-semibold">{new Date(log.created_at).toLocaleString()}</span> - 

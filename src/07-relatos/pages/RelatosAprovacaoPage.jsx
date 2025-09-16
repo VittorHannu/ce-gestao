@@ -54,24 +54,7 @@ const RelatosAprovacaoPage = () => {
     if (error) {
       toast({ title: 'Erro ao atualizar o status', description: error.message, variant: 'destructive' });
     } else {
-      // Log da ação de mudança de status
-      const { data: { user } } = await supabase.auth.getUser();
-      const currentUserId = user ? user.id : null;
-
-      const { error: logError } = await supabase.from('relato_logs').insert({
-        relato_id: id,
-        user_id: currentUserId,
-        action_type: 'STATUS_CHANGE',
-        details: {
-          old_status: oldStatus,
-          new_status: newStatus
-        }
-      });
-
-      if (logError) {
-        console.error('Erro ao registrar log de status:', logError);
-        // Não impede a operação principal, mas registra o erro
-      }
+      
 
       toast({ title: `Relato ${newStatus.toLowerCase()} com sucesso!` });
       // Remove o relato da lista na UI para não precisar recarregar a página
