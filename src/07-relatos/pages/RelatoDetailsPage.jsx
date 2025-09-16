@@ -189,7 +189,7 @@ const RelatoDetailsPage = () => {
   return (
     <MainLayout header={<PageHeader title="Detalhes do Relato" />}>
       <div className="w-full">
-        <div className="grid grid-cols-3 gap-1 mb-4 bg-gray-100 p-1 rounded-lg">
+        <div className="grid grid-cols-3 gap-1 mb-4 bg-gray-300 p-1 rounded-lg">
           {/* Tab Buttons */}
           <Button
             variant={activeTab === 'details' ? 'default' : 'ghost'}
