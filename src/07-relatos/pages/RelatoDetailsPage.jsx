@@ -191,9 +191,30 @@ const RelatoDetailsPage = () => {
       <div className="w-full">
         <div className="grid grid-cols-3 gap-1 mb-4 bg-gray-100 p-1 rounded-lg">
           {/* Tab Buttons */}
-          <Button variant={activeTab === 'details' ? 'default' : 'ghost'} onClick={() => setActiveTab('details')}><DocumentTextIcon className="w-5 h-5 mr-1" /> Detalhes</Button>
-          <Button variant={activeTab === 'comments' ? 'default' : 'ghost'} onClick={() => setActiveTab('comments')}><ChatBubbleLeftRightIcon className="w-5 h-5 mr-1" /> Comentários</Button>
-          <Button variant={activeTab === 'logs' ? 'default' : 'ghost'} onClick={() => setActiveTab('logs')}><ClockIcon className="w-5 h-5 mr-1" /> Logs</Button>
+          <Button
+            variant={activeTab === 'details' ? 'default' : 'ghost'}
+            onClick={() => setActiveTab('details')}
+            className={`flex-1 flex-col h-auto py-2 px-1 text-xs ${activeTab === 'details' ? 'bg-white text-black' : ''}`}
+          >
+            <DocumentTextIcon className="w-5 h-5 mb-1" />
+            <span>Detalhes</span>
+          </Button>
+          <Button
+            variant={activeTab === 'comments' ? 'default' : 'ghost'}
+            onClick={() => setActiveTab('comments')}
+            className={`flex-1 flex-col h-auto py-2 px-1 text-xs ${activeTab === 'comments' ? 'bg-white text-black' : ''}`}
+          >
+            <ChatBubbleLeftRightIcon className="w-5 h-5 mb-1" />
+            <span>Comentários</span>
+          </Button>
+          <Button
+            variant={activeTab === 'logs' ? 'default' : 'ghost'}
+            onClick={() => setActiveTab('logs')}
+            className={`flex-1 flex-col h-auto py-2 px-1 text-xs ${activeTab === 'logs' ? 'bg-white text-black' : ''}`}
+          >
+            <ClockIcon className="w-5 h-5 mb-1" />
+            <span>Logs</span>
+          </Button>
         </div>
         <div className="mt-4">{renderTabContent()}</div>
       </div>
