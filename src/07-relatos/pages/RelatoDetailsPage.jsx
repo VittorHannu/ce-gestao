@@ -2,42 +2,25 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { Button } from '@/01-shared/components/ui/button';
-import RelatoDisplayDetails from '../components/RelatoDisplayDetails';
 import PageHeader from '@/01-shared/components/PageHeader';
 import RelatoComments from '../components/RelatoComments';
 import MainLayout from '@/01-shared/components/MainLayout';
 import { useRelatoManagement } from '../hooks/useRelatoManagement';
 import RelatoLogs from '../components/RelatoLogs';
 import { DocumentTextIcon, ChatBubbleLeftRightIcon, ClockIcon } from '@heroicons/react/24/solid';
-import CompleteRelatoActions from '@/07-relatos/components/CompleteRelatoActions';
+import RelatoForm from '../components/RelatoForm';
 
-// These definitions are now shared between RelatoDisplayDetails and CompleteRelatoActions
-// so we define them in the parent component.
-import { EditableField, EditableDateField, EditableTimeField, EditableStatusField } from '../components/CompleteRelatoActions';
-
-const fieldLabels = {
-  status: 'Status',
-  data_ocorrencia: 'Data da Ocorrência',
-  hora_aproximada_ocorrencia: 'Hora Aproximada',
-  local_ocorrencia: 'Local da Ocorrência',
-  descricao: 'Descrição',
-  riscos_identificados: 'Riscos Identificados',
-  danos_ocorridos: 'Danos Ocorridos',
-  planejamento_cronologia_solucao: 'Planejamento da Solução',
-  data_conclusao_solucao: 'Data de Conclusão',
-};
-
-const fieldComponents = {
-  status: EditableStatusField,
-  data_ocorrencia: EditableDateField,
-  hora_aproximada_ocorrencia: EditableTimeField,
-  local_ocorrencia: EditableField,
-  descricao: EditableField,
-  riscos_identificados: EditableField,
-  danos_ocorridos: EditableField,
-  planejamento_cronologia_solucao: EditableField,
-  data_conclusao_solucao: EditableDateField,
-};
+const editableFieldKeys = [
+  'status',
+  'data_ocorrencia',
+  'hora_aproximada_ocorrencia',
+  'local_ocorrencia',
+  'descricao',
+  'riscos_identificados',
+  'danos_ocorridos',
+  'planejamento_cronologia_solucao',
+  'data_conclusao_solucao',
+];
 
 const RelatoDetailsPage = () => {
   const { id } = useParams();
@@ -59,32 +42,17 @@ const RelatoDetailsPage = () => {
 
   const [editedFields, setEditedFields] = useState(null);
   const [isDirty, setIsDirty] = useState(false);
-  const [filledFields, setFilledFields] = useState([]);
-  const [missingFields, setMissingFields] = useState([]);
-
-  const editableFieldKeys = useMemo(() => Object.keys(fieldLabels), []);
 
   useEffect(() => {
     if (relato) {
       const initialFields = {};
-      const filled = [];
-      const missing = [];
-      
       editableFieldKeys.forEach(key => {
         initialFields[key] = relato[key] || '';
-        if (relato[key]) {
-          filled.push(key);
-        } else {
-          missing.push(key);
-        }
       });
-
       setEditedFields(initialFields);
-      setFilledFields(filled);
-      setMissingFields(missing);
       setIsDirty(false);
     }
-  }, [relato, editableFieldKeys]);
+  }, [relato]);
 
   const handleFieldChange = (field, value) => {
     setEditedFields(prev => ({ ...prev, [field]: value }));
@@ -151,15 +119,12 @@ const RelatoDetailsPage = () => {
     default:
       return (
         <>
-          <RelatoDisplayDetails
+          <RelatoForm
             relato={relato}
             responsibles={currentResponsibles}
             editedFields={editedFields}
             onFieldChange={handleFieldChange}
             isDirty={isDirty}
-            fieldsToDisplay={filledFields}
-            fieldComponents={fieldComponents}
-            fieldLabels={fieldLabels}
             canManageRelatos={canManageRelatos}
           />
           <div className="mt-6 flex justify-center">
@@ -180,14 +145,6 @@ const RelatoDetailsPage = () => {
               </Button>
             )}
           </div>
-          <CompleteRelatoActions
-            missingFields={missingFields}
-            editedFields={editedFields}
-            onFieldChange={handleFieldChange}
-            isDirty={isDirty}
-            originalRelato={relato}
-            canManageRelatos={canManageRelatos}
-          />
         </>
       );
     }
