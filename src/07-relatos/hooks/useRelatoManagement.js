@@ -27,7 +27,8 @@ export const useRelatoManagement = (relatoId) => {
         .select(`
           *,
           relato_responsaveis(user_id),
-          relato_comentarios(*)
+          relato_comentarios(*),
+          relato_images(id, image_url, order_index)
         `)
         .eq('id', relatoId)
         .single();

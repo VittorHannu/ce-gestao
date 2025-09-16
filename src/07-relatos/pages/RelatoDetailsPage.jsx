@@ -34,7 +34,8 @@ const RelatoDetailsPage = () => {
   const [activeTab, setActiveTab] = useState('details');
   const [relatorName, setRelatorName] = useState('Carregando...');
   const [modalState, setModalState] = useState({ isOpen: false, config: null, title: '' });
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const imageInputRef = React.useRef(null);
   const { toast } = useToast();
@@ -120,13 +121,13 @@ const RelatoDetailsPage = () => {
     return success;
   };
 
-  const handleImageUpload = async () => {
-    console.log('--- Início do Upload ---');
-    if (!selectedImage) {
+  const handleFilesUpload = async () => {
+    console.log('--- Início do Upload de Múltiplas Imagens ---');
+    if (selectedFiles.length === 0) {
       console.log('1. Upload cancelado: Nenhuma imagem selecionada.');
       return;
     }
-    console.log('1. Imagem selecionada:', selectedImage);
+    console.log(`1. ${selectedFiles.length} imagens selecionadas.`);
 
     setIsUploading(true);
     try {
@@ -136,76 +137,117 @@ const RelatoDetailsPage = () => {
       console.log('2.1. userProfile.id:', userProfile.id);
       console.log('2.2. relato.id:', relato.id);
 
-      // 3. Gerar um nome de arquivo único para evitar conflitos
-      console.log('3. Gerando nome do arquivo...');
-      const fileExtension = selectedImage.name.split('.').pop();
-      const fileName = `${userProfile.id}/${relato.id}/${Date.now()}.${fileExtension}`;
-      console.log('3.1. Nome do arquivo gerado:', fileName);
+      const uploadedImageUrls = [];
 
-      // 4. Chamar a Edge Function para obter a URL pré-assinada
-      console.log('4. Chamando a Edge Function get-presigned-image-url...');
-      const { data: functionData, error: functionError } = await supabase.functions.invoke(
-        'get-presigned-image-url',
-        { body: { fileName, fileType: selectedImage.type } }
-      );
+      for (const [index, file] of selectedFiles.entries()) {
+        console.log(`Processando imagem ${index + 1}/${selectedFiles.length}: ${file.name}`);
 
-      if (functionError) throw new Error(`Erro da Edge Function: ${functionError.message}`);
-      console.log('4.1. URL pré-assinada recebida.');
-      
-      const { presignedUrl } = functionData;
+        // 3. Gerar um nome de arquivo único para evitar conflitos
+        const fileExtension = file.name.split('.').pop();
+        const fileName = `${userProfile.id}/${relato.id}/${Date.now()}_${index}.${fileExtension}`;
+        console.log(`3.1. Nome do arquivo gerado para ${file.name}:`, fileName);
 
-      // 5. Fazer o upload da imagem para o R2 usando a URL recebida
-      console.log('5. Enviando imagem para o R2...');
-      const uploadResponse = await fetch(presignedUrl, {
-        method: 'PUT',
-        headers: { 'Content-Type': selectedImage.type },
-        body: selectedImage
-      });
+        // 4. Chamar a Edge Function para obter a URL pré-assinada
+        console.log(`4. Chamando a Edge Function get-presigned-image-url para ${file.name}...`);
+        const { data: functionData, error: functionError } = await supabase.functions.invoke(
+          'get-presigned-image-url',
+          { body: { fileName, fileType: file.type } }
+        );
 
-      if (!uploadResponse.ok) {
-        throw new Error('Falha ao fazer upload da imagem para o R2.');
+        if (functionError) throw new Error(`Erro da Edge Function para ${file.name}: ${functionError.message}`);
+        console.log(`4.1. URL pré-assinada recebida para ${file.name}.`);
+        
+        const { presignedUrl } = functionData;
+
+        // 5. Fazer o upload da imagem para o R2 usando a URL recebida
+        console.log(`5. Enviando imagem ${file.name} para o R2...`);
+        const uploadResponse = await fetch(presignedUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': file.type },
+          body: file
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error(`Falha ao fazer upload da imagem ${file.name} para o R2.`);
+        }
+        console.log(`5.1. Imagem ${file.name} enviada com sucesso para o R2.`);
+
+        // 6. Construir a URL final da imagem
+        const imageUrl = `https://pub-a95ba591f3e14e6bb5399492c805d52a.r2.dev/${fileName}`;
+        uploadedImageUrls.push(imageUrl);
       }
-      console.log('5.1. Imagem enviada com sucesso para o R2.');
 
-      // 6. Salvar a URL final da imagem no relato
-      console.log('6. Salvando URL no banco de dados...');
-      const imageUrl = `https://pub-a95ba591f3e14e6bb5399492c805d52a.r2.dev/${fileName}`;
-      console.log('6. Construindo imageUrl para salvar no DB:', imageUrl);
-      const success = await handleUpdateRelato({ image_url: imageUrl }, canManageRelatos);
+      // 7. Salvar todas as URLs das imagens no banco de dados (tabela relato_images)
+      console.log('7. Salvando URLs no banco de dados (tabela relato_images)...');
+      const imagesToInsert = uploadedImageUrls.map((url, index) => ({
+        relato_id: relato.id,
+        image_url: url,
+        order_index: existingImages.length + index // Append to existing images
+      }));
 
-      if (success) {
-        console.log('6.1. handleUpdateRelato retornou sucesso. URL salva no DB.');
-        toast({ title: 'Sucesso!', description: 'Imagem enviada e associada ao relato.' });
-        setSelectedImage(null); // Limpa a preview
+      const { error: insertError } = await supabase
+        .from('relato_images')
+        .insert(imagesToInsert);
+
+      if (insertError) {
+        console.error('7.1. Erro ao inserir URLs das imagens no DB:', insertError);
+        throw new Error('Falha ao salvar as URLs das imagens no relato.');
+      }
+
+      console.log('7.1. URLs das imagens salvas com sucesso no DB.');
+      toast({ title: 'Sucesso!', description: 'Imagens enviadas e associadas ao relato.' });
+      setSelectedFiles([]); // Limpa as previews
+      // Refresh existing images by re-fetching
+      const { data: newImagesData, error: newImagesError } = await supabase
+        .from('relato_images')
+        .select('id, image_url, order_index')
+        .eq('relato_id', relato.id)
+        .order('order_index', { ascending: true });
+
+      if (newImagesError) {
+        console.error('Erro ao re-buscar imagens após upload:', newImagesError.message);
       } else {
-        console.error('6.1. handleUpdateRelato retornou falha. URL NÃO salva no DB.');
-        throw new Error('Falha ao salvar a URL da imagem no relato.');
+        setExistingImages(newImagesData || []);
       }
 
     } catch (error) {
-      console.error('ERRO NO PROCESSO DE UPLOAD:', error);
+      console.error('ERRO NO PROCESSO DE UPLOAD DE MÚLTIPLAS IMAGENS:', error);
       toast({ title: 'Erro no Upload', description: error.message, variant: 'destructive' });
     } finally {
       setIsUploading(false);
-      console.log('--- Fim do Upload ---');
+      console.log('--- Fim do Upload de Múltiplas Imagens ---');
     }
   };
 
   useEffect(() => {
-    const fetchRelatorName = async () => {
+    const fetchData = async () => {
       if (!relato) return;
+
+      // Fetch relator name
       if (relato.is_anonymous) {
         setRelatorName('Anônimo');
-        return;
-      }
-      if (relato.user_id) {
+      } else if (relato.user_id) {
         const { data, error } = await supabase.from('profiles').select('full_name').eq('id', relato.user_id).single();
         setRelatorName(error ? 'Erro' : data?.full_name || 'Não informado');
       } else {
         setRelatorName('Não informado');
       }
+
+      // Fetch existing images for the relato
+      const { data: imagesData, error: imagesError } = await supabase
+        .from('relato_images')
+        .select('id, image_url, order_index')
+        .eq('relato_id', relato.id)
+        .order('order_index', { ascending: true });
+
+      if (imagesError) {
+        console.error('Erro ao buscar imagens do relato:', imagesError.message);
+        setExistingImages([]);
+      } else {
+        setExistingImages(imagesData || []);
+      }
     };
-    fetchRelatorName();
+    fetchData();
   }, [relato]);
 
   if (loading || isLoadingProfile) return <LoadingSpinner />;
@@ -230,39 +272,49 @@ const RelatoDetailsPage = () => {
       <div className="space-y-4">
         {/* Seção de Imagem */}
         <div className="p-4 bg-white rounded-lg shadow-sm">
-          <h3 className="text-lg font-semibold mb-2 px-4">Imagem</h3>
+          <h3 className="text-lg font-semibold mb-2 px-4">Imagens</h3>
           <div className="p-4">
-            {relato.image_url ? (
-              <div className="max-w-[150px]">
-                <img src={relato.image_url} alt="Imagem do relato" className="w-full h-auto rounded-lg mb-4" />
+            {existingImages.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+                {existingImages.map((img) => (
+                  <div key={img.id} className="relative group">
+                    <img src={img.image_url} alt="Imagem do relato" className="w-full h-auto rounded-lg object-cover" />
+                    {/* Add delete button later */}
+                  </div>
+                ))}
               </div>
             ) : (
               <p className="text-gray-500 mb-4">Nenhuma imagem associada a este relato.</p>
             )}
 
-            {selectedImage && (
-              <div className="mb-4 max-w-[150px]">
-                <p className="font-semibold mb-2">Nova imagem selecionada:</p>
-                <img src={URL.createObjectURL(selectedImage)} alt="Preview" className="w-full h-auto rounded-lg" />
+            {selectedFiles.length > 0 && (
+              <div className="mb-4">
+                <p className="font-semibold mb-2">Novas imagens selecionadas:</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {selectedFiles.map((file, index) => (
+                    <img key={index} src={URL.createObjectURL(file)} alt="Preview" className="w-full h-auto rounded-lg object-cover" />
+                  ))}
+                </div>
               </div>
             )}
 
             <input 
               type="file" 
               ref={imageInputRef} 
-              onChange={(e) => setSelectedImage(e.target.files[0])} 
+              onChange={(e) => setSelectedFiles(Array.from(e.target.files))} 
               className="hidden" 
               accept="image/*"
+              multiple
             />
 
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => imageInputRef.current.click()}>
-                {relato.image_url ? 'Alterar Imagem' : 'Adicionar Imagem'}
+                {existingImages.length > 0 ? 'Adicionar Mais Imagens' : 'Adicionar Imagens'}
               </Button>
 
-              {selectedImage && (
-                <Button onClick={handleImageUpload} disabled={isUploading}>
-                  {isUploading ? 'Enviando...' : 'Salvar Imagem'}
+              {selectedFiles.length > 0 && (
+                <Button onClick={handleFilesUpload} disabled={isUploading}>
+                  {isUploading ? 'Enviando...' : 'Salvar Imagens'}
                 </Button>
               )}
             </div>
