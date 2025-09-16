@@ -26,6 +26,9 @@ importers:
       '@fortawesome/react-fontawesome':
         specifier: ^0.2.3
         version: 0.2.6(@fortawesome/fontawesome-svg-core@7.0.1)(react@19.1.1)
+      '@heroicons/react':
+        specifier: ^2.2.0
+        version: 2.2.0(react@19.1.1)
       '@hookform/resolvers':
         specifier: ^5.0.1
         version: 5.2.1(react-hook-form@7.62.0(react@19.1.1))
@@ -1068,6 +1071,11 @@ packages:
     peerDependencies:
       '@fortawesome/fontawesome-svg-core': ~1 || ~6 || ~7
       react: ^16.3 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  '@heroicons/react@2.2.0':
+    resolution: {integrity: sha512-LMcepvRaS9LYHJGsF0zzmgKCUim/X3N/DQKc4jepAXJ7l8QxJ1PmxJzqplF2Z3FE4PqBAIGyJAQ/w4B5dsqbtQ==}
+    peerDependencies:
+      react: '>= 16 || ^19.0.0-rc'
 
   '@hookform/resolvers@5.2.1':
     resolution: {integrity: sha512-u0+6X58gkjMcxur1wRWokA7XsiiBJ6aK17aPZxhkoYiK5J+HcTx0Vhu9ovXe6H+dVpO6cjrn2FkJTryXEMlryQ==}
@@ -5450,6 +5458,10 @@ snapshots:
     dependencies:
       '@fortawesome/fontawesome-svg-core': 7.0.1
       prop-types: 15.8.1
+      react: 19.1.1
+
+  '@heroicons/react@2.2.0(react@19.1.1)':
+    dependencies:
       react: 19.1.1
 
   '@hookform/resolvers@5.2.1(react-hook-form@7.62.0(react@19.1.1))':

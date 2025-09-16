@@ -7,12 +7,13 @@ import PageHeader from '@/01-shared/components/PageHeader';
 import RelatoComments from '../components/RelatoComments';
 import MainLayout from '@/01-shared/components/MainLayout';
 import { useRelatoManagement } from '../hooks/useRelatoManagement';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/01-shared/components/ui/tabs';
 import RelatoLogs from '../components/RelatoLogs';
+import { DocumentTextIcon, ChatBubbleLeftRightIcon, ClockIcon } from '@heroicons/react/24/solid';
 
 const RelatoDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('details');
 
   const {
     relato,
@@ -32,10 +33,11 @@ const RelatoDetailsPage = () => {
 
   const editableFieldKeys = useMemo(() => [
     'data_ocorrencia',
-    'descricao', 
-    'local_ocorrencia', 
-    'riscos_identificados', 
-    'danos_ocorridos', 
+    'hora_aproximada_ocorrencia',
+    'descricao',
+    'local_ocorrencia',
+    'riscos_identificados',
+    'danos_ocorridos',
     'planejamento_cronologia_solucao',
     'data_conclusao_solucao'
   ], []);
@@ -61,7 +63,6 @@ const RelatoDetailsPage = () => {
     if (!editedFields) return;
 
     editableFieldKeys.forEach(key => {
-      // Check if the edited field is different from the original relato field
       if (editedFields[key] !== (relato[key] || '')) {
         changes[key] = editedFields[key];
       }
@@ -70,12 +71,10 @@ const RelatoDetailsPage = () => {
     if (Object.keys(changes).length > 0) {
       const success = await handleUpdateRelato(changes);
       if (success) {
-        // The useEffect will reset the fields based on the refetched relato data,
-        // so we just need to set dirty to false.
         setIsDirty(false);
       }
     } else {
-      setIsDirty(false); // No actual changes were made, so just reset dirty state
+      setIsDirty(false);
     }
   };
 
@@ -104,63 +103,88 @@ const RelatoDetailsPage = () => {
     return <div className="container mx-auto p-4">Relato não encontrado.</div>;
   }
 
+  const renderTabContent = () => {
+    switch (activeTab) {
+    case 'comments':
+      return <RelatoComments relatoId={id} />;
+    case 'logs':
+      return <RelatoLogs relatoId={id} />;
+    case 'details':
+    default:
+      return (
+        <div className="p-4 bg-white rounded-lg shadow-sm">
+          <RelatoDisplayDetails
+            relato={relato}
+            responsibles={currentResponsibles}
+            editedFields={editedFields}
+            onFieldChange={handleFieldChange}
+            isDirty={isDirty}
+          />
+          <div className="mt-6 flex justify-center">
+            {canDeleteRelatos && (
+              <Button
+                variant="destructive"
+                onClick={async () => {
+                  if (window.confirm('Tem certeza que deseja excluir este relato? Esta ação não pode ser desfeita.')) {
+                    const success = await handleDeleteRelato();
+                    if (success) {
+                      navigate('/relatos');
+                    }
+                  }
+                }}
+                disabled={isDeleting}
+              >
+                {isDeleting ? 'Excluindo...' : 'Excluir'}
+              </Button>
+            )}
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <MainLayout
       header={<PageHeader title="Detalhes do Relato" />}
     >
-      <Tabs defaultValue="details" className="w-full">
-        <TabsList>
-          <TabsTrigger value="details">Detalhes</TabsTrigger>
-          <TabsTrigger value="comments">Comentários</TabsTrigger>
-          <TabsTrigger value="logs">Logs de Auditoria</TabsTrigger>
-        </TabsList>
+      <div className="w-full">
+        <div className="grid grid-cols-3 gap-1 mb-4 bg-gray-100 p-1 rounded-lg">
+          <Button
+            variant={activeTab === 'details' ? 'default' : 'ghost'}
+            onClick={() => setActiveTab('details')}
+            className={`flex-1 flex-col h-auto py-2 px-1 text-xs ${activeTab === 'details' ? 'bg-white text-black' : ''}`}
+          >
+            <DocumentTextIcon className="w-5 h-5 mb-1" />
+            <span>Detalhes</span>
+          </Button>
+          <Button
+            variant={activeTab === 'comments' ? 'default' : 'ghost'}
+            onClick={() => setActiveTab('comments')}
+            className={`flex-1 flex-col h-auto py-2 px-1 text-xs ${activeTab === 'comments' ? 'bg-white text-black' : ''}`}
+          >
+            <ChatBubbleLeftRightIcon className="w-5 h-5 mb-1" />
+            <span>Comentários</span>
+          </Button>
+          <Button
+            variant={activeTab === 'logs' ? 'default' : 'ghost'}
+            onClick={() => setActiveTab('logs')}
+            className={`flex-1 flex-col h-auto py-2 px-1 text-xs ${activeTab === 'logs' ? 'bg-white text-black' : ''}`}
+          >
+            <ClockIcon className="w-5 h-5 mb-1" />
+            <span>Logs</span>
+          </Button>
+        </div>
 
-        <TabsContent value="details">
-          <div className="p-4 bg-white rounded-lg shadow-sm">
-            <RelatoDisplayDetails
-              relato={relato}
-              responsibles={currentResponsibles}
-              editedFields={editedFields}
-              onFieldChange={handleFieldChange}
-              isDirty={isDirty}
-            />
-
-            <div className="mt-6 flex justify-center">
-              {canDeleteRelatos && (
-                <Button
-                  variant="destructive"
-                  onClick={async () => {
-                    if (window.confirm('Tem certeza que deseja excluir este relato? Esta ação não pode ser desfeita.')) {
-                      const success = await handleDeleteRelato();
-                      if (success) {
-                        navigate('/relatos');
-                      }
-                    }
-                  }}
-                  disabled={isDeleting}
-                >
-                  {isDeleting ? 'Excluindo...' : 'Excluir'}
-                </Button>
-              )}
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="comments">
-          <RelatoComments relatoId={id} />
-        </TabsContent>
-
-        <TabsContent value="logs">
-          <RelatoLogs relatoId={id} />
-        </TabsContent>
-
-      </Tabs>
+        <div className="mt-4">
+          {renderTabContent()}
+        </div>
+      </div>
 
       {isDirty && (
         <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center p-4 pointer-events-none">
-          <div 
+          <div
             className="w-full max-w-2xl bg-gray-800 text-white shadow-2xl rounded-xl p-4 pointer-events-auto"
-            style={{ 
+            style={{
               marginBottom: 'calc(env(safe-area-inset-bottom, 0px) + env(keyboard-inset-height, 0px))',
               transition: 'margin-bottom 0.2s ease-out'
             }}

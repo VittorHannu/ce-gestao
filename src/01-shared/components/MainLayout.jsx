@@ -42,7 +42,7 @@ const MainLayout = ({ children, header, _user, headerClassName }) => {
             </div>
           </div>
         )}
-        <div className="flex flex-1">
+        <div className="flex flex-1 relative z-0">
           <main
             ref={mainRef}
             className="flex-grow overflow-y-visible mx-auto px-2 sm:px-6 lg:px-8 w-full"
