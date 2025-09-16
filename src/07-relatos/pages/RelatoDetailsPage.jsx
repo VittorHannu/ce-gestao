@@ -64,9 +64,9 @@ const RelatoDetailsPage = () => {
         { key: 'status', label: 'Status de Aprovação', editable: canManageRelatos, type: 'select', options: [
           { value: 'Pendente', label: 'Pendente' },
           { value: 'Aprovado', label: 'Aprovado' },
-          { value: 'Reprovado', label: 'Reprovado' },
-        ]},
-        { key: 'tipo_relato', label: 'Tipo de Relato', editable: false },
+          { value: 'Reprovado', label: 'Reprovado' }
+        ] },
+        { key: 'tipo_relato', label: 'Tipo de Relato', editable: false }
       ]
     },
     ocorrencia: {
@@ -75,33 +75,33 @@ const RelatoDetailsPage = () => {
         { key: 'data_ocorrencia', label: 'Data da Ocorrência', editable: canManageRelatos, type: 'date' },
         { key: 'hora_aproximada_ocorrencia', label: 'Hora Aproximada', editable: canManageRelatos, type: 'time' },
         { key: 'local_ocorrencia', label: 'Local da Ocorrência', editable: canManageRelatos, type: 'text' },
-        { key: 'descricao', label: 'Descrição', editable: canManageRelatos, type: 'textarea' },
+        { key: 'descricao', label: 'Descrição', editable: canManageRelatos, type: 'textarea' }
       ]
     },
     analise: {
       title: 'Análise',
       fields: [
         { key: 'riscos_identificados', label: 'Riscos Identificados', editable: canManageRelatos, type: 'textarea' },
-        { key: 'danos_ocorridos', label: 'Danos Ocorridos', editable: canManageRelatos, type: 'textarea' },
+        { key: 'danos_ocorridos', label: 'Danos Ocorridos', editable: canManageRelatos, type: 'textarea' }
       ]
     },
     tratativa: {
-        title: 'Tratativa',
-        fields: [
-            { key: 'treatment_status', label: 'Status da Tratativa', editable: false },
-            { key: 'responsibles', label: 'Responsáveis', editable: canManageRelatos, type: 'text' }, // Placeholder, should be a multi-user select
-            { key: 'planejamento_cronologia_solucao', label: 'Planejamento da Solução', editable: canManageRelatos, type: 'textarea' },
-            { key: 'data_conclusao_solucao', label: 'Data de Conclusão', editable: canManageRelatos, type: 'date' },
-            { key: 'concluido_sem_data', label: 'Concluído Sem Data', editable: canManageRelatos, type: 'select', options: [{value: true, label: 'Sim'}, {value: false, label: 'Não'}] },
-        ]
+      title: 'Tratativa',
+      fields: [
+        { key: 'treatment_status', label: 'Status da Tratativa', editable: false },
+        { key: 'responsibles', label: 'Responsáveis', editable: canManageRelatos, type: 'text' }, // Placeholder, should be a multi-user select
+        { key: 'planejamento_cronologia_solucao', label: 'Planejamento da Solução', editable: canManageRelatos, type: 'textarea' },
+        { key: 'data_conclusao_solucao', label: 'Data de Conclusão', editable: canManageRelatos, type: 'date' },
+        { key: 'concluido_sem_data', label: 'Concluído Sem Data', editable: canManageRelatos, type: 'select', options: [{ value: true, label: 'Sim' }, { value: false, label: 'Não' }] }
+      ]
     },
     adicionais: {
-        title: 'Informações Adicionais',
-        fields: [
-            { key: 'relatorName', label: 'Relator', editable: false },
-            { key: 'is_anonymous', label: 'Anônimo', editable: false, format: (val) => val ? 'Sim' : 'Não' },
-            { key: 'created_at', label: 'Data de Criação', editable: false, format: (val) => new Date(val).toLocaleString() },
-        ]
+      title: 'Informações Adicionais',
+      fields: [
+        { key: 'relatorName', label: 'Relator', editable: false },
+        { key: 'is_anonymous', label: 'Anônimo', editable: false, format: (val) => val ? 'Sim' : 'Não' },
+        { key: 'created_at', label: 'Data de Criação', editable: false, format: (val) => new Date(val).toLocaleString() }
+      ]
     }
   };
 
@@ -159,7 +159,7 @@ const RelatoDetailsPage = () => {
       const uploadResponse = await fetch(presignedUrl, {
         method: 'PUT',
         headers: { 'Content-Type': selectedImage.type },
-        body: selectedImage,
+        body: selectedImage
       });
 
       if (!uploadResponse.ok) {
@@ -169,20 +169,22 @@ const RelatoDetailsPage = () => {
 
       // 6. Salvar a URL final da imagem no relato
       console.log('6. Salvando URL no banco de dados...');
-      const imageUrl = `https://e8eb74368ec81db9e24c3e93e1259a7d.r2.cloudflarestorage.com/sgi-copa-relatos/${fileName}`;
+      const imageUrl = `https://pub-a95ba591f3e14e6bb5399492c805d52a.r2.dev/${fileName}`;
+      console.log('6. Construindo imageUrl para salvar no DB:', imageUrl);
       const success = await handleUpdateRelato({ image_url: imageUrl }, canManageRelatos);
 
       if (success) {
-        console.log('6.1. URL salva com sucesso!');
-        toast({ title: "Sucesso!", description: "Imagem enviada e associada ao relato." });
+        console.log('6.1. handleUpdateRelato retornou sucesso. URL salva no DB.');
+        toast({ title: 'Sucesso!', description: 'Imagem enviada e associada ao relato.' });
         setSelectedImage(null); // Limpa a preview
       } else {
+        console.error('6.1. handleUpdateRelato retornou falha. URL NÃO salva no DB.');
         throw new Error('Falha ao salvar a URL da imagem no relato.');
       }
 
     } catch (error) {
       console.error('ERRO NO PROCESSO DE UPLOAD:', error);
-      toast({ title: "Erro no Upload", description: error.message, variant: 'destructive' });
+      toast({ title: 'Erro no Upload', description: error.message, variant: 'destructive' });
     } finally {
       setIsUploading(false);
       console.log('--- Fim do Upload ---');
@@ -231,13 +233,15 @@ const RelatoDetailsPage = () => {
           <h3 className="text-lg font-semibold mb-2 px-4">Imagem</h3>
           <div className="p-4">
             {relato.image_url ? (
-              <img src={relato.image_url} alt="Imagem do relato" className="w-full h-auto rounded-lg mb-4" />
+              <div className="max-w-[150px]">
+                <img src={relato.image_url} alt="Imagem do relato" className="w-full h-auto rounded-lg mb-4" />
+              </div>
             ) : (
               <p className="text-gray-500 mb-4">Nenhuma imagem associada a este relato.</p>
             )}
 
             {selectedImage && (
-              <div className="mb-4">
+              <div className="mb-4 max-w-[150px]">
                 <p className="font-semibold mb-2">Nova imagem selecionada:</p>
                 <img src={URL.createObjectURL(selectedImage)} alt="Preview" className="w-full h-auto rounded-lg" />
               </div>

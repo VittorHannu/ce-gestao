@@ -9,7 +9,7 @@ const ClickableTableRow = ({ label, value, onClick, isEditable = true }) => {
     <TableRow
       onClick={canClick ? onClick : undefined}
       className={cn(
-        canClick ? 'cursor-pointer hover:bg-gray-50' : 'cursor-default',
+        canClick ? 'cursor-pointer hover:bg-gray-50' : 'cursor-default'
       )}
     >
       <TableCell className="whitespace-normal">

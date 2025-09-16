@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogClose,
+  DialogClose
 } from '@/01-shared/components/ui/dialog';
 import { Button } from '@/01-shared/components/ui/button';
 
@@ -17,7 +17,7 @@ const EditModal = ({
   onSave,
   isSaving,
   saveButtonText = 'Salvar Alterações',
-  cancelButtonText = 'Cancelar',
+  cancelButtonText = 'Cancelar'
 }) => {
   if (!isOpen) return null;
 

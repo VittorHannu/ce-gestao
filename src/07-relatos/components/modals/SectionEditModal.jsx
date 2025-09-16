@@ -29,51 +29,51 @@ const FormFieldComponent = ({ field, value, onChange }) => {
 
   // Render editable fields based on their type
   switch (type) {
-    case 'textarea':
-      return (
-        <div className="space-y-2">
-          <Label htmlFor={key}>{label}</Label>
-          <Textarea id={key} value={value} onChange={(e) => onChange(key, e.target.value)} className="min-h-[100px] w-full" />
-        </div>
-      );
-    case 'date':
-      return (
-        <div className="space-y-2">
-          <Label htmlFor={key}>{label}</Label>
-          <DatePicker value={value} onChange={(date) => onChange(key, date)} />
-        </div>
-      );
-    case 'time':
-      return (
-        <div className="space-y-2">
-          <Label htmlFor={key}>{label}</Label>
-          <TimePicker value={value} onChange={(time) => onChange(key, time)} />
-        </div>
-      );
-    case 'select':
-      return (
-        <div className="space-y-2">
-          <Label htmlFor={key}>{label}</Label>
-          <Select value={value} onValueChange={(newValue) => onChange(key, newValue)}>
-            <SelectTrigger id={key} className="w-full">
-              <SelectValue placeholder={`Selecione um ${label.toLowerCase()}`} />
-            </SelectTrigger>
-            <SelectContent>
-              {field.options.map(option => (
-                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      );
-    case 'text':
-    default:
-      return (
-        <div className="space-y-2">
-          <Label htmlFor={key}>{label}</Label>
-          <Input id={key} value={value} onChange={(e) => onChange(key, e.target.value)} className="w-full" />
-        </div>
-      );
+  case 'textarea':
+    return (
+      <div className="space-y-2">
+        <Label htmlFor={key}>{label}</Label>
+        <Textarea id={key} value={value} onChange={(e) => onChange(key, e.target.value)} className="min-h-[100px] w-full" />
+      </div>
+    );
+  case 'date':
+    return (
+      <div className="space-y-2">
+        <Label htmlFor={key}>{label}</Label>
+        <DatePicker value={value} onChange={(date) => onChange(key, date)} />
+      </div>
+    );
+  case 'time':
+    return (
+      <div className="space-y-2">
+        <Label htmlFor={key}>{label}</Label>
+        <TimePicker value={value} onChange={(time) => onChange(key, time)} />
+      </div>
+    );
+  case 'select':
+    return (
+      <div className="space-y-2">
+        <Label htmlFor={key}>{label}</Label>
+        <Select value={value} onValueChange={(newValue) => onChange(key, newValue)}>
+          <SelectTrigger id={key} className="w-full">
+            <SelectValue placeholder={`Selecione um ${label.toLowerCase()}`} />
+          </SelectTrigger>
+          <SelectContent>
+            {field.options.map(option => (
+              <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    );
+  case 'text':
+  default:
+    return (
+      <div className="space-y-2">
+        <Label htmlFor={key}>{label}</Label>
+        <Input id={key} value={value} onChange={(e) => onChange(key, e.target.value)} className="w-full" />
+      </div>
+    );
   }
 };
 

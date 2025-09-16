@@ -11,7 +11,7 @@ import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
   PopoverContent,
-  PopoverTrigger,
+  PopoverTrigger
 } from '@/01-shared/components/ui/popover';
 
 export function DatePicker({ value, onChange, className }) {

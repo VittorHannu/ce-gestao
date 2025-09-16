@@ -55,6 +55,8 @@ export const useRelatoManagement = (relatoId) => {
 
   const handleUpdateRelato = useCallback(async (formData, canManageRelatos) => {
     setIsSaving(true);
+    console.log('handleUpdateRelato: Iniciando atualização do relato.');
+    console.log('handleUpdateRelato: formData recebido:', formData);
     try {
       const { responsaveis, ...relatoData } = formData;
 
@@ -69,34 +71,46 @@ export const useRelatoManagement = (relatoId) => {
       }
 
       // 1. Atualiza os campos de texto na tabela principal 'relatos'
+      console.log('handleUpdateRelato: Atualizando tabela relatos com:', relatoData);
       const { error: updateError } = await supabase
         .from('relatos')
         .update(relatoData)
         .eq('id', relatoId);
 
-      if (updateError) throw updateError;
-
-      
+      if (updateError) {
+        console.error('handleUpdateRelato: Erro ao atualizar relatos:', updateError);
+        throw updateError;
+      }
+      console.log('handleUpdateRelato: Tabela relatos atualizada com sucesso.');
 
 
       // 3. Se o usuário pode gerenciar e a lista de responsáveis existe, chama a função RPC
       if (canManageRelatos && responsaveis) {
+        console.log('handleUpdateRelato: Chamando RPC update_relato_responsaveis com:', responsaveis);
         const { error: rpcError } = await supabase.rpc('update_relato_responsaveis', {
           p_relato_id: relatoId,
           p_user_ids: responsaveis
         });
 
-        if (rpcError) throw rpcError;
+        if (rpcError) {
+          console.error('handleUpdateRelato: Erro ao chamar RPC update_relato_responsaveis:', rpcError);
+          throw rpcError;
+        }
+        console.log('handleUpdateRelato: RPC update_relato_responsaveis executado com sucesso.');
       }
 
       toast({ title: 'Relato atualizado com sucesso!' });
+      console.log('handleUpdateRelato: Chamando fetchRelato() para recarregar dados.');
       fetchRelato(); // Recarrega os dados para mostrar o estado atualizado
+      console.log('handleUpdateRelato: Atualização do relato concluída com sucesso.');
       return true;
     } catch (err) {
+      console.error('handleUpdateRelato: Erro geral na atualização do relato:', err);
       handleServiceError('handleUpdateRelato', err, toast);
       return false;
     } finally {
       setIsSaving(false);
+      console.log('handleUpdateRelato: Finalizando processo de atualização.');
     }
   }, [relatoId, toast, fetchRelato]);
 
