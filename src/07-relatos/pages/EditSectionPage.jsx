@@ -174,6 +174,7 @@ const EditSectionPage = () => {
     if (sectionKey === 'classificacoes' && selectedClassifications && JSON.stringify(selectedClassifications) !== JSON.stringify(currentSelection)) {
       setCurrentSelection(selectedClassifications);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [relato, sectionConfig, sectionKey, selectedClassifications]);
 
   const handleChange = (fieldKey, value) => {
@@ -196,7 +197,7 @@ const EditSectionPage = () => {
         if (exists) return prev;
         return [...prev, {
           classification_id: itemId,
-          classification_table: group.table_name,
+          classification_table: group.table_name
         }];
       } else if (checked === false) {
         return prev.filter(
@@ -211,7 +212,7 @@ const EditSectionPage = () => {
         } else {
           return [...prev, {
             classification_id: itemId,
-            classification_table: group.table_name,
+            classification_table: group.table_name
           }];
         }
       }
@@ -277,7 +278,6 @@ const EditSectionPage = () => {
                   }
                   onChange={(itemId) => handleSelectionChange(itemId, group)}
                   placeholder={`Selecione ${group.name.toLowerCase()}...`}
-                  selectionState={currentSelection}
                 />
               ))}
             </div>

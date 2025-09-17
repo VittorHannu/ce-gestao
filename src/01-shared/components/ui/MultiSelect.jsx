@@ -7,7 +7,7 @@ import { ScrollArea } from '@/01-shared/components/ui/scroll-area';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const MultiSelect = ({ label, options, selectedValues, onChange, placeholder = 'Selecione...', selectionState }) => {
+const MultiSelect = ({ label, options, selectedValues, onChange, placeholder = 'Selecione...' }) => {
   const [open, setOpen] = useState(false);
 
   const selectedItems = options.filter(option => selectedValues.includes(String(option.id)));
