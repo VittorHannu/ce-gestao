@@ -46,12 +46,17 @@ const RelatoDetailsPage = () => {
     isLoadingProfile
   } = useRelatoManagement(id);
 
-  useLayoutEffect(() => {
-    const savedPosition = sessionStorage.getItem(scrollPositionKey);
-    if (savedPosition) {
-      window.scrollTo(0, parseInt(savedPosition, 10));
+  useEffect(() => {
+    // Solução sugerida pelo usuário: Restaurar o scroll apenas quando os dados do relato estiverem carregados,
+    // garantindo que a altura da página esteja correta antes de rolar.
+    if (!loading && !isLoadingProfile && relato) {
+      const savedPosition = sessionStorage.getItem(scrollPositionKey);
+      if (savedPosition) {
+        window.scrollTo(0, parseInt(savedPosition, 10));
+        sessionStorage.removeItem(scrollPositionKey);
+      }
     }
-  }, [scrollPositionKey]);
+  }, [loading, isLoadingProfile, relato, scrollPositionKey]);
 
   useEffect(() => {
     return () => {
@@ -59,28 +64,14 @@ const RelatoDetailsPage = () => {
     };
   }, [scrollPositionKey]);
   const [activeTab, setActiveTab] = useState('details');
-  const [relatorName, setRelatorName] = useState('Carregando...');
+  
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const imageInputRef = useRef(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchRelatorName = async () => {
-      if (!relato) return;
-
-      if (relato.is_anonymous) {
-        setRelatorName('Anônimo');
-      } else if (relato.user_id) {
-        const { data, error } = await supabase.from('profiles').select('full_name').eq('id', relato.user_id).single();
-        setRelatorName(error ? 'Erro' : data?.full_name || 'Não informado');
-      } else {
-        setRelatorName('Não informado');
-      }
-    };
-    fetchRelatorName();
-  }, [relato]);
+  
 
   const canDeleteRelatos = userProfile?.can_delete_relatos;
   const canManageRelatos = userProfile?.can_manage_relatos;
@@ -200,7 +191,7 @@ const RelatoDetailsPage = () => {
       const imagesToInsert = uploadedImageUrls.map((url, index) => ({
         relato_id: relato.id,
         image_url: url,
-        order_index: (relato.relato_images?.length || 0) + index // Append to existing images
+        order_index: (relato.images?.length || 0) + index // Append to existing images
       }));
 
       const { error: insertError } = await supabase
@@ -240,7 +231,8 @@ const RelatoDetailsPage = () => {
     return 'Sem Tratativa';
   };
 
-  const responsibleNames = currentResponsibles.map(r => r.full_name).join(', ') || null;
+  const responsibleNames = relato.responsaveis?.map(r => r.full_name).join(', ') || 'Nenhum';
+  const relatorName = relato.is_anonymous ? 'Anônimo' : relato.relator_full_name || 'Não informado';
   const dynamicRelato = { ...relato, relatorName, treatment_status: getTreatmentStatusText(), responsibles: responsibleNames };
 
   const renderTabContent = () => {
@@ -253,9 +245,9 @@ const RelatoDetailsPage = () => {
         <div className="p-4 bg-white rounded-lg shadow-sm">
           <h3 className="text-lg font-semibold mb-2 px-4">Imagens</h3>
           <div className="p-4">
-            {relato.relato_images && relato.relato_images.length > 0 ? (
+            {relato.images && relato.images.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
-                {relato.relato_images.map((img) => (
+                {relato.images.map((img) => (
                   <div key={img.id} className="relative group">
                     <img src={img.image_url} alt="Imagem do relato" className="w-full h-auto rounded-lg object-cover" />
                     {/* Add delete button later */}

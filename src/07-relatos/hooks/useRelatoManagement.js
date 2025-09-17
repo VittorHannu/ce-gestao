@@ -1,31 +1,23 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/01-shared/hooks/useToast';
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { supabase } from '@/01-shared/lib/supabase';
 import { handleServiceError } from '@/01-shared/lib/errorUtils';
-import { getAllUsers } from '@/05-adm/services/userService';
 
 export const useRelatoManagement = (relatoId) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
 
-  const [allUsers, setAllUsers] = useState([]);
   const [currentResponsibles, setCurrentResponsibles] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchRelato = async () => {
+  // Fetches the consolidated relato details from the new RPC function
+  const fetchRelatoDetails = async () => {
     const { data, error } = await supabase
-      .from('relatos')
-      .select(`
-        *,
-        relato_responsaveis(user_id),
-        relato_comentarios(*),
-        relato_images(id, image_url, order_index)
-      `)
-      .eq('id', relatoId)
+      .rpc('get_relato_details', { p_relato_id: relatoId })
       .single();
 
     if (error) throw error;
@@ -34,24 +26,20 @@ export const useRelatoManagement = (relatoId) => {
 
   const { data: relato, error, isLoading: loading } = useQuery({
     queryKey: ['relato', relatoId],
-    queryFn: fetchRelato,
+    queryFn: fetchRelatoDetails,
     enabled: !!relatoId,
     onSuccess: (data) => {
-      setCurrentResponsibles(data.relato_responsaveis.map(r => r.user_id));
+      // The 'responsaveis' field is now a JSON array from the RPC
+      if (data && data.responsaveis) {
+        setCurrentResponsibles(data.responsaveis.map(r => r.id));
+      } else {
+        setCurrentResponsibles([]);
+      }
     },
     onError: (err) => {
-      handleServiceError('fetchRelato', err, toast);
+      handleServiceError('fetchRelatoDetails', err, toast);
     }
   });
-
-  const fetchAllUsers = useCallback(async () => {
-    try {
-      const users = await getAllUsers();
-      setAllUsers(users);
-    } catch (err) {
-      handleServiceError('fetchAllUsers', err, toast);
-    }
-  }, [toast]);
 
   const handleUpdateRelato = useCallback(async (formData, canManageRelatos) => {
     setIsSaving(true);
@@ -96,6 +84,10 @@ export const useRelatoManagement = (relatoId) => {
   const handleDeleteRelato = useCallback(async () => {
     setIsDeleting(true);
     try {
+      // Note: RLS policies should handle cascading deletes for related tables
+      // like comments, responsaveis, and images. Explicitly deleting them
+      // here might be redundant if policies are set up correctly.
+      // For safety, we can keep them, but it's worth reviewing.
       const { error: commentsError } = await supabase
         .from('relato_comentarios')
         .delete()
@@ -107,6 +99,12 @@ export const useRelatoManagement = (relatoId) => {
         .delete()
         .eq('relato_id', relatoId);
       if (responsiblesError) throw responsiblesError;
+      
+      const { error: imagesError } = await supabase
+        .from('relato_images')
+        .delete()
+        .eq('relato_id', relatoId);
+      if (imagesError) throw imagesError;
 
       const { error: deleteError } = await supabase
         .from('relatos')
@@ -116,6 +114,7 @@ export const useRelatoManagement = (relatoId) => {
       if (deleteError) throw deleteError;
 
       toast({ title: 'Relato excluído com sucesso!' });
+      queryClient.invalidateQueries(['relatos']); // Invalidate the main list
       return true;
     } catch (err) {
       handleServiceError('handleDeleteRelato', err, toast);
@@ -123,17 +122,10 @@ export const useRelatoManagement = (relatoId) => {
     } finally {
       setIsDeleting(false);
     }
-  }, [relatoId, toast]);
-
-  useEffect(() => {
-    if (relatoId) {
-      fetchAllUsers();
-    }
-  }, [relatoId, fetchAllUsers]);
+  }, [relatoId, toast, queryClient]);
 
   return {
     relato,
-    allUsers,
     currentResponsibles,
     loading,
     error,
