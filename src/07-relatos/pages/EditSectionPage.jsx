@@ -13,6 +13,9 @@ import { DatePicker } from '@/01-shared/components/ui/DatePicker';
 import { Checkbox } from '@/01-shared/components/ui/checkbox';
 import { TimePicker } from '@/01-shared/components/ui/TimePicker';
 import RelatoImages from '../components/RelatoImages';
+import { useRelatoClassifications } from '../hooks/useRelatoClassifications';
+import { useToast } from '@/01-shared/hooks/useToast';
+import MultiSelect from '@/01-shared/components/ui/MultiSelect';
 
 // FormFieldComponent copied from SectionEditModal
 const FormFieldComponent = ({ field, value, onChange, disabled }) => {
@@ -80,10 +83,27 @@ const FormFieldComponent = ({ field, value, onChange, disabled }) => {
   }
 };
 
+
+
 const EditSectionPage = () => {
   const { id, sectionKey } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
+
+  // State for the generic form fields
+  const [fields, setFields] = useState({});
+
+  // Hooks and state for the new classifications editor
+  const { 
+    allClassifications, 
+    isLoadingAll, 
+    selectedClassifications, 
+    isLoadingSelected, 
+    updateMutation 
+  } = useRelatoClassifications(id);
+  const [currentSelection, setCurrentSelection] = useState([]);
+
   const {
     relato,
     loading,
@@ -93,8 +113,6 @@ const EditSectionPage = () => {
     userProfile,
     isLoadingProfile
   } = useRelatoManagement(id);
-
-  const [fields, setFields] = useState({});
   const canManageRelatos = userProfile?.can_manage_relatos;
 
   const sectionsConfig = useMemo(() => ({
@@ -124,6 +142,9 @@ const EditSectionPage = () => {
         { key: 'danos_ocorridos', label: 'Danos Ocorridos', editable: canManageRelatos, type: 'textarea' }
       ]
     },
+    classificacoes: {
+      title: 'Classificações'
+    },
     tratativa: {
       title: 'Tratativa',
       fields: [
@@ -137,7 +158,8 @@ const EditSectionPage = () => {
   const sectionConfig = sectionsConfig[sectionKey];
 
   useEffect(() => {
-    if (relato && sectionConfig) {
+    // Effect for generic form fields
+    if (relato && sectionConfig && sectionKey !== 'classificacoes') {
       const initialState = {};
       sectionConfig.fields.forEach(field => {
         if (field.editable) {
@@ -146,7 +168,13 @@ const EditSectionPage = () => {
       });
       setFields(initialState);
     }
-  }, [relato, sectionConfig]);
+    
+    // Effect for classifications editor
+    // Note: We compare stringified versions to prevent infinite loops from new array instances.
+    if (sectionKey === 'classificacoes' && selectedClassifications && JSON.stringify(selectedClassifications) !== JSON.stringify(currentSelection)) {
+      setCurrentSelection(selectedClassifications);
+    }
+  }, [relato, sectionConfig, sectionKey, selectedClassifications]);
 
   const handleChange = (fieldKey, value) => {
     setFields(prev => {
@@ -158,24 +186,69 @@ const EditSectionPage = () => {
     });
   };
 
-  const handleSave = async () => {
-    const changes = {};
-    for (const key in fields) {
-      const originalValue = relato[key] || '';
-      const currentValue = fields[key] === null ? null : (fields[key] || '');
-
-      if (currentValue !== originalValue) {
-        changes[key] = fields[key] === '' ? null : fields[key];
+  const handleSelectionChange = (itemId, group, checkedParam) => {
+    const checked = typeof checkedParam === 'boolean' ? checkedParam : undefined;
+    setCurrentSelection(prev => {
+      const exists = prev.some(
+        sel => String(sel.classification_id) === String(itemId) && sel.classification_table === group.table_name
+      );
+      if (checked === true) {
+        if (exists) return prev;
+        return [...prev, {
+          classification_id: itemId,
+          classification_table: group.table_name,
+        }];
+      } else if (checked === false) {
+        return prev.filter(
+          sel => !(String(sel.classification_id) === String(itemId) && sel.classification_table === group.table_name)
+        );
+      } else {
+        // fallback: toggle (para compatibilidade)
+        if (exists) {
+          return prev.filter(
+            sel => !(String(sel.classification_id) === String(itemId) && sel.classification_table === group.table_name)
+          );
+        } else {
+          return [...prev, {
+            classification_id: itemId,
+            classification_table: group.table_name,
+          }];
+        }
       }
-    }
+    });
+  };
 
-    if (Object.keys(changes).length > 0) {
-      const success = await handleUpdateRelato(changes, canManageRelatos);
-      if (success) {
+  const handleSave = async () => {
+    if (sectionKey === 'classificacoes') {
+      updateMutation.mutate(currentSelection, {
+        onSuccess: () => {
+          toast({ title: 'Classificações salvas com sucesso!', type: 'success' });
+          navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state });
+        },
+        onError: (error) => {
+          toast({ title: `Erro ao salvar: ${error.message}`, type: 'error' });
+        }
+      });
+    } else {
+      // Generic form save logic
+      const changes = {};
+      for (const key in fields) {
+        const originalValue = relato[key] || '';
+        const currentValue = fields[key] === null ? null : (fields[key] || '');
+
+        if (currentValue !== originalValue) {
+          changes[key] = fields[key] === '' ? null : fields[key];
+        }
+      }
+
+      if (Object.keys(changes).length > 0) {
+        const success = await handleUpdateRelato(changes, canManageRelatos);
+        if (success) {
+          navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state });
+        }
+      } else {
         navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state });
       }
-    } else {
-      navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state });
     }
   };
 
@@ -191,30 +264,49 @@ const EditSectionPage = () => {
     <MainLayout header={<PageHeader title={`Editar Seção: ${sectionConfig.title}`} />}>
       <div className="container mx-auto p-4">
         <div className="p-4 bg-white rounded-lg shadow-sm">
-          <div className="space-y-4">
-            {sectionConfig.fields.map(field => {
-              const isDisabled = field.key === 'data_conclusao_solucao' && isConcluidoSemData;
-              return (
-                <FormFieldComponent
-                  key={field.key}
-                  field={field}
-                  value={fields[field.key] || ''}
-                  onChange={handleChange}
-                  disabled={isDisabled}
+          {sectionKey === 'classificacoes' ? (
+            <div className="space-y-6">
+              {(isLoadingAll || isLoadingSelected) ? <LoadingSpinner /> : allClassifications.map(group => (
+                <MultiSelect
+                  key={group.id}
+                  label={group.name}
+                  options={group.items}
+                  selectedValues={currentSelection
+                    .filter(sel => sel.classification_table === group.table_name)
+                    .map(sel => String(sel.classification_id))
+                  }
+                  onChange={(itemId) => handleSelectionChange(itemId, group)}
+                  placeholder={`Selecione ${group.name.toLowerCase()}...`}
+                  selectionState={currentSelection}
                 />
-              );
-            })}
-            {sectionKey === 'ocorrencia' && (
-              <RelatoImages relato={relato} userProfile={userProfile} isEditable={true} />
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {sectionConfig.fields.map(field => {
+                const isDisabled = field.key === 'data_conclusao_solucao' && isConcluidoSemData;
+                return (
+                  <FormFieldComponent
+                    key={field.key}
+                    field={field}
+                    value={fields[field.key] || ''}
+                    onChange={handleChange}
+                    disabled={isDisabled}
+                  />
+                );
+              })}
+              {sectionKey === 'ocorrencia' && (
+                <RelatoImages relato={relato} userProfile={userProfile} isEditable={true} />
+              )}
+            </div>
+          )}
         </div>
         <div className="flex justify-end space-x-4 mt-6">
-          <Button variant="outline" onClick={() => navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state })} disabled={isSaving}>
+          <Button variant="outline" onClick={() => navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state })} disabled={isSaving || updateMutation.isPending}>
             Cancelar
           </Button>
-          <Button onClick={handleSave} disabled={isSaving}>
-            {isSaving ? 'Salvando...' : 'Salvar Alterações'}
+          <Button onClick={handleSave} disabled={isSaving || updateMutation.isPending}>
+            {(isSaving || updateMutation.isPending) ? 'Salvando...' : 'Salvar Alterações'}
           </Button>
         </div>
       </div>

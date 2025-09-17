@@ -12,6 +12,8 @@ import { Table, TableBody } from '@/01-shared/components/ui/table';
 import ClickableTableRow from '@/01-shared/components/ClickableTableRow';
 import { cn } from '@/lib/utils';
 import RelatoImages from '../components/RelatoImages';
+import { useRelatoClassifications } from '../hooks/useRelatoClassifications';
+
 
 // Helper to create a clickable section
 const ClickableSection = ({ onClick, isEditable, children }) => (
@@ -28,6 +30,7 @@ const ClickableSection = ({ onClick, isEditable, children }) => (
 
 const RelatoDetailsPage = () => {
   const { id } = useParams();
+  const { selectedClassifications, isLoading: isLoadingClassifications } = useRelatoClassifications(id);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname + (location.state?.from?.search || '');
@@ -93,6 +96,12 @@ const RelatoDetailsPage = () => {
         { key: 'danos_ocorridos', label: 'Danos Ocorridos', editable: canManageRelatos, type: 'textarea' }
       ]
     },
+    classificacoes: {
+      title: 'Classificações',
+      fields: [
+        { key: 'classificacoes_selecionadas', label: 'Itens Selecionados', editable: canManageRelatos, type: 'custom' }
+      ]
+    },
     tratativa: {
       title: 'Tratativa',
       fields: [
@@ -117,7 +126,7 @@ const RelatoDetailsPage = () => {
     navigate(`/relatos/detalhes/${id}/edit/${sectionKey}`, { state: location.state });
   };
 
-  if (loading || isLoadingProfile) return <LoadingSpinner />;
+  if (loading || isLoadingProfile || isLoadingClassifications) return <LoadingSpinner />;
   if (error) return <div className="container p-4 text-red-500">{error.message || error}</div>;
   if (!relato) return <div className="container p-4">Relato não encontrado.</div>;
 
@@ -130,7 +139,10 @@ const RelatoDetailsPage = () => {
 
   const responsibleNames = relato.responsaveis?.map(r => r.full_name).join(', ') || 'Nenhum';
   const relatorName = relato.is_anonymous ? 'Anônimo' : relato.relator_full_name || 'Não informado';
-  const dynamicRelato = { ...relato, relatorName, treatment_status: getTreatmentStatusText(), responsibles: responsibleNames };
+  const classificacoesText = selectedClassifications && selectedClassifications.length > 0
+    ? `${selectedClassifications.length} itens selecionados`
+    : 'Nenhum item selecionado';
+  const dynamicRelato = { ...relato, relatorName, treatment_status: getTreatmentStatusText(), responsibles: responsibleNames, classificacoes_selecionadas: classificacoesText };
 
   const renderTabContent = () => {
     if (activeTab === 'comments') return <RelatoComments relatoId={id} />;
@@ -160,6 +172,8 @@ const RelatoDetailsPage = () => {
             )}
           </ClickableSection>
         ))}
+
+        
 
         <div className="mt-6 flex justify-center">
           {canDeleteRelatos && (

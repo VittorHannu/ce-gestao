@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDebug } from '@/01-shared/context/DebugContext';
 import SettingsItem from '@/01-shared/components/settings/SettingsItem';
-import { Switch } from '@/components/ui/switch';
+import { Switch } from '@/01-shared/components/ui/switch';
 
 
 const DebugSettings = () => {

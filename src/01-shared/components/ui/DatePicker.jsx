@@ -7,7 +7,7 @@ import { Calendar as CalendarIcon, X as XIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/01-shared/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
+import { Calendar } from '@/01-shared/components/ui/calendar';
 import {
   Popover,
   PopoverContent,
