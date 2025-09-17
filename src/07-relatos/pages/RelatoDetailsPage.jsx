@@ -32,6 +32,7 @@ const RelatoDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const from = location.state?.from?.pathname + (location.state?.from?.search || '');
   const scrollPositionKey = `scrollPos:${location.pathname}`;
 
   const {
@@ -334,7 +335,7 @@ const RelatoDetailsPage = () => {
   };
 
   return (
-    <MainLayout header={<PageHeader title="Detalhes do Relato" />}>
+    <MainLayout header={<PageHeader title="Detalhes do Relato" to={from || '/relatos/lista'} />}>
       <div className="w-full">
         <div className="grid grid-cols-3 gap-1 mb-4 bg-gray-300 p-1 rounded-lg">
           {/* Tab Buttons */}

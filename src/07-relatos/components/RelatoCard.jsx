@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/01-shared/components/ui/card';
 import { CheckCircle, Clock, AlertCircle } from 'lucide-react'; // Importa os ícones
 
 const RelatoCard = ({ relato, disableLink }) => {
+  const location = useLocation();
   const getTreatmentStatusDisplay = () => {
     if (relato.data_conclusao_solucao || relato.concluido_sem_data) {
       return { text: 'Concluído', icon: CheckCircle, color: 'text-white', bgColor: 'bg-green-600' };
@@ -41,7 +42,7 @@ const RelatoCard = ({ relato, disableLink }) => {
   return disableLink ? (
     <div className="block">{cardContent}</div>
   ) : (
-    <Link to={`/relatos/detalhes/${relato.id}`} className="block">{cardContent}</Link>
+    <Link to={`/relatos/detalhes/${relato.id}`} state={{ from: location }} className="block">{cardContent}</Link>
   );
 };
 
