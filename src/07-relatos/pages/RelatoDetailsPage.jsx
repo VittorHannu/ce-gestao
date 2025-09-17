@@ -152,7 +152,7 @@ const RelatoDetailsPage = () => {
       <div className="space-y-4">
         {Object.entries(sectionsConfig).map(([key, section]) => (
           <ClickableSection key={key} onClick={() => navigateToEditSection(key)} isEditable={section.fields.some(f => f.editable)}>
-            <h3 className="text-lg font-semibold mb-2 px-4">{section.title}</h3>
+            <h3 className="text-lg font-semibold mb-6 px-4 text-center">{section.title}</h3>
             <Table>
               <TableBody>
                 {section.fields.map(field => (
