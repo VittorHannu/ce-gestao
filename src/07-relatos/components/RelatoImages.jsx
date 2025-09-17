@@ -85,7 +85,7 @@ const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
     return null;
   }
 
-  const imageGrid = (
+  const imageGrid = relato.images && relato.images.length > 0 ? (
     <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
       {relato.images.map((img) => (
         <DialogTrigger key={img.id} asChild>
@@ -99,9 +99,12 @@ const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
         </DialogTrigger>
       ))}
     </div>
-  );
+  ) : null;
 
   if (!isEditable) {
+    if (!hasImages) {
+      return null;
+    }
     return (
       <div onClick={(e) => e.stopPropagation()}>
         <Dialog open={!!selectedImage} onOpenChange={(isOpen) => !isOpen && setSelectedImage(null)}>
