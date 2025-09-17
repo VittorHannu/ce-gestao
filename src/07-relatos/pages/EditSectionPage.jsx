@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { DatePicker } from '@/01-shared/components/ui/DatePicker';
 import { Checkbox } from '@/01-shared/components/ui/checkbox';
 import { TimePicker } from '@/01-shared/components/ui/TimePicker';
+import RelatoImages from '../components/RelatoImages';
 
 // FormFieldComponent copied from SectionEditModal
 const FormFieldComponent = ({ field, value, onChange, disabled }) => {
@@ -203,6 +204,9 @@ const EditSectionPage = () => {
                 />
               );
             })}
+            {sectionKey === 'ocorrencia' && (
+              <RelatoImages relato={relato} userProfile={userProfile} isEditable={true} />
+            )}
           </div>
         </div>
         <div className="flex justify-end space-x-4 mt-6">
