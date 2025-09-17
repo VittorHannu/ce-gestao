@@ -35,12 +35,14 @@ export const getAllClassificationsGrouped = async () => {
  * @returns {Promise<Array<{classification_table: string, classification_id: number}>>}
  */
 export const getRelatoClassifications = async (relatoId) => {
-  if (!relatoId) return [];
+  if (!relatoId) {
+    return [];
+  }
   const { data, error } = await supabase
     .from('relato_classificacoes')
     .select('classification_table, classification_id')
     .eq('relato_id', relatoId);
-  
+
   handleSupabaseError(error);
   return data;
 };

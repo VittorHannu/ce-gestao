@@ -29,8 +29,8 @@ const ClickableSection = ({ onClick, isEditable, children }) => (
 );
 
 const RelatoDetailsPage = () => {
-  const { id } = useParams();
-  const { selectedClassifications, isLoading: isLoadingClassifications } = useRelatoClassifications(id);
+  const { id } = useParams(); // <-- Adicionar esta linha
+  const { selectedClassifications, isLoading: isLoadingClassifications, allClassifications, isLoadingAll } = useRelatoClassifications(id);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname + (location.state?.from?.search || '');
@@ -97,10 +97,8 @@ const RelatoDetailsPage = () => {
       ]
     },
     classificacoes: {
-      title: 'Classificações',
-      fields: [
-        { key: 'classificacoes_selecionadas', label: 'Itens Selecionados', editable: canManageRelatos, type: 'custom' }
-      ]
+      title: 'Classificações'
+      // A renderização será customizada, não há fields genéricos aqui
     },
     tratativa: {
       title: 'Tratativa',
@@ -126,9 +124,7 @@ const RelatoDetailsPage = () => {
     navigate(`/relatos/detalhes/${id}/edit/${sectionKey}`, { state: location.state });
   };
 
-  if (loading || isLoadingProfile || isLoadingClassifications) return <LoadingSpinner />;
-  if (error) return <div className="container p-4 text-red-500">{error.message || error}</div>;
-  if (!relato) return <div className="container p-4">Relato não encontrado.</div>;
+  if (loading || isLoadingProfile || isLoadingClassifications || isLoadingAll) return <LoadingSpinner />;
 
   const getTreatmentStatusText = () => {
     if (relato.data_conclusao_solucao) return 'Concluído';
@@ -139,10 +135,7 @@ const RelatoDetailsPage = () => {
 
   const responsibleNames = relato.responsaveis?.map(r => r.full_name).join(', ') || 'Nenhum';
   const relatorName = relato.is_anonymous ? 'Anônimo' : relato.relator_full_name || 'Não informado';
-  const classificacoesText = selectedClassifications && selectedClassifications.length > 0
-    ? `${selectedClassifications.length} itens selecionados`
-    : 'Nenhum item selecionado';
-  const dynamicRelato = { ...relato, relatorName, treatment_status: getTreatmentStatusText(), responsibles: responsibleNames, classificacoes_selecionadas: classificacoesText };
+  const dynamicRelato = { ...relato, relatorName, treatment_status: getTreatmentStatusText(), responsibles: responsibleNames };
 
   const renderTabContent = () => {
     if (activeTab === 'comments') return <RelatoComments relatoId={id} />;
@@ -151,29 +144,58 @@ const RelatoDetailsPage = () => {
     return (
       <div className="space-y-4">
         {Object.entries(sectionsConfig).map(([key, section]) => (
-          <ClickableSection key={key} onClick={() => navigateToEditSection(key)} isEditable={section.fields.some(f => f.editable)}>
-            <h3 className="text-lg font-semibold mb-6 px-4 text-center">{section.title}</h3>
-            <Table>
-              <TableBody>
-                {section.fields.map(field => (
-                  <ClickableTableRow
-                    key={field.key}
-                    label={field.label}
-                    value={field.format ? field.format(dynamicRelato[field.key]) : dynamicRelato[field.key]}
-                    isEditable={false}
-                  />
-                ))}
-              </TableBody>
-            </Table>
-            {key === 'ocorrencia' && (relato.images && relato.images.length > 0) && (
-              <div className="px-2 pb-2">
-                <RelatoImages relato={relato} userProfile={userProfile} />
-              </div>
-            )}
-          </ClickableSection>
+          key !== 'classificacoes' && ( // Exclui a seção de classificações do loop genérico
+            <ClickableSection key={key} onClick={() => navigateToEditSection(key)} isEditable={section.fields.some(f => f.editable)}>
+              <h3 className="text-lg font-semibold mb-6 px-4 text-center">{section.title}</h3>
+              <Table>
+                <TableBody>
+                  {section.fields.map(field => (
+                    <ClickableTableRow
+                      key={field.key}
+                      label={field.label}
+                      value={field.format ? field.format(dynamicRelato[field.key]) : dynamicRelato[field.key]}
+                      isEditable={false}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+              {key === 'ocorrencia' && (relato.images && relato.images.length > 0) && (
+                <div className="px-2 pb-2">
+                  <RelatoImages relato={relato} userProfile={userProfile} />
+                </div>
+              )}
+            </ClickableSection>
+          )
         ))}
 
         
+
+        {/* Custom rendering for Classificações section */}
+        <ClickableSection key="classificacoes" onClick={() => navigateToEditSection('classificacoes')} isEditable={canManageRelatos}>
+          <h3 className="text-lg font-semibold mb-6 px-4 text-center">Classificações</h3>
+          <Table>
+            <TableBody>
+              {allClassifications.map(category => {
+                const selectedItemsForCategory = selectedClassifications
+                  .filter(sc => sc.classification_table === category.table_name)
+                  .map(sc => {
+                    const item = category.items.find(item => item.id === sc.classification_id);
+                    return item ? item.nome : null; // Usar item.nome em vez de item.name
+                  })
+                  .filter(Boolean); // Remove nulls
+
+                return (
+                  <ClickableTableRow
+                    key={category.id}
+                    label={category.name}
+                    value={selectedItemsForCategory.length > 0 ? selectedItemsForCategory.join(', ') : 'Nenhum item selecionado'}
+                    isEditable={false}
+                  />
+                );
+              })}
+            </TableBody>
+          </Table>
+        </ClickableSection>
 
         <div className="mt-6 flex justify-center">
           {canDeleteRelatos && (
