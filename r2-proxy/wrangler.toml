@@ -1,0 +1,10 @@
+name = "r2-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-03-20"
+
+# This is the crucial part: Binding your R2 bucket to the Worker.
+# The 'binding' is the variable name you'll use in your code.
+# The 'bucket_name' is the actual name of your R2 bucket in Cloudflare.
+[[r2_buckets]]
+binding = "MY_BUCKET"
+bucket_name = "sgi-copa-relatos"

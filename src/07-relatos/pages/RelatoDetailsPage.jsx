@@ -173,7 +173,7 @@ const RelatoDetailsPage = () => {
         console.log(`5.1. Imagem ${file.name} enviada com sucesso para o R2.`);
 
         // 6. Construir a URL final da imagem
-        const imageUrl = `https://pub-a95ba591f3e14e6bb5399492c805d52a.r2.dev/${fileName}`;
+        const imageUrl = `${import.meta.env.VITE_R2_PUBLIC_URL}/${fileName}`;
         uploadedImageUrls.push(imageUrl);
       }
 
