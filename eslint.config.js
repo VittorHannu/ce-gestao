@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import pluginReact from 'eslint-plugin-react';
 
 export default [
-  { ignores: ['dist', 'node_modules', '.vite/deps', 'public'] },
+  { ignores: ['dist', 'node_modules', '.vite/deps', 'public', 'components.json', 'jsconfig.json'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
@@ -48,6 +48,17 @@ export default [
       'block-spacing': ['error', 'always'],
       'react/prop-types': 'off',
       'react/react-in-jsx-scope': 'off'
+    }
+  },
+  {
+    files: ['tailwind.config.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node
+      },
+      parserOptions: {
+        sourceType: 'commonjs'
+      }
     }
   }
 ];

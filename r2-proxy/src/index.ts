@@ -38,6 +38,7 @@ export default {
 		const headers = new Headers();
 		object.writeHttpMetadata(headers);
 		headers.set('etag', object.httpEtag); // Set the ETag for browser caching.
+		headers.set('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
 
 		// Stream the object's body directly to the response.
 		// This is highly efficient as it avoids buffering the entire file in memory.

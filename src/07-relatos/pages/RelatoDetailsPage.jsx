@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { Button } from '@/01-shared/components/ui/button';
 import PageHeader from '@/01-shared/components/PageHeader';
@@ -10,9 +10,9 @@ import RelatoLogs from '../components/RelatoLogs';
 import { DocumentTextIcon, ChatBubbleLeftRightIcon, ClockIcon } from '@heroicons/react/24/solid';
 import { Table, TableBody } from '@/01-shared/components/ui/table';
 import ClickableTableRow from '@/01-shared/components/ClickableTableRow';
-import SectionEditModal from '../components/modals/SectionEditModal';
 import { supabase } from '@/01-shared/lib/supabase';
 import { useToast } from '@/01-shared/hooks/useToast';
+import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
 
 // Helper to create a clickable section
@@ -31,27 +31,55 @@ const ClickableSection = ({ onClick, isEditable, children }) => (
 const RelatoDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('details');
-  const [relatorName, setRelatorName] = useState('Carregando...');
-  const [modalState, setModalState] = useState({ isOpen: false, config: null, title: '' });
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [existingImages, setExistingImages] = useState([]);
-  const [isUploading, setIsUploading] = useState(false);
-  const imageInputRef = React.useRef(null);
-  const { toast } = useToast();
+  const location = useLocation();
+  const scrollPositionKey = `scrollPos:${location.pathname}`;
 
   const {
     relato,
     currentResponsibles,
     loading,
     error,
-    isSaving,
     isDeleting,
-    handleUpdateRelato,
     handleDeleteRelato,
     userProfile,
     isLoadingProfile
   } = useRelatoManagement(id);
+
+  useLayoutEffect(() => {
+    const savedPosition = sessionStorage.getItem(scrollPositionKey);
+    if (savedPosition) {
+      window.scrollTo(0, parseInt(savedPosition, 10));
+    }
+  }, [scrollPositionKey]);
+
+  useEffect(() => {
+    return () => {
+      sessionStorage.setItem(scrollPositionKey, window.scrollY);
+    };
+  }, [scrollPositionKey]);
+  const [activeTab, setActiveTab] = useState('details');
+  const [relatorName, setRelatorName] = useState('Carregando...');
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const imageInputRef = useRef(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const fetchRelatorName = async () => {
+      if (!relato) return;
+
+      if (relato.is_anonymous) {
+        setRelatorName('Anônimo');
+      } else if (relato.user_id) {
+        const { data, error } = await supabase.from('profiles').select('full_name').eq('id', relato.user_id).single();
+        setRelatorName(error ? 'Erro' : data?.full_name || 'Não informado');
+      } else {
+        setRelatorName('Não informado');
+      }
+    };
+    fetchRelatorName();
+  }, [relato]);
 
   const canDeleteRelatos = userProfile?.can_delete_relatos;
   const canManageRelatos = userProfile?.can_manage_relatos;
@@ -106,19 +134,8 @@ const RelatoDetailsPage = () => {
     }
   };
 
-  const openModal = (sectionKey) => {
-    const config = sectionsConfig[sectionKey];
-    if (config) {
-      setModalState({ isOpen: true, config: config.fields, title: config.title });
-    }
-  };
-
-  const handleSaveChanges = async (changes) => {
-    const success = await handleUpdateRelato(changes, canManageRelatos);
-    if (success) {
-      setModalState({ isOpen: false, config: null, title: '' });
-    }
-    return success;
+  const navigateToEditSection = (sectionKey) => {
+    navigate(`/relatos/detalhes/${id}/edit/${sectionKey}`);
   };
 
   const handleFilesUpload = async () => {
@@ -182,7 +199,7 @@ const RelatoDetailsPage = () => {
       const imagesToInsert = uploadedImageUrls.map((url, index) => ({
         relato_id: relato.id,
         image_url: url,
-        order_index: existingImages.length + index // Append to existing images
+        order_index: (relato.relato_images?.length || 0) + index // Append to existing images
       }));
 
       const { error: insertError } = await supabase
@@ -198,17 +215,7 @@ const RelatoDetailsPage = () => {
       toast({ title: 'Sucesso!', description: 'Imagens enviadas e associadas ao relato.' });
       setSelectedFiles([]); // Limpa as previews
       // Refresh existing images by re-fetching
-      const { data: newImagesData, error: newImagesError } = await supabase
-        .from('relato_images')
-        .select('id, image_url, order_index')
-        .eq('relato_id', relato.id)
-        .order('order_index', { ascending: true });
-
-      if (newImagesError) {
-        console.error('Erro ao re-buscar imagens após upload:', newImagesError.message);
-      } else {
-        setExistingImages(newImagesData || []);
-      }
+      queryClient.invalidateQueries(['relato', relato.id]);
 
     } catch (error) {
       console.error('ERRO NO PROCESSO DE UPLOAD DE MÚLTIPLAS IMAGENS:', error);
@@ -219,36 +226,7 @@ const RelatoDetailsPage = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!relato) return;
-
-      // Fetch relator name
-      if (relato.is_anonymous) {
-        setRelatorName('Anônimo');
-      } else if (relato.user_id) {
-        const { data, error } = await supabase.from('profiles').select('full_name').eq('id', relato.user_id).single();
-        setRelatorName(error ? 'Erro' : data?.full_name || 'Não informado');
-      } else {
-        setRelatorName('Não informado');
-      }
-
-      // Fetch existing images for the relato
-      const { data: imagesData, error: imagesError } = await supabase
-        .from('relato_images')
-        .select('id, image_url, order_index')
-        .eq('relato_id', relato.id)
-        .order('order_index', { ascending: true });
-
-      if (imagesError) {
-        console.error('Erro ao buscar imagens do relato:', imagesError.message);
-        setExistingImages([]);
-      } else {
-        setExistingImages(imagesData || []);
-      }
-    };
-    fetchData();
-  }, [relato]);
+  
 
   if (loading || isLoadingProfile) return <LoadingSpinner />;
   if (error) return <div className="container p-4 text-red-500">{error.message || error}</div>;
@@ -274,9 +252,9 @@ const RelatoDetailsPage = () => {
         <div className="p-4 bg-white rounded-lg shadow-sm">
           <h3 className="text-lg font-semibold mb-2 px-4">Imagens</h3>
           <div className="p-4">
-            {existingImages.length > 0 ? (
+            {relato.relato_images && relato.relato_images.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
-                {existingImages.map((img) => (
+                {relato.relato_images.map((img) => (
                   <div key={img.id} className="relative group">
                     <img src={img.image_url} alt="Imagem do relato" className="w-full h-auto rounded-lg object-cover" />
                     {/* Add delete button later */}
@@ -309,7 +287,7 @@ const RelatoDetailsPage = () => {
 
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => imageInputRef.current.click()}>
-                {existingImages.length > 0 ? 'Adicionar Mais Imagens' : 'Adicionar Imagens'}
+                {relato.relato_images && relato.relato_images.length > 0 ? 'Adicionar Mais Imagens' : 'Adicionar Imagens'}
               </Button>
 
               {selectedFiles.length > 0 && (
@@ -322,7 +300,7 @@ const RelatoDetailsPage = () => {
         </div>
 
         {Object.entries(sectionsConfig).map(([key, section]) => (
-          <ClickableSection key={key} onClick={() => openModal(key)} isEditable={section.fields.some(f => f.editable)}>
+          <ClickableSection key={key} onClick={() => navigateToEditSection(key)} isEditable={section.fields.some(f => f.editable)}>
             <h3 className="text-lg font-semibold mb-2 px-4">{section.title}</h3>
             <Table>
               <TableBody>
@@ -388,15 +366,7 @@ const RelatoDetailsPage = () => {
         <div className="mt-4">{renderTabContent()}</div>
       </div>
 
-      <SectionEditModal
-        isOpen={modalState.isOpen}
-        onClose={() => setModalState({ isOpen: false, config: null, title: '' })}
-        title={modalState.title}
-        relato={relato}
-        fieldsConfig={modalState.config}
-        onSave={handleSaveChanges}
-        isSaving={isSaving}
-      />
+      
     </MainLayout>
   );
 };
