@@ -89,7 +89,7 @@ const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
     <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
       {relato.images.map((img) => (
         <DialogTrigger key={img.id} asChild>
-          <div className="relative group cursor-pointer" onClick={() => setSelectedImage(img.image_url)}>
+          <div className="relative group cursor-pointer" onClick={(e) => { e.stopPropagation(); setSelectedImage(img.image_url); }}>
             <img 
               src={img.image_url} 
               alt="Imagem do relato" 
@@ -103,16 +103,18 @@ const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
 
   if (!isEditable) {
     return (
-      <Dialog open={!!selectedImage} onOpenChange={(isOpen) => !isOpen && setSelectedImage(null)}>
-        <div className="pt-2">
-          {imageGrid}
-        </div>
-        {selectedImage && (
-          <DialogContent className="max-w-4xl">
-            <img src={selectedImage} alt="Imagem do relato em tela cheia" className="w-full h-auto rounded-lg" />
-          </DialogContent>
-        )}
-      </Dialog>
+      <div onClick={(e) => e.stopPropagation()}>
+        <Dialog open={!!selectedImage} onOpenChange={(isOpen) => !isOpen && setSelectedImage(null)}>
+          <div className="pt-2">
+            {imageGrid}
+          </div>
+          {selectedImage && (
+            <DialogContent className="max-w-4xl">
+              <img src={selectedImage} alt="Imagem do relato em tela cheia" className="w-full h-auto rounded-lg" />
+            </DialogContent>
+          )}
+        </Dialog>
+      </div>
     );
   }
 
