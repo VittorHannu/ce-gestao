@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useRelatoManagement } from '../hooks/useRelatoManagement';
 import MainLayout from '@/01-shared/components/MainLayout';
 import PageHeader from '@/01-shared/components/PageHeader';
@@ -82,6 +82,7 @@ const FormFieldComponent = ({ field, value, onChange, disabled }) => {
 const EditSectionPage = () => {
   const { id, sectionKey } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     relato,
     loading,
@@ -170,10 +171,10 @@ const EditSectionPage = () => {
     if (Object.keys(changes).length > 0) {
       const success = await handleUpdateRelato(changes, canManageRelatos);
       if (success) {
-        navigate(`/relatos/detalhes/${id}`, { replace: true });
+        navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state });
       }
     } else {
-      navigate(`/relatos/detalhes/${id}`, { replace: true });
+      navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state });
     }
   };
 
@@ -205,7 +206,7 @@ const EditSectionPage = () => {
           </div>
         </div>
         <div className="flex justify-end space-x-4 mt-6">
-          <Button variant="outline" onClick={() => navigate(`/relatos/detalhes/${id}`, { replace: true })} disabled={isSaving}>
+          <Button variant="outline" onClick={() => navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state })} disabled={isSaving}>
             Cancelar
           </Button>
           <Button onClick={handleSave} disabled={isSaving}>

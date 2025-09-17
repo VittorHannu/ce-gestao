@@ -136,7 +136,7 @@ const RelatoDetailsPage = () => {
   };
 
   const navigateToEditSection = (sectionKey) => {
-    navigate(`/relatos/detalhes/${id}/edit/${sectionKey}`);
+    navigate(`/relatos/detalhes/${id}/edit/${sectionKey}`, { state: location.state });
   };
 
   const handleFilesUpload = async () => {
