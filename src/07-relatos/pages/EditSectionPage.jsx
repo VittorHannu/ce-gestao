@@ -170,10 +170,10 @@ const EditSectionPage = () => {
     if (Object.keys(changes).length > 0) {
       const success = await handleUpdateRelato(changes, canManageRelatos);
       if (success) {
-        navigate(`/relatos/detalhes/${id}`);
+        navigate(`/relatos/detalhes/${id}`, { replace: true });
       }
     } else {
-      navigate(`/relatos/detalhes/${id}`);
+      navigate(`/relatos/detalhes/${id}`, { replace: true });
     }
   };
 
@@ -205,7 +205,7 @@ const EditSectionPage = () => {
           </div>
         </div>
         <div className="flex justify-end space-x-4 mt-6">
-          <Button variant="outline" onClick={() => navigate(`/relatos/detalhes/${id}`)} disabled={isSaving}>
+          <Button variant="outline" onClick={() => navigate(`/relatos/detalhes/${id}`, { replace: true })} disabled={isSaving}>
             Cancelar
           </Button>
           <Button onClick={handleSave} disabled={isSaving}>
