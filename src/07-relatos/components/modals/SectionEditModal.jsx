@@ -5,13 +5,12 @@ import { Input } from '@/01-shared/components/ui/input';
 import { Textarea } from '@/01-shared/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/01-shared/components/ui/select';
 import { DatePicker } from '@/01-shared/components/ui/DatePicker';
-
+import { Checkbox } from '@/01-shared/components/ui/checkbox';
 import { TimePicker } from '@/01-shared/components/ui/TimePicker';
 
-const FormFieldComponent = ({ field, value, onChange }) => {
+const FormFieldComponent = ({ field, value, onChange, disabled }) => {
   const { key, label, type = 'text', editable = true } = field;
 
-  // Render non-editable fields as styled text, but with the standard Label.
   if (!editable) {
     return (
       <div className="space-y-2">
@@ -27,53 +26,61 @@ const FormFieldComponent = ({ field, value, onChange }) => {
     );
   }
 
-  // Render editable fields based on their type
   switch (type) {
-  case 'textarea':
-    return (
-      <div className="space-y-2">
-        <Label htmlFor={key}>{label}</Label>
-        <Textarea id={key} value={value} onChange={(e) => onChange(key, e.target.value)} className="min-h-[100px] w-full" />
-      </div>
-    );
-  case 'date':
-    return (
-      <div className="space-y-2">
-        <Label htmlFor={key}>{label}</Label>
-        <DatePicker value={value} onChange={(date) => onChange(key, date)} />
-      </div>
-    );
-  case 'time':
-    return (
-      <div className="space-y-2">
-        <Label htmlFor={key}>{label}</Label>
-        <TimePicker value={value} onChange={(time) => onChange(key, time)} />
-      </div>
-    );
-  case 'select':
-    return (
-      <div className="space-y-2">
-        <Label htmlFor={key}>{label}</Label>
-        <Select value={value} onValueChange={(newValue) => onChange(key, newValue)}>
-          <SelectTrigger id={key} className="w-full">
-            <SelectValue placeholder={`Selecione um ${label.toLowerCase()}`} />
-          </SelectTrigger>
-          <SelectContent>
-            {field.options.map(option => (
-              <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-    );
-  case 'text':
-  default:
-    return (
-      <div className="space-y-2">
-        <Label htmlFor={key}>{label}</Label>
-        <Input id={key} value={value} onChange={(e) => onChange(key, e.target.value)} className="w-full" />
-      </div>
-    );
+    case 'textarea':
+      return (
+        <div className="space-y-2">
+          <Label htmlFor={key}>{label}</Label>
+          <Textarea id={key} value={value} onChange={(e) => onChange(key, e.target.value)} className="min-h-[100px] w-full" />
+        </div>
+      );
+    case 'date':
+      return (
+        <div className="space-y-2">
+          <Label htmlFor={key}>{label}</Label>
+          <DatePicker value={value} onChange={(date) => onChange(key, date)} disabled={disabled} />
+        </div>
+      );
+    case 'time':
+      return (
+        <div className="space-y-2">
+          <Label htmlFor={key}>{label}</Label>
+          <TimePicker value={value} onChange={(time) => onChange(key, time)} />
+        </div>
+      );
+    case 'select':
+      return (
+        <div className="space-y-2">
+          <Label htmlFor={key}>{label}</Label>
+          <Select value={value} onValueChange={(newValue) => onChange(key, newValue)}>
+            <SelectTrigger id={key} className="w-full">
+              <SelectValue placeholder={`Selecione um ${label.toLowerCase()}`} />
+            </SelectTrigger>
+            <SelectContent>
+              {field.options.map(option => (
+                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      );
+    case 'checkbox':
+      return (
+        <div className="pt-4">
+          <Label htmlFor={key} className="flex items-center space-x-2 font-medium cursor-pointer">
+            <Checkbox id={key} checked={value} onCheckedChange={(checked) => onChange(key, checked)} />
+            <span>{label}</span>
+          </Label>
+        </div>
+      );
+    case 'text':
+    default:
+      return (
+        <div className="space-y-2">
+          <Label htmlFor={key}>{label}</Label>
+          <Input id={key} value={value} onChange={(e) => onChange(key, e.target.value)} className="w-full" />
+        </div>
+      );
   }
 };
 
@@ -84,23 +91,30 @@ const SectionEditModal = ({ isOpen, onClose, onSave, isSaving, title, relato, fi
     if (relato && fieldsConfig) {
       const initialState = {};
       fieldsConfig.forEach(field => {
-        initialState[field.key] = relato[field.key] || '';
+        initialState[field.key] = relato[field.key] === null ? '' : (relato[field.key] || '');
       });
       setFields(initialState);
     }
   }, [relato, fieldsConfig, isOpen]);
 
   const handleChange = (fieldKey, value) => {
-    setFields(prev => ({ ...prev, [fieldKey]: value }));
+    setFields(prev => {
+      const newFields = { ...prev, [fieldKey]: value };
+      if (fieldKey === 'concluido_sem_data' && value === true) {
+        newFields.data_conclusao_solucao = null;
+      }
+      return newFields;
+    });
   };
 
   const handleSave = () => {
     const changes = {};
     for (const key in fields) {
       const originalValue = relato[key] || '';
-      const currentValue = fields[key] || '';
+      const currentValue = fields[key] === null ? null : (fields[key] || '');
+
       if (currentValue !== originalValue) {
-        changes[key] = fields[key];
+        changes[key] = fields[key] === '' ? null : fields[key];
       }
     }
 
@@ -111,6 +125,8 @@ const SectionEditModal = ({ isOpen, onClose, onSave, isSaving, title, relato, fi
     }
   };
 
+  const isConcluidoSemData = fields.concluido_sem_data === true;
+
   return (
     <EditModal
       isOpen={isOpen}
@@ -120,14 +136,18 @@ const SectionEditModal = ({ isOpen, onClose, onSave, isSaving, title, relato, fi
       title={title}
     >
       <div className="space-y-4">
-        {fieldsConfig && fieldsConfig.map(field => (
-          <FormFieldComponent
-            key={field.key}
-            field={field}
-            value={fields[field.key] || ''}
-            onChange={handleChange}
-          />
-        ))}
+        {fieldsConfig && fieldsConfig.map(field => {
+          const isDisabled = field.key === 'data_conclusao_solucao' && isConcluidoSemData;
+          return (
+            <FormFieldComponent
+              key={field.key}
+              field={field}
+              value={fields[field.key] || ''}
+              onChange={handleChange}
+              disabled={isDisabled}
+            />
+          );
+        })}
       </div>
     </EditModal>
   );

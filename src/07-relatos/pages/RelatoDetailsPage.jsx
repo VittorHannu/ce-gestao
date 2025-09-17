@@ -92,8 +92,8 @@ const RelatoDetailsPage = () => {
         { key: 'treatment_status', label: 'Status da Tratativa', editable: false },
         { key: 'responsibles', label: 'Responsáveis', editable: canManageRelatos, type: 'text' }, // Placeholder, should be a multi-user select
         { key: 'planejamento_cronologia_solucao', label: 'Planejamento da Solução', editable: canManageRelatos, type: 'textarea' },
-        { key: 'data_conclusao_solucao', label: 'Data de Conclusão', editable: canManageRelatos, type: 'date' },
-        { key: 'concluido_sem_data', label: 'Concluído Sem Data', editable: canManageRelatos, type: 'select', options: [{ value: true, label: 'Sim' }, { value: false, label: 'Não' }] }
+        { key: 'concluido_sem_data', label: 'Concluído (sem data de conclusão)', editable: canManageRelatos, type: 'checkbox' },
+        { key: 'data_conclusao_solucao', label: 'Data de Conclusão', editable: canManageRelatos, type: 'date' }
       ]
     },
     adicionais: {
