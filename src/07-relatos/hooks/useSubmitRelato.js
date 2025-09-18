@@ -13,8 +13,8 @@ export const useSubmitRelato = ({ onSettled }) => {
   return useMutation({
     mutationFn: submitRelato,
     onSuccess: (data, variables) => {
-      const { relatoId } = data;
-      const { relatoData } = variables;
+      const { relatoId, relatoCode } = data;
+      const { relatoData, imageFiles } = variables;
 
       toast({ title: 'Relato enviado com sucesso!', description: 'Sua contribuição foi registrada.', type: 'success' });
 
@@ -26,7 +26,14 @@ export const useSubmitRelato = ({ onSettled }) => {
 
       // Navigate to the confirmation page with the necessary data
       navigate('/relato-confirmation', {
-        state: { submissionData: { relatoId, relatoData } },
+        state: { 
+          submissionData: { 
+            relatoId, 
+            relatoCode, 
+            relatoData, 
+            imageUrls: imageFiles.map(f => f.preview) // Pass image previews for display
+          } 
+        },
         replace: true // Replace the form page in history
       });
     },
