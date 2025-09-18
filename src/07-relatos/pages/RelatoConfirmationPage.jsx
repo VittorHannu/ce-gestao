@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { useLocation, Link, useOutletContext } from 'react-router-dom';
-import html2canvas from 'html2canvas';
-import { CheckCircleIcon, ArrowLeftIcon, PrinterIcon, CameraIcon } from '@heroicons/react/24/solid';
+import { CheckCircleIcon, ArrowLeftIcon, PrinterIcon } from '@heroicons/react/24/solid';
 import { Button } from '@/01-shared/components/ui/button';
 import MainLayout from '@/01-shared/components/MainLayout';
 
@@ -18,26 +17,11 @@ const RelatoConfirmationPage = () => {
   const submissionData = location.state?.submissionData;
   const printRef = useRef();
 
-  const handleSaveAsImage = () => {
-    if (printRef.current) {
-      html2canvas(printRef.current, {
-        useCORS: true,
-        scale: 2,
-      }).then((canvas) => {
-        const link = document.createElement('a');
-        link.download = `relato-${submissionData?.relatoCode || 'confirmation'}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      });
-    }
-  };
-
   const handlePrint = () => {
     window.print();
   };
 
   if (!submissionData || !submissionData.relatoData) {
-    // This fallback doesn't need a complex layout.
     return (
       <div className="text-center p-8">
         <h1 className="text-2xl font-bold mb-4">Nenhuma informação de relato encontrada.</h1>
@@ -49,14 +33,17 @@ const RelatoConfirmationPage = () => {
     );
   }
 
-  const { relatoCode, relatoData, imageUrls } = submissionData;
+  const { relatoCode, relatoData, imageUrls, submissionTimestamp } = submissionData;
   const isReportAnonymous = relatoData.is_anonymous;
   const isAuthenticated = !!context?.user;
   const backUrl = isAuthenticated ? '/' : '/auth';
 
   const pageContent = (
-    <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 print:p-0">
-      <div className="relative bg-white shadow-lg rounded-lg p-8 print:shadow-none print:rounded-none" ref={printRef}>
+    // Add print-specific margin and padding removal
+    <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 print:p-0 print:m-0">
+      {/* Add print-specific styles to make it look like a document */}
+      <div className="bg-white shadow-lg rounded-lg p-8 print:shadow-none print:border-none print:rounded-none" ref={printRef}>
+        {/* This div contains the back button and should be hidden when printing */}
         <div className="absolute top-4 left-4 print:hidden">
           <Button asChild variant="ghost" size="icon">
             <Link to={backUrl}><ArrowLeftIcon className="h-6 w-6" /></Link>
@@ -68,7 +55,7 @@ const RelatoConfirmationPage = () => {
         </div>
 
         <div className="text-center mb-8">
-          <CheckCircleIcon className="h-16 w-16 text-green-500 mx-auto mb-4" />
+          <CheckCircleIcon className="h-16 w-16 text-green-500 mx-auto mb-4 print:hidden" />
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Relato Enviado com Sucesso!</h1>
           <p className="text-gray-600">Sua contribuição para a segurança foi registrada. Agradecemos seu compromisso.</p>
         </div>
@@ -89,6 +76,9 @@ const RelatoConfirmationPage = () => {
             <ConfirmationField label="Data da Ocorrência" value={new Date(relatoData.data_ocorrencia).toLocaleDateString('pt-BR', { timeZone: 'UTC' })} />
             <ConfirmationField label="Hora Aproximada" value={relatoData.hora_aproximada_ocorrencia} />
             <ConfirmationField label="Relato Anônimo" value={isReportAnonymous ? 'Sim' : 'Não'} />
+            {submissionTimestamp && (
+              <ConfirmationField label="Data de Envio" value={new Date(submissionTimestamp).toLocaleString('pt-BR')} />
+            )}
           </div>
 
           <div>
@@ -110,14 +100,11 @@ const RelatoConfirmationPage = () => {
         </div>
       </div>
 
+      {/* This entire div of buttons will be hidden when printing */}
       <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 print:hidden">
         <Button onClick={handlePrint} variant="outline" size="lg">
           <PrinterIcon className="h-5 w-5 mr-2" />
             Imprimir
-        </Button>
-        <Button onClick={handleSaveAsImage} variant="outline" size="lg">
-          <CameraIcon className="h-5 w-5 mr-2" />
-            Salvar como Imagem
         </Button>
         <Button asChild size="lg" className="mt-4 sm:mt-0">
           <Link to="/relatos/novo">Criar novo Relato</Link>

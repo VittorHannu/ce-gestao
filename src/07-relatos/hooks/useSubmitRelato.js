@@ -15,6 +15,7 @@ export const useSubmitRelato = ({ onSettled }) => {
     onSuccess: (data, variables) => {
       const { relatoId, relatoCode } = data;
       const { relatoData, imageFiles } = variables;
+      const submissionTimestamp = new Date();
 
       toast({ title: 'Relato enviado com sucesso!', description: 'Sua contribuição foi registrada.', type: 'success' });
 
@@ -31,7 +32,8 @@ export const useSubmitRelato = ({ onSettled }) => {
             relatoId, 
             relatoCode, 
             relatoData, 
-            imageUrls: imageFiles.map(f => f.preview) // Pass image previews for display
+            imageUrls: imageFiles.map(f => f.preview), // Pass image previews for display
+            submissionTimestamp,
           } 
         },
         replace: true // Replace the form page in history

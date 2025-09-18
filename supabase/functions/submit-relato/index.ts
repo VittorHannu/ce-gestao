@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
     const { data: newRelato, error: relatoError } = await supabaseClient
       .from('relatos')
       .insert(finalRelatoData)
-      .select('id, relato_code')
+      .select('id, relato_code, created_at')
       .single();
 
     if (relatoError) {
@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
       throw new Error(`Database error on relato insert: ${relatoError.message}`);
     }
 
-    const { id: relatoId, relato_code: relatoCode } = newRelato;
+    const { id: relatoId, relato_code: relatoCode, created_at: createdAt } = newRelato;
 
     // --- Insert image URLs if they exist ---
     if (imageUrls && imageUrls.length > 0) {
@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    return new Response(JSON.stringify({ message: 'Relato created successfully', relatoId, relatoCode }), {
+    return new Response(JSON.stringify({ message: 'Relato created successfully', relatoId, relatoCode, createdAt }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     });
