@@ -6,7 +6,7 @@ import { useRelatoCounts } from '../hooks/useRelatoCounts';
 import { useLastAccidentDate } from '../hooks/useLastAccidentDate';
 
 
-import { CheckCircle, Clock, XCircle, Plus, User, AlertTriangle, List, Bell, Settings } from 'lucide-react';
+import { CheckCircle, Clock, XCircle, User, AlertTriangle, List, Bell, Settings } from 'lucide-react';
 
 import RelatoStatsCard from '../components/stats/RelatoStatsCard';
 import TotalReportsCard from '../components/stats/TotalReportsCard';

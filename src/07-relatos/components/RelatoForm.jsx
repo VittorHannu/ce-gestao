@@ -11,6 +11,8 @@ import { Textarea } from '@/01-shared/components/ui/textarea';
 import { Switch } from '@/01-shared/components/ui/switch';
 import { Label } from '@/01-shared/components/ui/label';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/01-shared/components/ui/accordion';
+import { DatePicker } from '@/01-shared/components/ui/DatePicker';
+import { TimePicker } from '@/01-shared/components/ui/TimePicker';
 import { TrashIcon, ArrowUpTrayIcon as UploadIcon, CheckCircleIcon, ExclamationTriangleIcon, PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
 const formSchema = z.object({
@@ -18,8 +20,8 @@ const formSchema = z.object({
   riscos_identificados: z.string().min(10, 'Os riscos devem ter pelo menos 10 caracteres.'),
   danos_ocorridos: z.string().optional(),
   local_ocorrencia: z.string().min(5, 'O local deve ter pelo menos 5 caracteres.'),
-  data_ocorrencia: z.string().refine((val) => !isNaN(Date.parse(val)), 'Data inválida'),
-  hora_aproximada_ocorrencia: z.string().optional(),
+  data_ocorrencia: z.string({ required_error: 'A data é obrigatória.' }).nullable(),
+  hora_aproximada_ocorrencia: z.string().nullable().optional(),
   is_anonymous: z.boolean().default(false)
 });
 
@@ -85,7 +87,7 @@ const RelatoForm = ({ user }) => {
       danos_ocorridos: '',
       local_ocorrencia: '',
       data_ocorrencia: new Date().toISOString().split('T')[0],
-      hora_aproximada_ocorrencia: '',
+      hora_aproximada_ocorrencia: null,
       is_anonymous: !user
     }
   });
@@ -158,7 +160,7 @@ const RelatoForm = ({ user }) => {
           {errors.riscos_identificados && <p className="text-red-500 text-sm">{errors.riscos_identificados.message}</p>}
         </div>
         <div>
-          <Label htmlFor="danos_ocorridos">Danos ou possíveis consequências (opcional)</Label>
+          <Label htmlFor="danos_ocorridos">Danos (apenas se houve)</Label>
           <Controller name="danos_ocorridos" control={control} render={({ field }) => <Textarea {...field} rows={3} />} />
         </div>
       </div>
@@ -170,15 +172,23 @@ const RelatoForm = ({ user }) => {
           <Controller name="local_ocorrencia" control={control} render={({ field }) => <Input {...field} />} />
           {errors.local_ocorrencia && <p className="text-red-500 text-sm">{errors.local_ocorrencia.message}</p>}
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-4">
           <div>
             <Label htmlFor="data_ocorrencia">Data da ocorrência</Label>
-            <Controller name="data_ocorrencia" control={control} render={({ field }) => <Input type="date" {...field} />} />
+            <Controller
+              name="data_ocorrencia"
+              control={control}
+              render={({ field }) => <DatePicker value={field.value} onChange={field.onChange} />}
+            />
             {errors.data_ocorrencia && <p className="text-red-500 text-sm">{errors.data_ocorrencia.message}</p>}
           </div>
           <div>
             <Label htmlFor="hora_aproximada_ocorrencia">Hora aproximada (opcional)</Label>
-            <Controller name="hora_aproximada_ocorrencia" control={control} render={({ field }) => <Input type="time" {...field} />} />
+            <Controller
+              name="hora_aproximada_ocorrencia"
+              control={control}
+              render={({ field }) => <TimePicker value={field.value} onChange={field.onChange} />}
+            />
           </div>
         </div>
       </div>
@@ -206,11 +216,23 @@ const RelatoForm = ({ user }) => {
     ),
     'section-4': (
       <div className="space-y-4">
-        <div className="flex items-center space-x-2">
-          <Controller name="is_anonymous" control={control} render={({ field }) => <Switch id="is_anonymous" checked={field.value} onCheckedChange={field.onChange} disabled={!user} />} />
-          <Label htmlFor="is_anonymous">Enviar como anônimo</Label>
-        </div>
-        {!user && <p className='text-sm text-muted-foreground'>Você não está logado, o relato será enviado como anônimo.</p>}
+        {user ? (
+          <>
+            <div className="flex items-center space-x-2">
+              <Controller name="is_anonymous" control={control} render={({ field }) => <Switch id="is_anonymous" checked={field.value} onCheckedChange={field.onChange} />} />
+              <Label htmlFor="is_anonymous">Enviar como anônimo</Label>
+            </div>
+            {!watch('is_anonymous') && (
+              <p className='text-sm text-muted-foreground'>
+                Seu relato será enviado em nome de: <strong>{user.full_name}</strong>.
+              </p>
+            )}
+          </>
+        ) : (
+          <p className='text-sm text-muted-foreground'>
+            Você não está logado. Para se identificar, <a href="/login" className="underline">faça login</a>. Caso contrário, seu relato será enviado como anônimo.
+          </p>
+        )}
         <div className="flex justify-end pt-4">
           <Button type="submit" disabled={isLoading || isSubmitting}>
             {isLoading || isSubmitting ? 'Enviando...' : 'Enviar Relato'}

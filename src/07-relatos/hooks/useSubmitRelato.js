@@ -33,7 +33,7 @@ export const useSubmitRelato = ({ onSettled }) => {
             relatoCode, 
             relatoData, 
             imageUrls: imageFiles.map(f => f.preview), // Pass image previews for display
-            submissionTimestamp,
+            submissionTimestamp
           } 
         },
         replace: true // Replace the form page in history

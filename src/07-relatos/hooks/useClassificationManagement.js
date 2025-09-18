@@ -10,12 +10,12 @@ export const useClassificationManagement = () => {
     onSuccess: (data, variables) => {
       // Invalidate and refetch the classifications for the specific relato
       queryClient.invalidateQueries({ queryKey: ['relatoClassifications', variables.relatoId] });
-    },
+    }
   });
 
   return {
     updateCategoryClassifications: updateMutation.mutate,
     isUpdating: updateMutation.isPending,
-    updateError: updateMutation.error,
+    updateError: updateMutation.error
   };
 };

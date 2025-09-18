@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useRelatoManagement } from '../hooks/useRelatoManagement';
 import MainLayout from '@/01-shared/components/MainLayout';
 import PageHeader from '@/01-shared/components/PageHeader';
@@ -14,8 +14,8 @@ import { Checkbox } from '@/01-shared/components/ui/checkbox';
 import { TimePicker } from '@/01-shared/components/ui/TimePicker';
 import RelatoImages from '../components/RelatoImages';
 import { useRelatoClassifications } from '../hooks/useRelatoClassifications';
-import { Table, TableBody } from "@/01-shared/components/ui/table";
-import ClickableTableRow from "@/01-shared/components/ClickableTableRow";
+import { Table, TableBody } from '@/01-shared/components/ui/table';
+import ClickableTableRow from '@/01-shared/components/ClickableTableRow';
 
 
 // FormFieldComponent copied from SectionEditModal
@@ -99,7 +99,7 @@ const EditSectionPage = () => {
     allClassifications, 
     isLoadingAll, 
     selectedClassifications, 
-    isLoadingSelected, 
+    isLoadingSelected 
   } = useRelatoClassifications(id);
 
   const {
@@ -266,7 +266,7 @@ const EditSectionPage = () => {
             </Button>
           </div>
         )}
-         {sectionKey === 'classificacoes' && (
+        {sectionKey === 'classificacoes' && (
           <div className="flex justify-end space-x-4 mt-6">
             <Button variant="outline" onClick={() => navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state })}>
               Voltar

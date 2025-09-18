@@ -37,7 +37,7 @@ const SelectClassificationsPage = () => {
   // Data fetching
   const { data: category, isLoading: isLoadingCategory } = useQuery({
     queryKey: ['classification_category', categoryId],
-    queryFn: () => fetchCategory(categoryId),
+    queryFn: () => fetchCategory(categoryId)
   });
 
   const tableName = category?.table_name;

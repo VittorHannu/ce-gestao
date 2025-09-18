@@ -41,7 +41,7 @@ export const updateCategoryClassifications = async (relatoId, categoryId, classi
     const newEntries = classificationIds.map(classificationId => ({
       relato_id: relatoId,
       classification_id: classificationId,
-      classification_table: tableName,
+      classification_table: tableName
     }));
 
     const { error: insertError } = await supabase
