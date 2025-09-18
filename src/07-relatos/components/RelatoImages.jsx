@@ -130,20 +130,22 @@ const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
   const imageViewerModal = (
     <Dialog open={selectedImageIndex !== null} onOpenChange={(isOpen) => !isOpen && closeImageViewer()}>
       {currentImageUrl && (
-        <DialogContent className="max-w-4xl w-full h-full max-h-[90vh] flex flex-col p-0" showCloseButton={false}>
-          <div className="flex justify-between items-center p-4 border-b bg-background">
+        <DialogContent className="w-full h-full flex flex-col-reverse p-0" showCloseButton={false}>
+          <div className="flex justify-between items-center p-4 border-t bg-background">
             <div className="flex items-center gap-2">
               {relato.images.length > 1 && (
                 <>
-                  <Button variant="ghost" size="icon" onClick={handlePrevImage}>
-                    <ChevronLeftIcon className="h-6 w-6" />
-                  </Button>
+                  <div className="flex items-center gap-1">
+                    <Button variant="default" size="icon" onClick={handlePrevImage}>
+                      <ChevronLeftIcon className="h-6 w-6" />
+                    </Button>
+                    <Button variant="default" size="icon" onClick={handleNextImage}>
+                      <ChevronRightIcon className="h-6 w-6" />
+                    </Button>
+                  </div>
                   <span className="text-sm text-muted-foreground">
-                    Imagem {selectedImageIndex + 1} de {relato.images.length}
+                    {selectedImageIndex + 1} de {relato.images.length}
                   </span>
-                  <Button variant="ghost" size="icon" onClick={handleNextImage}>
-                    <ChevronRightIcon className="h-6 w-6" />
-                  </Button>
                 </>
               )}
             </div>
