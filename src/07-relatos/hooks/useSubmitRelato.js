@@ -1,15 +1,16 @@
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/01-shared/hooks/useToast';
-import { createRelatoWithImages } from '../services/relatosService';
+import { submitRelato } from '../services/relatosService';
 
-export const useCreateRelato = (isUserLoggedIn) => {
+export const useSubmitRelato = (isUserLoggedIn) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: createRelatoWithImages, // Use the new function
+    mutationFn: submitRelato,
     onSuccess: () => {
       toast({ title: 'Relato enviado com sucesso!', description: 'Sua contribuição foi registrada.', type: 'success' });
 
@@ -22,7 +23,8 @@ export const useCreateRelato = (isUserLoggedIn) => {
       if (isUserLoggedIn) {
         navigate('/relatos');
       } else {
-        navigate('/auth');
+        // After anonymous submission, navigate to a confirmation or home page
+        navigate('/'); // Or a specific thank you page
       }
     },
     onError: (error) => {

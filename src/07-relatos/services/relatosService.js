@@ -1,57 +1,59 @@
+
 import { supabase } from '@/01-shared/lib/supabase';
 
-export const createRelato = async (relatoData) => {
-  const { data, error } = await supabase
-    .from('relatos')
-    .insert([relatoData])
-    .select('id')
-    .single();
+// Function to generate a UUID in environments where crypto.randomUUID is not available.
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
-  if (error) {
-    console.error('Error creating relato:', error);
-    throw new Error(error.message);
+export const submitRelato = async ({ relatoData, imageFiles }) => {
+  // Step 1: Invoke the Edge Function to create the relato entry and get its ID.
+  const { data: functionResponse, error: functionError } = await supabase.functions.invoke(
+    'submit-relato',
+    { body: { relatoData } }
+  );
+
+  if (functionError) {
+    console.error('Error invoking submit-relato function:', functionError);
+    throw new Error(functionError.message);
   }
 
-  return data;
-};
-
-export const createRelatoWithImages = async ({ relatoData, imageFiles }) => {
-  // Step 1: Create the relato entry and get its ID
-  const { data: newRelato, error: createRelatoError } = await supabase
-    .from('relatos')
-    .insert([relatoData])
-    .select('id')
-    .single();
-
-  if (createRelatoError) {
-    console.error('Error creating relato:', createRelatoError);
-    throw new Error(createRelatoError.message);
-  }
+  const { relatoId } = functionResponse;
 
   if (!imageFiles || imageFiles.length === 0) {
-    return newRelato;
+    return { id: relatoId };
   }
 
-  // Step 2: If images are present, upload them
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error('User not authenticated for image upload.');
+  // Step 2: Enforce image limit (client-side for immediate feedback).
+  if (imageFiles.length > 5) {
+    throw new Error('Não é permitido o envio de mais de 5 imagens.');
+  }
 
+  // Step 3: If images are present, upload them.
+  const { data: { user } } = await supabase.auth.getUser();
+  
   const uploadedImageUrls = [];
+  const pathIdentifier = user ? user.id : `anonymous/${generateUUID()}`;
 
   for (const [index, file] of imageFiles.entries()) {
     const fileExtension = file.name.split('.').pop();
-    const fileName = `${user.id}/${newRelato.id}/${Date.now()}_${index}.${fileExtension}`;
+    const fileName = `${pathIdentifier}/${relatoId}/${Date.now()}_${index}.${fileExtension}`;
 
-    const { data: functionData, error: functionError } = await supabase.functions.invoke(
+    // Pass relatoId to the function for backend validation
+    const { data: presignedUrlData, error: presignedUrlError } = await supabase.functions.invoke(
       'get-presigned-image-url',
-      { body: { fileName, fileType: file.type } }
+      { body: { fileName, fileType: file.type, relatoId } }
     );
 
-    if (functionError) {
-      throw new Error(`Error from Edge Function for ${file.name}: ${functionError.message}`);
+    if (presignedUrlError) {
+      // The backend will throw an error if the limit is exceeded.
+      throw new Error(`Error getting presigned URL for ${file.name}: ${presignedUrlError.message}`);
     }
-    
-    const { presignedUrl } = functionData;
+
+    const { presignedUrl } = presignedUrlData;
 
     const uploadResponse = await fetch(presignedUrl, {
       method: 'PUT',
@@ -67,9 +69,9 @@ export const createRelatoWithImages = async ({ relatoData, imageFiles }) => {
     uploadedImageUrls.push(imageUrl);
   }
 
-  // Step 3: Associate uploaded images with the relato
+  // Step 4: Associate uploaded images with the relato.
   const imagesToInsert = uploadedImageUrls.map((url, index) => ({
-    relato_id: newRelato.id,
+    relato_id: relatoId,
     image_url: url,
     order_index: index
   }));
@@ -80,9 +82,8 @@ export const createRelatoWithImages = async ({ relatoData, imageFiles }) => {
 
   if (insertError) {
     // TODO: Add cleanup logic here? If this fails, the images are in R2 but not in the DB.
-    // For now, we'll just throw the error.
     throw new Error('Failed to save image URLs to the database.');
   }
 
-  return newRelato;
+  return { id: relatoId };
 };

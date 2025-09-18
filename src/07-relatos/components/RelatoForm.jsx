@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useDropzone } from 'react-dropzone';
-import { useCreateRelato } from '../hooks/useCreateRelato';
+import { useSubmitRelato } from '../hooks/useSubmitRelato';
 
 import { Button } from '@/01-shared/components/ui/button';
 import { Input } from '@/01-shared/components/ui/input';
@@ -57,7 +57,7 @@ const RelatoForm = ({ user }) => {
     'section-4': 'default'
   });
   const [imageFiles, setImageFiles] = useState([]);
-  const { mutate: createRelato, isLoading } = useCreateRelato(!!user);
+  const { mutate: submitRelato, isLoading } = useSubmitRelato(!!user);
 
   const sections = useMemo(() => [
     { id: 'section-1', title: 'O que aconteceu?', fields: ['descricao', 'riscos_identificados'] },
@@ -135,8 +135,9 @@ const RelatoForm = ({ user }) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: { 'image/*': [] }, multiple: true });
 
   const onSubmit = (data) => {
-    const relatoData = { ...data, user_id: data.is_anonymous ? null : user?.id, hora_aproximada_ocorrencia: data.hora_aproximada_ocorrencia || null };
-    createRelato({ relatoData, imageFiles });
+    // The user_id is now handled by the Edge Function, so we don't need to set it here.
+    const relatoData = { ...data, hora_aproximada_ocorrencia: data.hora_aproximada_ocorrencia || null };
+    submitRelato({ relatoData, imageFiles });
   };
 
   const sectionContents = {
