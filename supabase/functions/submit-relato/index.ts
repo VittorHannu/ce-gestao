@@ -1,14 +1,9 @@
+
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.43.2';
 import { corsHeaders } from '../_shared/cors.ts';
 
-const supabaseUrl = Deno.env.get('SUPABASE_URL');
-const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-
-if (!supabaseUrl || !serviceRoleKey) {
-  console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
-  // Consider how to handle this error state.
-  // For now, we'll log and the function will fail on client creation.
-}
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -17,50 +12,66 @@ Deno.serve(async (req) => {
 
   try {
     const supabaseClient = createClient(supabaseUrl, serviceRoleKey);
-    const { relatoData } = await req.json();
+    const { relatoData, imageUrls } = await req.json();
+
+    // --- Backend validation for image limit ---
+    if (imageUrls && imageUrls.length > 5) {
+      throw new Error('Limite de 5 imagens por relato atingido.');
+    }
 
     let finalRelatoData = { ...relatoData };
 
-    // Check for authentication
     const authHeader = req.headers.get('Authorization');
     if (authHeader) {
       const jwt = authHeader.replace('Bearer ', '');
       const { data: { user } } = await supabaseClient.auth.getUser(jwt);
-
       if (user) {
-        // User is authenticated
-        if (relatoData.is_anonymous) {
-          // Authenticated user submitting anonymously
-          finalRelatoData.user_id = null;
-          finalRelatoData.is_anonymous = true;
-        } else {
-          // Authenticated user submitting as themselves
-          finalRelatoData.user_id = user.id;
-          finalRelatoData.is_anonymous = false;
-        }
+        finalRelatoData.user_id = relatoData.is_anonymous ? null : user.id;
+        finalRelatoData.is_anonymous = relatoData.is_anonymous;
       } else {
-        // Invalid JWT, treat as anonymous
         finalRelatoData.user_id = null;
         finalRelatoData.is_anonymous = true;
       }
     } else {
-      // No auth header, definitely anonymous
       finalRelatoData.user_id = null;
       finalRelatoData.is_anonymous = true;
     }
 
-    const { data: newRelato, error } = await supabaseClient
+    // --- Insert relato ---
+    const { data: newRelato, error: relatoError } = await supabaseClient
       .from('relatos')
-      .insert([finalRelatoData])
+      .insert(finalRelatoData)
       .select('id')
       .single();
 
-    if (error) {
-      console.error('Supabase insert error:', error);
-      throw new Error(`Database error: ${error.message}`);
+    if (relatoError) {
+      console.error('Supabase relato insert error:', relatoError);
+      throw new Error(`Database error on relato insert: ${relatoError.message}`);
     }
 
-    return new Response(JSON.stringify({ message: 'Relato created successfully', relatoId: newRelato.id }), {
+    const relatoId = newRelato.id;
+
+    // --- Insert image URLs if they exist ---
+    if (imageUrls && imageUrls.length > 0) {
+      const imagesToInsert = imageUrls.map((url, index) => ({
+        relato_id: relatoId,
+        image_url: url,
+        order_index: index,
+      }));
+
+      const { error: imageError } = await supabaseClient
+        .from('relato_images')
+        .insert(imagesToInsert);
+
+      if (imageError) {
+        console.error('Supabase image insert error:', imageError);
+        // Note: This leaves an orphan relato. A more robust solution could
+        // wrap these in a transaction or queue a cleanup.
+        throw new Error(`Database error on image insert: ${imageError.message}`);
+      }
+    }
+
+    return new Response(JSON.stringify({ message: 'Relato created successfully', relatoId }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     });
