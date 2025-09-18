@@ -17,9 +17,7 @@ const CreateRelatoPage = () => {
         />
       )}
     >
-      <div className="p-4 md:p-6">
-        <RelatoForm user={user} key={user ? user.id : 'anonymous'} />
-      </div>
+      <RelatoForm user={user} key={user ? user.id : 'anonymous'} />
     </MainLayout>
   );
 };

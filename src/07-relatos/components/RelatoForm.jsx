@@ -244,10 +244,10 @@ const RelatoForm = ({ user }) => {
 
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl mx-auto">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <Accordion type="single" collapsible value={openSection} onValueChange={setOpenSection} className="w-full space-y-4">
         {sections.map((section) => (
-          <AccordionItem value={section.id} key={section.id} className="border shadow-sm rounded-lg bg-white">
+          <AccordionItem value={section.id} key={section.id} className="w-full border shadow-sm rounded-lg bg-white">
             <AccordionTrigger className="p-6">
               <SectionTitle title={section.title} status={sectionStatus[section.id] || 'default'} sectionId={section.id} />
             </AccordionTrigger>
