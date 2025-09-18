@@ -45,7 +45,7 @@ const FormFieldComponent = ({ field, value, onChange, disabled }) => {
     return (
       <div className="space-y-2">
         <Label htmlFor={key}>{label}</Label>
-        <TimePicker value={value} onChange={(time) => onChange(key, time)} />
+        <TimePicker value={value} onChange={(time) => onChange(key, time)} disabled={disabled} />
       </div>
     );
   case 'select':
@@ -237,7 +237,7 @@ const EditSectionPage = () => {
               </TableBody>
             </Table>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-8">
               {sectionConfig.fields.map(field => {
                 const isDisabled = field.key === 'data_conclusao_solucao' && isConcluidoSemData;
                 return (
