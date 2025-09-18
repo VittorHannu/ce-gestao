@@ -53,6 +53,7 @@ const RelatoLogsPage = React.lazy(() => import('@/07-relatos/pages/RelatoLogsPag
 const RelatosAcidentesGravesPage = React.lazy(() => import('@/07-relatos/pages/RelatosAcidentesGravesPage'));
 
 const SettingsPage = React.lazy(() => import('@/10-settings/pages/SettingsPage'));
+const ImageManagementPage = React.lazy(() => import('@/10-settings/pages/ImageManagementPage'));
 const VersionHistoryPage = React.lazy(() => import('@/11-version-history/pages/VersionHistoryPage'));
 const AuditLogsPage = React.lazy(() => import('@/12-audit-logs/pages/AuditLogsPage'));
 const GerenciarClassificacoesPage = React.lazy(() => import('@/05-adm/pages/GerenciarClassificacoesPage'));
@@ -200,6 +201,7 @@ function AppWrapper() {
         <Route path="/settings/update-password" element={<Suspense fallback={<LoadingSpinner />}><UpdatePasswordProfilePage /></Suspense>} />
         <Route path="/settings/update-email" element={<Suspense fallback={<LoadingSpinner />}><UpdateEmailPage /></Suspense>} />
         <Route path="/settings" element={<Suspense fallback={<LoadingSpinner />}><SettingsPage /></Suspense>} />
+        <Route path="/settings/images" element={<Suspense fallback={<LoadingSpinner />}><ImageManagementPage /></Suspense>} />
         <Route path="/version-history" element={<Suspense fallback={<LoadingSpinner />}><VersionHistoryPage /></Suspense>} />
         <Route path="/relatos" element={<Suspense fallback={<LoadingSpinner />}><RelatosPage /></Suspense>} />
         <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage /></Suspense>} />

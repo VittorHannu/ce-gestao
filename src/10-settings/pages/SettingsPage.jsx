@@ -125,7 +125,7 @@ function SettingsPage() {
             </div>
           )}
 
-          {(userProfile?.can_view_users || userProfile?.can_view_audit_logs) && (
+          {(userProfile?.can_view_users || userProfile?.can_view_audit_logs || userProfile?.can_manage_relatos) && (
             <SettingsGroup title="Administração">
               {userProfile?.can_view_users && (
                 <SettingsItem
@@ -137,6 +137,12 @@ function SettingsPage() {
                 <SettingsItem
                   label="Logs de Auditoria"
                   path="/audit-logs"
+                />
+              )}
+              {userProfile?.can_manage_relatos && (
+                <SettingsItem
+                  label="Gerenciamento de Imagens"
+                  path="/settings/images"
                 />
               )}
             </SettingsGroup>
