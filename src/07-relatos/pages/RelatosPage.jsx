@@ -165,8 +165,8 @@ const RelatosPage = () => {
       <div className="h-48" />
 
       <Link to="/relatos/novo" className="fixed bottom-12 right-4 z-50">
-        <Button variant="warning" size="icon" className="rounded-full w-14 h-14 shadow-lg">
-          <Plus className="h-6 w-6" />
+        <Button variant="warning" style={{ backgroundColor: 'darkorange' }} className="rounded-full h-14 px-6 shadow-lg font-bold text-white">
+          Fazer relato
         </Button>
       </Link>
     </MainLayout>
