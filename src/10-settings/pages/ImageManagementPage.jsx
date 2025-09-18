@@ -19,7 +19,7 @@ const forceDeleteRelatoImage = async (image) => {
 
   // 1. Chamar a Edge Function para deletar do R2
   const { error: functionError } = await supabase.functions.invoke('delete-image', {
-    body: { fileName },
+    body: { fileName }
   });
 
   if (functionError) {
@@ -75,7 +75,7 @@ const ImageManagementPage = () => {
 
   const { data: allImages, isLoading, error } = useQuery({
     queryKey: ['allRelatoImages'],
-    queryFn: fetchAllImages,
+    queryFn: fetchAllImages
   });
 
   const { validImages, brokenImages } = useMemo(() => {

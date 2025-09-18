@@ -38,7 +38,7 @@ const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
       if (!oldData) return oldData;
       return {
         ...oldData,
-        images: oldData.images.filter((img) => img.image_url !== imageUrl),
+        images: oldData.images.filter((img) => img.image_url !== imageUrl)
       };
     });
 
