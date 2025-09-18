@@ -27,7 +27,7 @@ if (import.meta.env.VITE_SUPABASE_TUNNEL_URL) {
   supabaseUrl = import.meta.env.VITE_SUPABASE_TUNNEL_URL;
 } else if (import.meta.env.DEV) {
   // 2. Fallback para desenvolvimento: Usar o hostname dinâmico (funciona para localhost e IP de rede)
-  supabaseUrl = `http://${window.location.hostname}:8000`;
+  supabaseUrl = `http://${window.location.hostname}:8000`; // Revertendo para a porta original
 } else {
   // 3. Em produção: Usar a URL de produção oficial
   supabaseUrl = import.meta.env.VITE_SUPABASE_URL;

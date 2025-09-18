@@ -9,6 +9,9 @@ import {
   DialogTrigger
 } from '@/01-shared/components/ui/dialog';
 
+import { deleteRelatoImage } from '../services/relatoImageService';
+import { TrashIcon } from '@heroicons/react/24/solid'; // Importar ícone de lixeira
+
 const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -16,6 +19,41 @@ const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
   const imageInputRef = useRef(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const handleDeleteImage = async (imageUrl) => {
+    if (!window.confirm('Tem certeza que deseja excluir esta imagem?')) {
+      return;
+    }
+
+    const queryKey = ['relato', relato.id];
+
+    // Cancelar queries existentes para não sobrescrever nossa atualização otimista
+    await queryClient.cancelQueries(queryKey);
+
+    // Salvar o estado anterior para o caso de erro
+    const previousRelato = queryClient.getQueryData(queryKey);
+
+    // Atualizar a UI otimisticamente
+    queryClient.setQueryData(queryKey, (oldData) => {
+      if (!oldData) return oldData;
+      return {
+        ...oldData,
+        images: oldData.images.filter((img) => img.image_url !== imageUrl),
+      };
+    });
+
+    try {
+      await deleteRelatoImage(imageUrl);
+      toast({ title: 'Sucesso!', description: 'Imagem excluída com sucesso.' });
+    } catch (error) {
+      // Em caso de erro, reverter para o estado anterior
+      queryClient.setQueryData(queryKey, previousRelato);
+      toast({ title: 'Erro ao excluir imagem', description: error.message, variant: 'destructive' });
+    } finally {
+      // No final, sempre revalidar para garantir consistência com o servidor
+      queryClient.invalidateQueries(queryKey);
+    }
+  };
 
   const handleFilesUpload = async () => {
     if (selectedFiles.length === 0) return;
@@ -112,8 +150,21 @@ const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
             {imageGrid}
           </div>
           {selectedImage && (
-            <DialogContent className="max-w-4xl">
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto"> {/* Adicionado max-h e overflow */}
               <img src={selectedImage} alt="Imagem do relato em tela cheia" className="w-full h-auto rounded-lg" />
+              {isEditable && ( // Adicionar botão de exclusão se for editável
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-4 right-4" // Posição do botão no modal
+                  onClick={() => {
+                    handleDeleteImage(selectedImage);
+                    setSelectedImage(null); // Fechar o modal após a exclusão
+                  }}
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </Button>
+              )}
             </DialogContent>
           )}
         </Dialog>
@@ -170,8 +221,21 @@ const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
           </div>
         </div>
         {selectedImage && (
-          <DialogContent className="max-w-4xl">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto"> {/* Adicionado max-h e overflow */}
             <img src={selectedImage} alt="Imagem do relato em tela cheia" className="w-full h-auto rounded-lg" />
+            {isEditable && ( // Adicionar botão de exclusão se for editável
+              <Button
+                variant="destructive"
+                size="icon"
+                className="absolute top-4 right-4" // Posição do botão no modal
+                onClick={() => {
+                  handleDeleteImage(selectedImage);
+                  setSelectedImage(null); // Fechar o modal após a exclusão
+                }}
+              >
+                <TrashIcon className="h-4 w-4" />
+              </Button>
+            )}
           </DialogContent>
         )}
       </Dialog>
