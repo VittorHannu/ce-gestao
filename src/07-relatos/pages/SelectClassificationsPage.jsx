@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useClassificationManagement } from '../hooks/useClassificationManagement';
@@ -11,7 +11,7 @@ import PageHeader from '@/01-shared/components/PageHeader';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import FormActionButtons from '@/01-shared/components/FormActionButtons';
 import { Checkbox } from '@/01-shared/components/ui/checkbox';
-import { Label } from '@/01-shared/components/ui/label';
+import { Input } from '@/01-shared/components/ui/input';
 import { useToast } from '@/01-shared/hooks/useToast';
 
 // Fetch category details
@@ -30,8 +30,9 @@ const SelectClassificationsPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // State for selected items
-  const [selectedIds, setSelectedIds] = useState(new Set());
+  // State for selected items and search term
+  const [selectedIds, setSelectedIds] = useState(null); // Initialize with null to prevent race conditions
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Data fetching
   const { data: category, isLoading: isLoadingCategory } = useQuery({
@@ -46,15 +47,15 @@ const SelectClassificationsPage = () => {
   // Mutation hook
   const { updateCategoryClassifications, isUpdating } = useClassificationManagement();
 
-  // Effect to initialize selected state once data is loaded
+  // Effect to initialize selected state once data is loaded, and only once.
   useEffect(() => {
-    if (category && selectedClassifications) {
+    if (selectedIds === null && category && selectedClassifications) {
       const initialSelected = selectedClassifications
         .filter(sel => sel.classification_table === category.table_name)
         .map(sel => sel.classification_id);
       setSelectedIds(new Set(initialSelected));
     }
-  }, [selectedClassifications, category]);
+  }, [selectedClassifications, category, selectedIds]);
 
   const handleCheckboxChange = (id) => {
     setSelectedIds(prev => {
@@ -69,6 +70,7 @@ const SelectClassificationsPage = () => {
   };
 
   const handleSave = () => {
+    if (selectedIds === null) return; // Avoid saving if state is not initialized
     updateCategoryClassifications({ 
       relatoId, 
       categoryId, 
@@ -84,40 +86,61 @@ const SelectClassificationsPage = () => {
     });
   };
 
-  const isLoading = isLoadingCategory || isLoadingAll || isLoadingSelected;
+  const filteredClassifications = useMemo(() => {
+    if (!allClassifications) return [];
+    return allClassifications.filter(item => 
+      item.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [allClassifications, searchTerm]);
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  const isLoading = isLoadingCategory || isLoadingAll || isLoadingSelected || selectedIds === null;
 
   return (
     <MainLayout header={<PageHeader title={category?.name || 'Selecionar'} />}>
-      <div className="container mx-auto p-4">
-        <div className="p-4 bg-white rounded-lg shadow-sm space-y-4">
-          {allClassifications?.map(item => (
-            <Label 
-              key={item.id} 
-              htmlFor={`item-${item.id}`}
-              className="flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer transition-colors duration-150 ease-in-out"
-            >
-              <Checkbox
-                id={`item-${item.id}`}
-                checked={selectedIds.has(item.id)}
-                onCheckedChange={() => handleCheckboxChange(item.id)}
+      <div className="container mx-auto p-4 pb-24"> {/* Padding at bottom to avoid overlap with sticky footer */}
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <div className="p-4 bg-white rounded-lg shadow-sm">
+            <div className="mb-4">
+              <Input 
+                placeholder="Pesquisar..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <span className="text-base font-normal">
-                {item.nome}
-              </span>
-            </Label>
-          ))}
+            </div>
+            <div className="border rounded-md">
+              {filteredClassifications.map((item, index) => (
+                <div 
+                  key={item.id} 
+                  className={`flex items-center p-3 ${index < filteredClassifications.length - 1 ? 'border-b' : ''}`}>
+                  <div className="flex items-center space-x-3">
+                    <Checkbox
+                      onCheckedChange={() => handleCheckboxChange(item.id)}
+                      checked={selectedIds.has(item.id)}
+                      className="h-5 w-5"
+                      id={`checkbox-${item.id}`}
+                    />
+                    <label htmlFor={`checkbox-${item.id}`} className="cursor-pointer">{item.nome}</label>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Sticky Footer for Action Buttons */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
+        <div className="container mx-auto">
+          <FormActionButtons
+            onConfirm={handleSave}
+            onCancel={() => navigate(-1)}
+            isConfirming={isUpdating}
+            confirmText="Salvar"
+            cancelText="Cancelar"
+          />
         </div>
-        <FormActionButtons
-          onConfirm={handleSave}
-          onCancel={() => navigate(-1)}
-          isConfirming={isUpdating}
-          confirmText="Salvar"
-          cancelText="Cancelar"
-        />
       </div>
     </MainLayout>
   );

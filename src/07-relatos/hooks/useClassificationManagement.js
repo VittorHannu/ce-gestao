@@ -9,7 +9,7 @@ export const useClassificationManagement = () => {
       updateCategoryClassifications(relatoId, categoryId, classificationIds),
     onSuccess: (data, variables) => {
       // Invalidate and refetch the classifications for the specific relato
-      queryClient.invalidateQueries({ queryKey: ['relato_classifications', variables.relatoId] });
+      queryClient.invalidateQueries({ queryKey: ['relatoClassifications', variables.relatoId] });
     },
   });
 

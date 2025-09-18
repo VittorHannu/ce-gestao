@@ -14,8 +14,8 @@ import { Checkbox } from '@/01-shared/components/ui/checkbox';
 import { TimePicker } from '@/01-shared/components/ui/TimePicker';
 import RelatoImages from '../components/RelatoImages';
 import { useRelatoClassifications } from '../hooks/useRelatoClassifications';
-import { Card, CardContent, CardHeader, CardTitle } from "@/01-shared/components/ui/card";
-import { ChevronRight } from 'lucide-react';
+import { Table, TableBody } from "@/01-shared/components/ui/table";
+import ClickableTableRow from "@/01-shared/components/ClickableTableRow";
 
 
 // FormFieldComponent copied from SectionEditModal
@@ -213,33 +213,29 @@ const EditSectionPage = () => {
       <div className="container mx-auto p-4">
         <div className="p-4 bg-white rounded-lg shadow-sm">
           {sectionKey === 'classificacoes' ? (
-            <div className="space-y-4">
-              {allClassifications.map(category => {
-                const selectedForCategory = selectedClassifications
-                  .filter(sel => sel.classification_table === category.table_name)
-                  .map(sel => {
-                    const item = category.items.find(i => i.id === sel.classification_id);
-                    return item ? item.name : '';
-                  })
-                  .filter(Boolean);
+            <Table>
+              <TableBody>
+                {allClassifications.map(category => {
+                  const selectedForCategory = selectedClassifications
+                    .filter(sel => sel.classification_table === category.table_name)
+                    .map(sel => {
+                      const item = category.items.find(i => i.id === sel.classification_id);
+                      return item ? item.nome : '';
+                    })
+                    .filter(Boolean);
 
-                return (
-                  <Link to={`/relatos/detalhes/${id}/edit/classificacoes/${category.id}`} key={category.id} className="block">
-                    <Card className="hover:bg-gray-50 transition-colors">
-                      <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-lg font-medium">{category.name}</CardTitle>
-                        <ChevronRight className="h-6 w-6 text-gray-400" />
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-sm text-gray-500">
-                          {selectedForCategory.length > 0 ? selectedForCategory.join(', ') : 'Nenhuma classificação selecionada'}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                );
-              })}
-            </div>
+                  return (
+                    <ClickableTableRow
+                      key={category.id}
+                      label={category.name}
+                      value={selectedForCategory.length > 0 ? selectedForCategory.join(', ') : 'Nenhuma classificação selecionada'}
+                      onClick={() => navigate(`/relatos/detalhes/${id}/edit/classificacoes/${category.id}`)}
+                      isEditable={true}
+                    />
+                  );
+                })}
+              </TableBody>
+            </Table>
           ) : (
             <div className="space-y-4">
               {sectionConfig.fields.map(field => {
