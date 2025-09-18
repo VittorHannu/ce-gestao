@@ -8,7 +8,7 @@ import {
   DialogContent
 } from '@/01-shared/components/ui/dialog';
 import { deleteRelatoImage } from '../services/relatoImageService';
-import { TrashIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
+import { TrashIcon, ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/24/solid';
 
 const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -130,7 +130,7 @@ const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
   const imageViewerModal = (
     <Dialog open={selectedImageIndex !== null} onOpenChange={(isOpen) => !isOpen && closeImageViewer()}>
       {currentImageUrl && (
-        <DialogContent className="max-w-4xl w-full h-full max-h-[90vh] flex flex-col p-0">
+        <DialogContent className="max-w-4xl w-full h-full max-h-[90vh] flex flex-col p-0" showCloseButton={false}>
           <div className="flex justify-between items-center p-4 border-b bg-background">
             <div className="flex items-center gap-2">
               {relato.images.length > 1 && (
@@ -147,12 +147,16 @@ const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
                 </>
               )}
             </div>
-            {isEditable && (
-              <Button variant="destructive" onClick={handleDeleteImage}>
-                <TrashIcon className="h-4 w-4 mr-2" />
-                Excluir Imagem
+            <div className="flex items-center gap-2">
+              {isEditable && (
+                <Button variant="destructive" size="icon" onClick={handleDeleteImage}>
+                  <TrashIcon className="h-4 w-4" />
+                </Button>
+              )}
+              <Button variant="ghost" size="icon" onClick={closeImageViewer}>
+                <XMarkIcon className="h-6 w-6" />
               </Button>
-            )}
+            </div>
           </div>
           <div className="relative flex-grow flex items-center justify-center overflow-y-auto">
             <img src={currentImageUrl} alt="Imagem do relato em tela cheia" className="max-w-full max-h-full object-contain" />
