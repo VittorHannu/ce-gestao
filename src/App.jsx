@@ -45,6 +45,7 @@ const RelatoConfirmationPage = React.lazy(() => import('@/07-relatos/pages/Relat
 const RelatosListaPage = React.lazy(() => import('@/07-relatos/pages/RelatosListaPage'));
 const RelatoDetailsPage = React.lazy(() => import('@/07-relatos/pages/RelatoDetailsPage'));
 const EditSectionPage = React.lazy(() => import('@/07-relatos/pages/EditSectionPage'));
+const SelectClassificationsPage = React.lazy(() => import('@/07-relatos/pages/SelectClassificationsPage'));
 const UsersPage = React.lazy(() => import('@/05-adm/pages/UsersPage'));
 const CreateUserPage = React.lazy(() => import('@/05-adm/pages/CreateUserPage'));
 const UserDetailsPage = React.lazy(() => import('@/05-adm/pages/UserDetailsPage'));
@@ -212,6 +213,7 @@ function AppWrapper() {
         <Route path="/relatos/lista" element={<Suspense fallback={<LoadingSpinner />}><RelatosListaPage /></Suspense>} />
         <Route path="/relatos/detalhes/:id" element={<Suspense fallback={<LoadingSpinner />}><RelatoDetailsPage /></Suspense>} />
         <Route path="/relatos/detalhes/:id/edit/:sectionKey" element={<Suspense fallback={<LoadingSpinner />}><EditSectionPage /></Suspense>} />
+        <Route path="/relatos/detalhes/:id/edit/classificacoes/:categoryId" element={<Suspense fallback={<LoadingSpinner />}><SelectClassificationsPage /></Suspense>} />
         <Route path="/relatos/atribuidos" element={<Navigate to="/relatos/lista?assigned_to_me=true" />} />
         <Route path="/relatos/reprovados" element={<Navigate to="/relatos/lista?status=reprovado" />} />
         <Route path="/relatos/logs/:id" element={<Suspense fallback={<LoadingSpinner />}><RelatoLogsPage /></Suspense>} />

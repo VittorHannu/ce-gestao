@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { useRelatoManagement } from '../hooks/useRelatoManagement';
 import MainLayout from '@/01-shared/components/MainLayout';
 import PageHeader from '@/01-shared/components/PageHeader';
@@ -14,8 +14,9 @@ import { Checkbox } from '@/01-shared/components/ui/checkbox';
 import { TimePicker } from '@/01-shared/components/ui/TimePicker';
 import RelatoImages from '../components/RelatoImages';
 import { useRelatoClassifications } from '../hooks/useRelatoClassifications';
-import { useToast } from '@/01-shared/hooks/useToast';
-import MultiSelect from '@/01-shared/components/ui/MultiSelect';
+import { Card, CardContent, CardHeader, CardTitle } from "@/01-shared/components/ui/card";
+import { ChevronRight } from 'lucide-react';
+
 
 // FormFieldComponent copied from SectionEditModal
 const FormFieldComponent = ({ field, value, onChange, disabled }) => {
@@ -89,7 +90,6 @@ const EditSectionPage = () => {
   const { id, sectionKey } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
 
   // State for the generic form fields
   const [fields, setFields] = useState({});
@@ -100,9 +100,7 @@ const EditSectionPage = () => {
     isLoadingAll, 
     selectedClassifications, 
     isLoadingSelected, 
-    updateMutation 
   } = useRelatoClassifications(id);
-  const [currentSelection, setCurrentSelection] = useState([]);
 
   const {
     relato,
@@ -168,14 +166,7 @@ const EditSectionPage = () => {
       });
       setFields(initialState);
     }
-    
-    // Effect for classifications editor
-    // Note: We compare stringified versions to prevent infinite loops from new array instances.
-    if (sectionKey === 'classificacoes' && selectedClassifications && JSON.stringify(selectedClassifications) !== JSON.stringify(currentSelection)) {
-      setCurrentSelection(selectedClassifications);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [relato, sectionConfig, sectionKey, selectedClassifications]);
+  }, [relato, sectionConfig, sectionKey]);
 
   const handleChange = (fieldKey, value) => {
     setFields(prev => {
@@ -187,73 +178,29 @@ const EditSectionPage = () => {
     });
   };
 
-  const handleSelectionChange = (itemId, group, checkedParam) => {
-    const checked = typeof checkedParam === 'boolean' ? checkedParam : undefined;
-    setCurrentSelection(prev => {
-      const exists = prev.some(
-        sel => String(sel.classification_id) === String(itemId) && sel.classification_table === group.table_name
-      );
-      if (checked === true) {
-        if (exists) return prev;
-        return [...prev, {
-          classification_id: itemId,
-          classification_table: group.table_name
-        }];
-      } else if (checked === false) {
-        return prev.filter(
-          sel => !(String(sel.classification_id) === String(itemId) && sel.classification_table === group.table_name)
-        );
-      } else {
-        // fallback: toggle (para compatibilidade)
-        if (exists) {
-          return prev.filter(
-            sel => !(String(sel.classification_id) === String(itemId) && sel.classification_table === group.table_name)
-          );
-        } else {
-          return [...prev, {
-            classification_id: itemId,
-            classification_table: group.table_name
-          }];
-        }
-      }
-    });
-  };
-
   const handleSave = async () => {
-    if (sectionKey === 'classificacoes') {
-      updateMutation.mutate(currentSelection, {
-        onSuccess: () => {
-          toast({ title: 'Classificações salvas com sucesso!', type: 'success' });
-          navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state });
-        },
-        onError: (error) => {
-          toast({ title: `Erro ao salvar: ${error.message}`, type: 'error' });
-        }
-      });
-    } else {
-      // Generic form save logic
-      const changes = {};
-      for (const key in fields) {
-        const originalValue = relato[key] || '';
-        const currentValue = fields[key] === null ? null : (fields[key] || '');
+    // Generic form save logic
+    const changes = {};
+    for (const key in fields) {
+      const originalValue = relato[key] || '';
+      const currentValue = fields[key] === null ? null : (fields[key] || '');
 
-        if (currentValue !== originalValue) {
-          changes[key] = fields[key] === '' ? null : fields[key];
-        }
+      if (currentValue !== originalValue) {
+        changes[key] = fields[key] === '' ? null : fields[key];
       }
+    }
 
-      if (Object.keys(changes).length > 0) {
-        const success = await handleUpdateRelato(changes, canManageRelatos);
-        if (success) {
-          navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state });
-        }
-      } else {
+    if (Object.keys(changes).length > 0) {
+      const success = await handleUpdateRelato(changes, canManageRelatos);
+      if (success) {
         navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state });
       }
+    } else {
+      navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state });
     }
   };
 
-  if (loading || isLoadingProfile) return <LoadingSpinner />;
+  if (loading || isLoadingProfile || isLoadingAll || isLoadingSelected) return <LoadingSpinner />;
   if (error) return <div className="container p-4 text-red-500">{error.message || error}</div>;
   if (!relato) return <div className="container p-4">Relato não encontrado.</div>;
   if (!canManageRelatos) return <div className="container p-4">Você não tem permissão para editar este relato.</div>;
@@ -266,20 +213,32 @@ const EditSectionPage = () => {
       <div className="container mx-auto p-4">
         <div className="p-4 bg-white rounded-lg shadow-sm">
           {sectionKey === 'classificacoes' ? (
-            <div className="space-y-6">
-              {(isLoadingAll || isLoadingSelected) ? <LoadingSpinner /> : allClassifications.map(group => (
-                <MultiSelect
-                  key={group.id}
-                  label={group.name}
-                  options={group.items}
-                  selectedValues={currentSelection
-                    .filter(sel => sel.classification_table === group.table_name)
-                    .map(sel => String(sel.classification_id))
-                  }
-                  onChange={(itemId) => handleSelectionChange(itemId, group)}
-                  placeholder={`Selecione ${group.name.toLowerCase()}...`}
-                />
-              ))}
+            <div className="space-y-4">
+              {allClassifications.map(category => {
+                const selectedForCategory = selectedClassifications
+                  .filter(sel => sel.classification_table === category.table_name)
+                  .map(sel => {
+                    const item = category.items.find(i => i.id === sel.classification_id);
+                    return item ? item.name : '';
+                  })
+                  .filter(Boolean);
+
+                return (
+                  <Link to={`/relatos/detalhes/${id}/edit/classificacoes/${category.id}`} key={category.id} className="block">
+                    <Card className="hover:bg-gray-50 transition-colors">
+                      <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="text-lg font-medium">{category.name}</CardTitle>
+                        <ChevronRight className="h-6 w-6 text-gray-400" />
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-gray-500">
+                          {selectedForCategory.length > 0 ? selectedForCategory.join(', ') : 'Nenhuma classificação selecionada'}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                );
+              })}
             </div>
           ) : (
             <div className="space-y-4">
@@ -301,14 +260,23 @@ const EditSectionPage = () => {
             </div>
           )}
         </div>
-        <div className="flex justify-end space-x-4 mt-6">
-          <Button variant="outline" onClick={() => navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state })} disabled={isSaving || updateMutation.isPending}>
-            Cancelar
-          </Button>
-          <Button onClick={handleSave} disabled={isSaving || updateMutation.isPending}>
-            {(isSaving || updateMutation.isPending) ? 'Salvando...' : 'Salvar Alterações'}
-          </Button>
-        </div>
+        {sectionKey !== 'classificacoes' && (
+          <div className="flex justify-end space-x-4 mt-6">
+            <Button variant="outline" onClick={() => navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state })} disabled={isSaving}>
+              Cancelar
+            </Button>
+            <Button onClick={handleSave} disabled={isSaving}>
+              {isSaving ? 'Salvando...' : 'Salvar Alterações'}
+            </Button>
+          </div>
+        )}
+         {sectionKey === 'classificacoes' && (
+          <div className="flex justify-end space-x-4 mt-6">
+            <Button variant="outline" onClick={() => navigate(`/relatos/detalhes/${id}`, { replace: true, state: location.state })}>
+              Voltar
+            </Button>
+          </div>
+        )}
       </div>
     </MainLayout>
   );
