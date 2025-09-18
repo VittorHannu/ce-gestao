@@ -36,7 +36,7 @@ const DynamicRelatoCard = ({ relato, viewOptions, disableLink }) => {
         <h2 className="text-lg font-bold text-gray-800 mt-2">{relato.relato_code}</h2>
       </CardHeader>
 
-      <CardContent className="p-4 space-y-3">
+      <CardContent className="px-4 py-3 space-y-2">
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <Calendar className="h-4 w-4" />
           <span>{new Date(relato.data_ocorrencia).toLocaleDateString()}</span>
@@ -79,7 +79,7 @@ const DynamicRelatoCard = ({ relato, viewOptions, disableLink }) => {
             </div>
         )}
 
-        <div className="border-t border-gray-200 pt-3 flex items-center justify-start gap-4 text-sm text-gray-500">
+        <div className="border-t border-gray-200 pt-4 flex items-center justify-start gap-4 text-sm text-gray-500">
             <div className="flex items-center gap-1">
                 <Image className="h-4 w-4" />
                 <span>{relato.image_count || 0}</span>
