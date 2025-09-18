@@ -68,7 +68,7 @@ const RelatoForm = ({ user }) => {
   const sections = useMemo(() => [
     { id: 'section-1', title: 'O que aconteceu?', fields: ['descricao', 'riscos_identificados'] },
     { id: 'section-2', title: 'Onde e quando?', fields: ['local_ocorrencia', 'data_ocorrencia'] },
-    { id: 'section-3', title: 'Evidências (Opcional)', fields: [] },
+    { id: 'section-3', title: 'Imagens do Evento (Opcional)', fields: [] },
     { id: 'section-4', title: 'Identificação', fields: [] }
   ], []);
 
