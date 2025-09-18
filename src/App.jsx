@@ -205,6 +205,7 @@ function AppWrapper() {
         <Route path="/settings" element={<Suspense fallback={<LoadingSpinner />}><SettingsPage /></Suspense>} />
         <Route path="/settings/images" element={<Suspense fallback={<LoadingSpinner />}><ImageManagementPage /></Suspense>} />
         <Route path="/version-history" element={<Suspense fallback={<LoadingSpinner />}><VersionHistoryPage /></Suspense>} />
+        <Route path="/relato-confirmation" element={<Suspense fallback={<LoadingSpinner />}><RelatoConfirmationPage /></Suspense>} />
         <Route path="/relatos" element={<Suspense fallback={<LoadingSpinner />}><RelatosPage /></Suspense>} />
         <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage /></Suspense>} />
         <Route path="/relatos/aprovacao" element={<Navigate to="/relatos/lista?status=pendente" />} />
