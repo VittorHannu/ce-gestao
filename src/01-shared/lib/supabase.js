@@ -33,6 +33,4 @@ if (import.meta.env.VITE_SUPABASE_TUNNEL_URL) {
   supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  global: { headers: { 'ngrok-skip-browser-warning': 'true' } }
-});
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
