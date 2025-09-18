@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { debounce } from '@/lib/utils';
 
-const SearchInput = ({ value, onChange, placeholder, className }) => {
+const SearchInput = ({ value, onChange, placeholder }) => {
   const [searchTerm, setSearchTerm] = useState(value);
 
   // Sincroniza o estado interno com a prop 'value' externa
@@ -33,7 +33,7 @@ const SearchInput = ({ value, onChange, placeholder, className }) => {
   };
 
   return (
-    <div className={`relative ${className || ''}`}>
+    <div className="relative">
       <input
         type="text"
         placeholder={placeholder}
