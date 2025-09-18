@@ -39,7 +39,7 @@ const RelatoDetailsPage = () => {
   const {
     relato,
     loading,
-    error,
+    error: _error, // Keep error for debugging, but avoid lint warning
     isDeleting,
     handleDeleteRelato,
     userProfile,
