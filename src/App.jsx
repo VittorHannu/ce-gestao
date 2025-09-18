@@ -41,6 +41,7 @@ const UpdateEmailPage = React.lazy(() => import('@/04-profile/pages/UpdateEmailP
 const ConfirmEmailChangePage = React.lazy(() => import('@/03-auth/pages/ConfirmEmailChangePage'));
 const RelatosPage = React.lazy(() => import('@/07-relatos/pages/RelatosPage'));
 const CreateRelatoPage = React.lazy(() => import('@/07-relatos/pages/CreateRelatoPage'));
+const RelatoConfirmationPage = React.lazy(() => import('@/07-relatos/pages/RelatoConfirmationPage'));
 const RelatosListaPage = React.lazy(() => import('@/07-relatos/pages/RelatosListaPage'));
 const RelatoDetailsPage = React.lazy(() => import('@/07-relatos/pages/RelatoDetailsPage'));
 const EditSectionPage = React.lazy(() => import('@/07-relatos/pages/EditSectionPage'));
@@ -186,6 +187,7 @@ function AppWrapper() {
           <Route path="/auth" element={<Suspense fallback={<LoadingSpinner />}><LoginPage /></Suspense>} />
           <Route path="/auth/confirm" element={<Suspense fallback={<LoadingSpinner />}><ConfirmEmailChangePage /></Suspense>} />
           <Route path="/relatos/novo" element={<Suspense fallback={<LoadingSpinner />}><CreateRelatoPage /></Suspense>} />
+          <Route path="/relato-confirmation" element={<Suspense fallback={<LoadingSpinner />}><RelatoConfirmationPage /></Suspense>} />
           <Route path="/" element={<Navigate to="/auth" />} />
           <Route path="*" element={<Navigate to="/auth" />} />
         </Route>

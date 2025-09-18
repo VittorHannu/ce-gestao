@@ -48,8 +48,10 @@ const SectionTitle = ({ title, status, sectionId }) => {
   );
 };
 
+
 const RelatoForm = ({ user }) => {
   const [openSection, setOpenSection] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [sectionStatus, setSectionStatus] = useState({
     'section-1': 'default',
     'section-2': 'default',
@@ -57,7 +59,9 @@ const RelatoForm = ({ user }) => {
     'section-4': 'default'
   });
   const [imageFiles, setImageFiles] = useState([]);
-  const { mutate: submitRelato, isLoading } = useSubmitRelato(!!user);
+  const { mutate: submitRelato, isLoading } = useSubmitRelato({ 
+    onSettled: () => setIsSubmitting(false) 
+  });
 
   const sections = useMemo(() => [
     { id: 'section-1', title: 'O que aconteceu?', fields: ['descricao', 'riscos_identificados'] },
@@ -135,7 +139,7 @@ const RelatoForm = ({ user }) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: { 'image/*': [] }, multiple: true });
 
   const onSubmit = (data) => {
-    // The user_id is now handled by the Edge Function, so we don't need to set it here.
+    setIsSubmitting(true);
     const relatoData = { ...data, hora_aproximada_ocorrencia: data.hora_aproximada_ocorrencia || null };
     submitRelato({ relatoData, imageFiles });
   };
@@ -208,13 +212,14 @@ const RelatoForm = ({ user }) => {
         </div>
         {!user && <p className='text-sm text-muted-foreground'>Você não está logado, o relato será enviado como anônimo.</p>}
         <div className="flex justify-end pt-4">
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Enviando...' : 'Enviar Relato'}
+          <Button type="submit" disabled={isLoading || isSubmitting}>
+            {isLoading || isSubmitting ? 'Enviando...' : 'Enviar Relato'}
           </Button>
         </div>
       </div>
     )
   };
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-2xl mx-auto">
