@@ -45,7 +45,7 @@ const MainLayout = ({ children, header, _user, headerClassName }) => {
         <div className="flex flex-1 relative z-0">
           <main
             ref={mainRef}
-            className="flex-grow overflow-y-visible mx-auto px-4 sm:px-8 lg:px-12 w-full"
+            className="flex-grow overflow-y-visible mx-auto px-2 sm:px-4 lg:px-6 w-full"
             style={{
               paddingTop: `calc(${headerHeight}px + 0.7rem)`,
               paddingBottom: '60px'
