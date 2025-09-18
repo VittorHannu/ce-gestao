@@ -173,3 +173,9 @@ textarea:focus-visible {
     gap: 2rem; /* Corresponds to Tailwind's gap-8 */
   }
 }
+
+.changelog-pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.875rem;
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import MainLayout from '@/01-shared/components/MainLayout';
 import PageHeader from '@/01-shared/components/PageHeader';
 import changelogContent from '../../../CHANGELOG.md?raw';
@@ -25,7 +26,7 @@ function VersionHistoryPage() {
     >
       <div>
         <div className={proseClassName}>
-          <ReactMarkdown>{changelogContent}</ReactMarkdown>
+          <pre className="changelog-pre">{changelogContent}</pre>
         </div>
       </div>
     </MainLayout>
