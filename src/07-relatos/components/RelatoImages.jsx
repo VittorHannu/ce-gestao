@@ -150,20 +150,23 @@ const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
             {imageGrid}
           </div>
           {selectedImage && (
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto"> {/* Adicionado max-h e overflow */}
-              <img src={selectedImage} alt="Imagem do relato em tela cheia" className="w-full h-auto rounded-lg" />
-              {isEditable && ( // Adicionar botão de exclusão se for editável
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  className="absolute top-4 right-4" // Posição do botão no modal
-                  onClick={() => {
-                    handleDeleteImage(selectedImage);
-                    setSelectedImage(null); // Fechar o modal após a exclusão
-                  }}
-                >
-                  <TrashIcon className="h-4 w-4" />
-                </Button>
+            <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
+              <div className="flex-grow overflow-y-auto">
+                <img src={selectedImage} alt="Imagem do relato em tela cheia" className="w-full h-auto rounded-lg" />
+              </div>
+              {isEditable && (
+                <div className="flex justify-end p-4 border-t">
+                  <Button
+                    variant="destructive"
+                    onClick={() => {
+                      handleDeleteImage(selectedImage);
+                      setSelectedImage(null);
+                    }}
+                  >
+                    <TrashIcon className="h-4 w-4 mr-2" />
+                    Excluir Imagem
+                  </Button>
+                </div>
               )}
             </DialogContent>
           )}
@@ -221,20 +224,23 @@ const RelatoImages = ({ relato, userProfile, isEditable = false }) => {
           </div>
         </div>
         {selectedImage && (
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto"> {/* Adicionado max-h e overflow */}
-            <img src={selectedImage} alt="Imagem do relato em tela cheia" className="w-full h-auto rounded-lg" />
-            {isEditable && ( // Adicionar botão de exclusão se for editável
-              <Button
-                variant="destructive"
-                size="icon"
-                className="absolute top-4 right-4" // Posição do botão no modal
-                onClick={() => {
-                  handleDeleteImage(selectedImage);
-                  setSelectedImage(null); // Fechar o modal após a exclusão
-                }}
-              >
-                <TrashIcon className="h-4 w-4" />
-              </Button>
+          <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
+            <div className="flex-grow overflow-y-auto">
+              <img src={selectedImage} alt="Imagem do relato em tela cheia" className="w-full h-auto rounded-lg" />
+            </div>
+            {isEditable && (
+              <div className="flex justify-end p-4 border-t">
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    handleDeleteImage(selectedImage);
+                    setSelectedImage(null);
+                  }}
+                >
+                  <TrashIcon className="h-4 w-4 mr-2" />
+                  Excluir Imagem
+                </Button>
+              </div>
             )}
           </DialogContent>
         )}
