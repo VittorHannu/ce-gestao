@@ -258,7 +258,7 @@ const ClassificationTableManager = ({ tableName }) => {
         </CardContent>
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="!max-w-[calc(100%-2rem)] sm:!max-w-xl lg:!max-w-lg xl:!max-w-md mx-auto">
+          <DialogContent className="max-w-[calc(100vw-2rem)] rounded-lg">
             <DialogHeader>
               <DialogTitle>{currentItem ? 'Editar Item' : 'Adicionar Novo Item'}</DialogTitle>
               <DialogDescription>
