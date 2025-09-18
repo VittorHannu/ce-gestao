@@ -1,48 +1,90 @@
 import React from 'react';
-import { useLocation, Link } from 'react-router-dom';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/01-shared/components/ui/card';
-import { CheckCircle, Clock, AlertCircle } from 'lucide-react'; // Importa os ícones
+import { Link, useLocation } from 'react-router-dom';
+import { Card, CardContent, CardHeader } from '@/01-shared/components/ui/card';
+import { Calendar, MapPin, User, Image, MessageSquare } from 'lucide-react';
 
-const RelatoCard = ({ relato, disableLink }) => {
+const statusConfig = {
+  CONCLUIDO: { text: 'Concluído', color: 'bg-green-500' },
+  EM_ANDAMENTO: { text: 'Em Andamento', color: 'bg-orange-500' },
+  SEM_TRATATIVA: { text: 'Sem Tratativa', color: 'bg-red-500' },
+  PENDENTE: { text: 'Pendente', color: 'bg-yellow-500' },
+  APROVADO: { text: 'Aprovado', color: 'bg-blue-500' },
+  REPROVADO: { text: 'Reprovado', color: 'bg-gray-500' },
+};
+
+const getTreatmentStatus = (relato) => {
+    if (relato.data_conclusao_solucao || relato.concluido_sem_data) return 'CONCLUIDO';
+    if (relato.planejamento_cronologia_solucao) return 'EM_ANDAMENTO';
+    return 'SEM_TRATATIVA';
+}
+
+const RelatoCard = ({ relato }) => {
   const location = useLocation();
-  const getTreatmentStatusDisplay = () => {
-    if (relato.data_conclusao_solucao || relato.concluido_sem_data) {
-      return { text: 'Concluído', icon: CheckCircle, color: 'text-white', bgColor: 'bg-green-600' };
-    } else if (relato.planejamento_cronologia_solucao) {
-      return { text: 'Em Andamento', icon: Clock, color: 'text-white', bgColor: 'bg-orange-600' };
-    } else {
-      return { text: 'Sem Tratativa', icon: AlertCircle, color: 'text-white', bgColor: 'bg-red-600' };
-    }
-  };
 
-  const { text: statusText, icon: StatusIcon, color: statusColor, bgColor } = getTreatmentStatusDisplay();
+  const finalStatusKey = relato.status === 'APROVADO' ? getTreatmentStatus(relato) : relato.status;
+  const { text: statusText, color: statusColor } = statusConfig[finalStatusKey] || { text: 'Indefinido', color: 'bg-gray-400' };
 
-  const cardContent = (
-    <Card className={`transition-shadow duration-200 p-3 ${bgColor} w-full min-w-0`} style={{ boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)' }}>
-      <CardHeader className="p-0">
-        <CardTitle className="text-lg font-semibold mb-1 text-white">{relato.relato_code}</CardTitle>
-        <CardDescription className="text-sm text-gray-200">
-          Data da Ocorrência: {new Date(relato.data_ocorrencia).toLocaleDateString()}
-          {relato.hora_aproximada_ocorrencia && ` - ${relato.hora_aproximada_ocorrencia}`}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-0">
-        <p className="text-base text-gray-100 mb-4">{relato.descricao}</p>
-        {relato.data_conclusao_solucao && (
-          <p className="text-sm text-gray-200 mt-1">Concluído em: {new Date(relato.data_conclusao_solucao).toLocaleDateString()}</p>
-        )}
-        <div className="flex items-center mt-2">
-          <StatusIcon className={`h-4 w-4 mr-2 ${statusColor}`} />
-          <p className={`text-sm font-medium ${statusColor}`}>{statusText}</p>
-        </div>
-      </CardContent>
-    </Card>
-  );
+  return (
+    <Link to={`/relatos/detalhes/${relato.id}`} state={{ from: location }} className="block">
+      <Card className="w-full bg-white rounded-lg shadow-md overflow-hidden transition-shadow duration-300 hover:shadow-xl">
+        <CardHeader className="p-4 border-b border-gray-200">
+          <div className="flex items-center gap-3">
+            <span className={`w-3 h-3 rounded-full ${statusColor}`}></span>
+            <span className="text-sm font-semibold text-gray-600">{statusText}</span>
+          </div>
+          <h2 className="text-lg font-bold text-gray-800 mt-2">{relato.relato_code}</h2>
+        </CardHeader>
 
-  return disableLink ? (
-    <div className="block">{cardContent}</div>
-  ) : (
-    <Link to={`/relatos/detalhes/${relato.id}`} state={{ from: location }} className="block">{cardContent}</Link>
+        <CardContent className="p-4 space-y-4">
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <Calendar className="h-4 w-4 flex-shrink-0" />
+            <span>{new Date(relato.data_ocorrencia).toLocaleDateString()}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <MapPin className="h-4 w-4 flex-shrink-0" />
+            <span>{relato.local_ocorrencia}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <User className="h-4 w-4 flex-shrink-0" />
+            <span>{relato.is_anonymous ? 'Anônimo' : relato.user_full_name || 'Usuário desconhecido'}</span>
+          </div>
+
+          <div className="border-t border-gray-200 pt-4 space-y-4">
+            <div>
+              <h4 className="font-bold text-gray-700">Descrição do Evento</h4>
+              <p className="text-gray-600 text-sm mt-1">{relato.descricao}</p>
+            </div>
+            <div>
+              <h4 className="font-bold text-gray-700">Riscos Identificados</h4>
+              <p className="text-gray-600 text-sm mt-1">{relato.riscos_identificados}</p>
+            </div>
+            {relato.planejamento_cronologia_solucao && (
+              <div>
+                <h4 className="font-bold text-gray-700">Solução Implementada</h4>
+                <p className="text-gray-600 text-sm mt-1">{relato.planejamento_cronologia_solucao}</p>
+              </div>
+            )}
+            {relato.danos_ocorridos && (
+              <div>
+                <h4 className="font-bold text-gray-700">Danos Ocorridos</h4>
+                <p className="text-gray-600 text-sm mt-1">{relato.danos_ocorridos}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="border-t border-gray-200 pt-4 flex items-center justify-start gap-4 text-sm text-gray-500">
+            <div className="flex items-center gap-1">
+              <Image className="h-4 w-4" />
+              <span>{relato.image_count || 0}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <MessageSquare className="h-4 w-4" />
+              <span>{relato.comment_count || 0}</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 };
 

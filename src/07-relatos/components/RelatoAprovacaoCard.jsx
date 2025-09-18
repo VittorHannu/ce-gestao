@@ -1,5 +1,7 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardFooter } from '@/01-shared/components/ui/card';
+import { Calendar, MapPin, User } from 'lucide-react';
 import { Button } from '@/01-shared/components/ui/button';
 
 const RelatoAprovacaoCard = ({ relato, onUpdateStatus }) => {
@@ -11,24 +13,47 @@ const RelatoAprovacaoCard = ({ relato, onUpdateStatus }) => {
     onUpdateStatus(relato.id, status);
   };
 
+  const handleCardClick = () => {
+    navigate(`/relatos/detalhes/${relato.id}`, { state: { from: location } });
+  };
+
   return (
-    <div onClick={() => navigate(`/relatos/detalhes/${relato.id}`, { state: { from: location } })} className="p-4 border rounded-lg bg-white cursor-pointer hover:bg-gray-50">
-      <div className="flex justify-between items-start">
+    <Card
+      className="w-full bg-white rounded-lg shadow-md overflow-hidden transition-shadow duration-300 hover:shadow-xl cursor-pointer"
+      onClick={handleCardClick}
+    >
+      <CardHeader className="p-4 border-b border-gray-200">
+        <div className="flex items-center gap-3">
+          <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
+          <span className="text-sm font-semibold text-gray-600">Pendente</span>
+        </div>
+        <h2 className="text-lg font-bold text-gray-800 mt-2">{relato.relato_code}</h2>
+      </CardHeader>
+
+      <CardContent className="p-4 space-y-4">
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <Calendar className="h-4 w-4 flex-shrink-0" />
+          <span>{new Date(relato.data_ocorrencia).toLocaleDateString()}</span>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <MapPin className="h-4 w-4 flex-shrink-0" />
+          <span>{relato.local_ocorrencia}</span>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <User className="h-4 w-4 flex-shrink-0" />
+          <span>{relato.is_anonymous ? 'Anônimo' : relato.user_full_name || 'Usuário desconhecido'}</span>
+        </div>
         <div>
-          <p className="font-bold text-lg">{relato.relato_code}</p>
-          <p className="text-sm text-gray-600">{relato.tipo_relato}</p>
+          <h4 className="font-bold text-gray-700">Descrição do Evento</h4>
+          <p className="text-gray-600 text-sm mt-1 line-clamp-3">{relato.descricao}</p>
         </div>
-        <div className="text-right">
-          <p className="text-sm font-medium">{new Date(relato.data_ocorrencia).toLocaleDateString()}</p>
-          <p className="text-xs text-gray-500">{relato.local_ocorrencia}</p>
-        </div>
-      </div>
-      <p className="mt-2 text-gray-800 line-clamp-2">{relato.descricao}</p>
-      <div className="mt-4 flex justify-end space-x-2">
+      </CardContent>
+
+      <CardFooter className="p-4 border-t border-gray-200 flex justify-end space-x-2">
         <Button size="sm" variant="outline" onClick={(e) => handleAction(e, 'REPROVADO')}>Reprovar</Button>
         <Button size="sm" onClick={(e) => handleAction(e, 'APROVADO')}>Aprovar</Button>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 };
 
