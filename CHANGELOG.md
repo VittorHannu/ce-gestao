@@ -1,81 +1,78 @@
-## [0.1.25] - 2025-09-14
+## [2.0.0] - 2025-09-18
 
-### Correções (Fixes)
-- **relatos**: Corrige o cálculo da Pirâmide de Bird, garantindo que a contagem de status (concluído, em andamento, etc.) seja precisa.
-- **UI**: Adiciona um espaçador na página de relatos para evitar o "flicker" (layout shift) durante a renderização do gráfico da pirâmide.
+### Novidades
+- **Gerenciamento de Imagens Avançado**: Implementação de um sistema robusto para upload, visualização e gerenciamento de múltiplas imagens em relatos, incluindo integração com Cloudflare R2 e Edge Functions para segurança e desempenho.
+- **Fluxo de Submissão de Relatos Aprimorado**: Completa reformulação do processo de submissão e confirmação de relatos, com melhorias na experiência do usuário e prevenção de duplicatas.
+- **Gestão de Classificações Dinâmica**: Nova funcionalidade de administração para gerenciar e reordenar categorias de classificação de relatos, oferecendo maior flexibilidade.
+- **Sistema Abrangente de Auditoria (Audit Logs)**: Implementação de um sistema detalhado de trilha de auditoria para registrar e visualizar ações importantes no aplicativo.
+- **Edição In-loco e UX da Página de Detalhes de Relatos**: Grandes melhorias na página de detalhes de relatos, incluindo edição direta de campos e uma experiência de usuário mais fluida.
+- **Pirâmide de Bird no Dashboard**: Integração da Pirâmide de Bird diretamente no dashboard principal para visualização de dados de segurança.
+
+### Melhorias e Correções
+- **Refatoração do OneSignal**: Otimização e centralização da lógica de notificações push para maior robustez e desempenho.
+- Diversas outras melhorias de UI/UX e correções de bugs em todo o aplicativo.
+
+## [0.1.25] - 2025-09-14
+### Melhorias e Correções
+- Cálculo da Pirâmide de Bird corrigido.
+- Espaçador adicionado na página de relatos para evitar "flicker" na UI.
 
 ## [0.1.24] - 2025-09-14
-
-### Correções (Fixes)
-- **admin**: Corrige bugs na página de detalhes do usuário (`UserDetailsPage.jsx`):
-  - Garante que as notificações de toast sejam exibidas corretamente ao corrigir o uso do hook `useToast`.
-  - Impede que a mensagem de sucesso seja exibida em caso de falha na atualização de permissões, adicionando uma verificação no retorno da API.
+### Melhorias e Correções
+- Bugs corrigidos na página de detalhes do usuário, incluindo notificações e atualização de permissões.
 
 ## [0.1.23] - 2025-09-14
-
-### Correções (Fixes)
-- **build**: Remove a ferramenta de depuração `eruda` do build de produção, reduzindo o tamanho final do aplicativo em mais de 500KB e eliminando riscos de segurança.
+### Melhorias e Correções
+- Ferramenta de depuração `eruda` removida do build de produção para otimização e segurança.
 
 ## [0.1.22] - 2025-09-14
-
-### Feat
-- **user**: Adiciona novas permissões na página de detalhes do usuário (`can_delete_any_comment`, `can_view_audit_logs`, `can_manage_classifications`).
+### Novidades
+- Novas permissões adicionadas para usuários na página de detalhes.
 
 ## [0.1.21] - 2025-09-13
-
-### Fix
-- **migrations**: Corrige o processo de `db push` ao ignorar a migração de schema inicial e passar a versionar o `schema.sql` completo, evitando conflitos com bancos de dados já existentes.
+### Melhorias e Correções
+- Processo de migrações do Supabase corrigido para evitar conflitos e melhorar o versionamento do schema.
 
 ## [0.1.16] - 2025-09-12
-
-### Feat
-- **pwa**: Adiciona a opção de atualizar o aplicativo mais tarde a partir da página de configurações, caso o usuário dispense o aviso de atualização.
+### Novidades
+- Opção de atualizar o aplicativo PWA mais tarde adicionada nas configurações.
 
 ## [0.1.15] - 2025-09-12
-
-### Feat
-- **layout**: Adiciona layout de duas colunas na página de lista de relatos para melhor aproveitamento de tela em dispositivos maiores.
-- **layout**: Ajusta o espaçamento na página principal de relatos.
+### Melhorias e Correções
+- Layout de duas colunas adicionado na página de lista de relatos para melhor aproveitamento de tela.
+- Espaçamento ajustado na página principal de relatos.
 
 ## [0.1.14] - 2025-09-11
-
-### Fix
-- **pwa**: Corrige o comportamento de instalação do PWA, garantindo que o aplicativo seja adicionado à tela inicial como um app de tela cheia (standalone) em vez de um atalho de navegador.
+### Melhorias e Correções
+- Comportamento de instalação do PWA corrigido para garantir que o aplicativo seja adicionado como standalone.
 
 ## [0.1.13] - 2025-09-11
-
-### Feat
-- **settings**: Re-introduces the "About" section in the settings page, displaying the application version, build date, and a link to the changelog.
+### Novidades
+- Seção "Sobre" reintroduzida nas configurações, exibindo informações da versão do aplicativo.
 
 ## [0.1.12] - 2025-09-10
-
-### Refactor
-- **onesignal**: Centraliza toda a lógica de ciclo de vida do OneSignal (inicialização, login/logout de usuário) em um hook dedicado `useOneSignal`. Isso corrige bugs de múltiplas inicializações e garante uma arquitetura mais robusta e estável para o sistema de notificações.
+### Melhorias e Correções
+- Lógica do OneSignal refatorada para centralizar o gerenciamento de notificações em um hook dedicado.
 
 ## [0.1.11] - 2025-09-10
-
-### Fix
-- **onesignal**: Refatora completamente a integração com o OneSignal para maior robustez, adicionando timeouts, tratamento de erros aprimorado e um botão de depuração para forçar a reinicialização. A inicialização agora é feita sob demanda para melhorar o desempenho.
+### Melhorias e Correções
+- Integração com o OneSignal refatorada para maior robustez e desempenho.
 
 ## [1.1.2] - 2025-09-09
-
-### Fixes
-- **notificações**: Limpa `user_id` do OneSignal no logout para evitar receber notificações de outro usuário.
-- **UI**: Garante que o foco do teclado não seja visível em elementos não interativos no modo mobile.
+### Melhorias e Correções
+- Limpeza de `user_id` do OneSignal no logout para evitar notificações de outros usuários.
+- Foco do teclado não visível em elementos não interativos no modo mobile.
 
 ## [1.1.1] - 2025-09-09
-
-### Fixes
-- **notificações**: Corrige a lógica de limpeza de notificações, removendo tabelas e funções obsoletas do Supabase para uma gestão mais limpa e centralizada através de uma única tabela `notifications`.
+### Melhorias e Correções
+- Lógica de limpeza de notificações corrigida, removendo tabelas e funções obsoletas do Supabase.
 
 ## [1.1.0] - 2025-09-08
-
-### Features
-- **Notificações**: Adiciona uma nova página de "Notificações" que exibe um histórico de todas as notificações recebidas pelo usuário, com suporte para paginação.
-
-### Fixes
-- **Navegação**: Corrige o bug que impedia o menu inferior de ser exibido em telas maiores que `sm` (640px), garantindo que ele apareça corretamente em tablets e dispositivos com telas maiores.
+### Novidades
+- Nova página de "Notificações" com histórico e paginação.
+### Melhorias e Correções
+- Bug corrigido que impedia o menu inferior de ser exibido em telas maiores.
 
 ## [1.0.0] - 2025-09-05
-
-Lançamento inicial do SGI Copa.
+### Novidades
+- Lançamento inicial do SGI Copa.
