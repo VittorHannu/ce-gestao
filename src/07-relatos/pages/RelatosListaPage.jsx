@@ -63,6 +63,9 @@ const RelatosListaPage = () => {
     showRisks: true,
     showSolution: false,
     showDamage: false,
+    showTipoRelato: false,
+    showTreatmentStatus: false,
+    showResponsibles: false,
   });
 
   const handleViewOptionsChange = (option) => {

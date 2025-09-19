@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader } from '@/01-shared/components/ui/card';
-import { Calendar, MapPin, User, Image, MessageSquare } from 'lucide-react';
+import { Calendar, MapPin, User, Image, MessageSquare, Tag, ShieldCheck, Users } from 'lucide-react';
 
 const statusConfig = {
   CONCLUIDO: { text: 'Concluído', color: 'bg-green-500' },
@@ -23,6 +23,8 @@ const RelatoCard = ({ relato, children, viewOptions }) => {
 
   const finalStatusKey = relato.status === 'APROVADO' ? getTreatmentStatus(relato) : relato.status;
   const { text: statusText, color: statusColor } = statusConfig[finalStatusKey] || { text: 'Indefinido', color: 'bg-gray-400' };
+
+  const treatmentStatusText = getTreatmentStatus(relato);
 
   return (
     <Card className="w-full bg-white rounded-lg shadow-md overflow-hidden transition-shadow duration-300 hover:shadow-xl">
@@ -49,7 +51,7 @@ const RelatoCard = ({ relato, children, viewOptions }) => {
             <span>{relato.is_anonymous ? 'Anônimo' : relato.user_full_name || 'Usuário desconhecido'}</span>
           </div>
 
-          {(viewOptions?.showDescription || viewOptions?.showRisks || viewOptions?.showSolution || viewOptions?.showDamage) && (
+          {(viewOptions?.showDescription || viewOptions?.showRisks || viewOptions?.showSolution || viewOptions?.showDamage || viewOptions?.showTipoRelato || viewOptions?.showTreatmentStatus || viewOptions?.showResponsibles) && (
             <div className="border-t border-gray-200 pt-4 space-y-4">
               {viewOptions.showDescription && (
                 <div>
@@ -73,6 +75,24 @@ const RelatoCard = ({ relato, children, viewOptions }) => {
                 <div>
                   <h4 className="font-bold text-gray-700">Danos Ocorridos</h4>
                   <p className="text-gray-600 text-sm mt-1">{relato.danos_ocorridos}</p>
+                </div>
+              )}
+              {viewOptions.showTipoRelato && relato.tipo_relato && (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Tag className="h-4 w-4 flex-shrink-0" />
+                  <span>{relato.tipo_relato}</span>
+                </div>
+              )}
+              {viewOptions.showTreatmentStatus && (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <ShieldCheck className="h-4 w-4 flex-shrink-0" />
+                  <span>{treatmentStatusText}</span>
+                </div>
+              )}
+              {viewOptions.showResponsibles && (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Users className="h-4 w-4 flex-shrink-0" />
+                  <span>{relato.responsaveis?.map(r => r.full_name).join(', ') || 'Nenhum'}</span>
                 </div>
               )}
             </div>
