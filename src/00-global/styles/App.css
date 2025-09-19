@@ -198,12 +198,14 @@ textarea:focus-visible {
   
   .responsive-pyramid-table tr {
     display: block;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 1rem;
+    margin-bottom: 0.75rem; /* Space between each full row */
   }
+}
 
-  .responsive-pyramid-table tr:last-child {
-    border-bottom: none;
-  }
+.stretchy-bar-container {
+  height: 100%;
+}
+
+.stretchy-bar {
+  min-height: 40px;
 }

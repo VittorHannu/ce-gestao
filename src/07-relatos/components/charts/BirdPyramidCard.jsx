@@ -204,25 +204,25 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
                 <tr 
                   key={item.name} 
                   onClick={() => navigate(destinationUrl)}
-                  className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                  className="hover:bg-gray-50 cursor-pointer"
                 >
-                  <td className="p-2 w-1/3 lg:w-1/4">
-                    <p className="text-gray-700 font-medium">
+                  <td className="py-0 px-2 w-1/3 lg:w-1/4">
+                    <p className="text-gray-700 font-medium text-sm">
                       {item.name}
                       {showDetailedView && (
-                        <span className="text-sm text-gray-500 font-normal ml-1">({item.value})</span>
+                        <span className="text-xs text-gray-500 font-normal ml-1">({item.value})</span>
                       )}
                     </p>
                   </td>
-                  <td className="p-2">
-                    <div className={`flex items-center ${barAlignment === 'left' ? 'justify-start' : 'justify-center'}`}>
+                  <td className="py-1 px-2">
+                    <div className={`stretchy-bar-container flex items-center ${barAlignment === 'left' ? 'justify-start' : 'justify-center'}`}>
                       {item.value === 0 ? (
                         <span className="ml-2 text-gray-700 font-bold">0</span>
                       ) : (
                         showDetailedView ? (
                           <div className={`flex items-center w-full ${barAlignment === 'center' ? 'justify-center' : ''}`}>
                             <div
-                              className={'h-8 rounded-sm flex items-center justify-center text-white font-bold overflow-hidden'}
+                              className={'stretchy-bar h-8 rounded-sm flex items-center justify-center text-white font-bold overflow-hidden'}
                               style={{ width: `${barWidth}%` }}
                             >
                               {item.concluido > 0 && (
@@ -290,7 +290,7 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
                     ) : (
                       <div className={`flex items-center w-full ${barAlignment === 'center' ? 'justify-center' : ''}`}>
                         <div
-                          className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
+                          className={`stretchy-bar h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
                           style={{ width: `${barWidth}%` }}
                         >
                           {((item.value / maxPyramidCount) * 600) > 20 && item.value}
