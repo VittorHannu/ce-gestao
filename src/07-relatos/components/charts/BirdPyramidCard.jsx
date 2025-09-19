@@ -6,6 +6,7 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/01-shared/components/
 import * as Tooltip from '@radix-ui/react-tooltip';
 import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { fetchRelatosCountByType } from '../../services/relatoStatsService';
+import { cn } from '@/lib/utils';
 
 const BirdPyramidCard = ({ startDate, endDate }) => {
   const navigate = useNavigate();
@@ -208,7 +209,13 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
                   className={`hover:bg-gray-50 cursor-pointer ${index === birdPyramidData.length - 1 ? '' : 'lg:border-b'}`}
                 >
                   <td className="py-0 px-2 w-1/3 lg:w-1/4">
-                    <p class="text-gray-700 font-normal text-sm">
+                                        <p className={cn(
+                      "text-gray-700 font-normal text-sm lg:!text-center",
+                      {
+                        "text-center": barAlignment === 'center',
+                        "text-left": barAlignment === 'left'
+                      }
+                    )}>
                       {item.name}
                       {showDetailedView && (
                         <span className="text-xs text-gray-500 font-normal ml-1">({item.value})</span>
