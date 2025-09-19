@@ -15,7 +15,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { updateRelatoType } from '../services/relatoStatsService';
 import MainLayout from '@/01-shared/components/MainLayout';
-import ViewOptionsControl from '../components/ViewOptionsControl';
+import ViewOptionsModal from '../components/ViewOptionsModal';
+import { Settings2 } from 'lucide-react';
 
 const PAGE_SIZE = 10;
 
@@ -160,7 +161,11 @@ const RelatosListaPage = () => {
           <div className="flex-grow">
             <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Pesquisar relatos..." />
           </div>
-          <ViewOptionsControl viewOptions={viewOptions} onViewOptionsChange={handleViewOptionsChange} />
+          <ViewOptionsModal viewOptions={viewOptions} onViewOptionsChange={handleViewOptionsChange}>
+            <Button variant="outline" size="lg" className="px-3">
+              <Settings2 className="h-5 w-5" />
+            </Button>
+          </ViewOptionsModal>
         </div>
 
         <div className="mb-4 flex flex-wrap space-x-2 gap-y-2">
