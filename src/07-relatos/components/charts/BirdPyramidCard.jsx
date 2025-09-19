@@ -12,7 +12,7 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [barAlignment, setBarAlignment] = useState(() => sessionStorage.getItem('birdPyramid_barAlignment') || 'left');
+  const [barAlignment, setBarAlignment] = useState(() => sessionStorage.getItem('birdPyramid_barAlignment') || 'center');
   const [showZeroBars, setShowZeroBars] = useState(() => {
     const storedValue = sessionStorage.getItem('birdPyramid_showZeroBars');
     return storedValue !== null ? JSON.parse(storedValue) : false;
@@ -112,7 +112,7 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
 
   return (
     <div className="p-6 border rounded-lg bg-white shadow-md">
-      <div className="pb-4 mb-4 border-b border-gray-200 flex justify-between items-center">
+      <div className="pb-4 mb-4 flex justify-between items-center">
         <h2 className="text-xl font-semibold text-gray-800">Pirâmide de Bird</h2>
         <div className="flex items-center gap-2">
           <Popover>
@@ -178,7 +178,7 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
       {birdPyramidData.length > 0 && maxPyramidCount > 0 ? (
         <table className="w-full border-collapse responsive-pyramid-table">
           <tbody>
-            {birdPyramidData.map((item) => {
+            {birdPyramidData.map((item, index) => {
               const barWidth = maxPyramidCount > 0 ? (item.value / maxPyramidCount) * 100 : 0;
               const colorMap = {
                 'Fatal': 'bg-black',
@@ -198,10 +198,10 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
                 <tr 
                   key={item.name} 
                   onClick={() => navigate(destinationUrl)}
-                  className="hover:bg-gray-50 cursor-pointer"
+                  className={`hover:bg-gray-50 cursor-pointer ${index === birdPyramidData.length - 1 ? '' : 'lg:border-b'}`}
                 >
                   <td className="py-0 px-2 w-1/3 lg:w-1/4">
-                    <p className="text-gray-700 font-medium text-sm">
+                    <p class="text-gray-700 font-normal text-sm">
                       {item.name}
                       {showDetailedView && (
                         <span className="text-xs text-gray-500 font-normal ml-1">({item.value})</span>
