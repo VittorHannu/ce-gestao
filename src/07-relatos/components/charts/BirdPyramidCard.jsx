@@ -112,37 +112,35 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
 
   return (
     <div className="p-6 border rounded-lg bg-white shadow-md">
-      <div className="pb-4 mb-4 border-b border-gray-200">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Pirâmide de Bird</h2>
-        <div className="flex flex-col md:flex-row md:justify-between w-full gap-2">
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowZeroBars(!showZeroBars)}
-              className={`flex items-center space-x-2 ${!showZeroBars ? 'bg-gray-200' : ''}`}
-            >
-              {showZeroBars ? <FilterX className="h-4 w-4" /> : <Filter className="h-4 w-4" />}
-              <span>Ocultar os vazios</span>
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowDetailedView(!showDetailedView)}
-              className={`flex items-center space-x-2 ${showDetailedView ? 'bg-gray-200' : ''}`}
-            >
-              <Layers className="h-4 w-4" />
-              <span>Filtrar por tratativa</span>
-            </Button>
-            {showDetailedView && (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="p-2">
-                    <Info className="h-4 w-4" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto">
-                  <div className="text-sm text-gray-600">
+      <div className="pb-4 mb-4 border-b border-gray-200 flex justify-between items-center">
+        <h2 className="text-xl font-semibold text-gray-800">Pirâmide de Bird</h2>
+        <div className="flex items-center gap-2">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="icon" className="h-8 w-8">
+                <Filter className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-4">
+              <div className="flex flex-col gap-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowZeroBars(!showZeroBars)}
+                  className={`flex items-center space-x-2 ${!showZeroBars ? 'bg-gray-200' : ''}`}>
+                  {showZeroBars ? <FilterX className="h-4 w-4" /> : <Filter className="h-4 w-4" />}
+                  <span>Ocultar os vazios</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowDetailedView(!showDetailedView)}
+                  className={`flex items-center space-x-2 ${showDetailedView ? 'bg-gray-200' : ''}`}>
+                  <Layers className="h-4 w-4" />
+                  <span>Filtrar por tratativa</span>
+                </Button>
+                {showDetailedView && (
+                  <div className="text-sm text-gray-600 border-t pt-4 mt-4">
                     <p className="font-semibold mb-2">Legenda de Status:</p>
                     <div className="flex items-center mb-1">
                       <span className="w-4 h-4 bg-green-500 rounded-full mr-2"></span>
@@ -157,28 +155,24 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
                       <span>Sem Tratativa</span>
                     </div>
                   </div>
-                </PopoverContent>
-              </Popover>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setBarAlignment('left')}
-              className={barAlignment === 'left' ? 'bg-gray-200' : ''}
-            >
-              <AlignLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setBarAlignment('center')}
-              className={barAlignment === 'center' ? 'bg-gray-200' : ''}
-            >
-              <AlignCenter className="h-4 w-4" />
-            </Button>
-          </div>
+                )}
+              </div>
+            </PopoverContent>
+          </Popover>
+          <Button
+            variant="outline"
+            size="icon"
+            className={`h-8 w-8 ${barAlignment === 'left' ? 'bg-gray-200' : ''}`}
+            onClick={() => setBarAlignment('left')}>
+            <AlignLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className={`h-8 w-8 ${barAlignment === 'center' ? 'bg-gray-200' : ''}`}
+            onClick={() => setBarAlignment('center')}>
+            <AlignCenter className="h-4 w-4" />
+          </Button>
         </div>
       </div>
       {birdPyramidData.length > 0 && maxPyramidCount > 0 ? (
