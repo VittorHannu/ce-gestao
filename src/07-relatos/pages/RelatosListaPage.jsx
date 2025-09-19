@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useUserProfile } from '@/04-profile/hooks/useUserProfile';
 import { updateRelatoType } from '../services/relatoStatsService';
 import MainLayout from '@/01-shared/components/MainLayout';
+import ViewOptionsControl from '../components/ViewOptionsControl';
 
 const PAGE_SIZE = 10;
 
@@ -55,6 +56,17 @@ const RelatosListaPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [responsibleFilter, setResponsibleFilter] = useState('all');
   const { startDate, endDate } = useDateFilter();
+
+  const [viewOptions, setViewOptions] = useState({
+    showDescription: true,
+    showRisks: true,
+    showSolution: false,
+    showDamage: false,
+  });
+
+  const handleViewOptionsChange = (option) => {
+    setViewOptions((prev) => ({ ...prev, [option]: !prev[option] }));
+  };
 
   const queryParams = new URLSearchParams(location.search);
   const statusFilterParam = queryParams.get('status');
@@ -144,8 +156,11 @@ const RelatosListaPage = () => {
   return (
     <MainLayout header={<PageHeader title={getTitle()} />}>
       <div>
-        <div className="mb-4">
-          <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Pesquisar relatos..." />
+        <div className="flex justify-between items-center mb-4 gap-2">
+          <div className="flex-grow">
+            <SearchInput value={searchTerm} onChange={setSearchTerm} placeholder="Pesquisar relatos..." />
+          </div>
+          <ViewOptionsControl viewOptions={viewOptions} onViewOptionsChange={handleViewOptionsChange} />
         </div>
 
         <div className="mb-4 flex flex-wrap space-x-2 gap-y-2">
@@ -174,7 +189,7 @@ const RelatosListaPage = () => {
                       {statusFilter === 'pendente' ? (
                         <RelatoAprovacaoCard relato={relato} onUpdateStatus={handleUpdateStatus} />
                       ) : (
-                        <RelatoCard relato={relato}>
+                        <RelatoCard relato={relato} viewOptions={viewOptions}>
                           {tipoRelatoFilter && (
                             <div className="p-4 border-t flex items-center gap-2">
                               <Select
