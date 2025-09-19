@@ -19,8 +19,9 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
   });
   const [showDetailedView, setShowDetailedView] = useState(() => {
     const storedValue = sessionStorage.getItem('birdPyramid_showDetailedView');
-    return storedValue !== null ? JSON.parse(storedValue) : true;
+    return storedValue !== null ? JSON.parse(storedValue) : false;
   });
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const getChartData = useCallback(async () => {
     setLoading(true);
@@ -115,7 +116,7 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
       <div className="pb-4 mb-4 flex justify-between items-center">
         <h2 className="text-xl font-semibold text-gray-800">Pirâmide de Bird</h2>
         <div className="flex items-center gap-2">
-          <Popover>
+          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
               <Button variant="outline" size="icon" className="h-8 w-8">
                 <Filter className="h-4 w-4" />
@@ -126,7 +127,10 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setShowZeroBars(!showZeroBars)}
+                  onClick={() => {
+                    setShowZeroBars(!showZeroBars);
+                    setIsPopoverOpen(false);
+                  }}
                   className={`flex items-center space-x-2 ${!showZeroBars ? 'bg-gray-200' : ''}`}>
                   {showZeroBars ? <FilterX className="h-4 w-4" /> : <Filter className="h-4 w-4" />}
                   <span>Ocultar os vazios</span>
@@ -134,7 +138,10 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setShowDetailedView(!showDetailedView)}
+                  onClick={() => {
+                    setShowDetailedView(!showDetailedView);
+                    setIsPopoverOpen(false);
+                  }}
                   className={`flex items-center space-x-2 ${showDetailedView ? 'bg-gray-200' : ''}`}>
                   <Layers className="h-4 w-4" />
                   <span>Filtrar por tratativa</span>
