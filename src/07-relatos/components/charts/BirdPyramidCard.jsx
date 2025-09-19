@@ -182,7 +182,7 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
         </div>
       </div>
       {birdPyramidData.length > 0 && maxPyramidCount > 0 ? (
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse responsive-pyramid-table">
           <tbody>
             {birdPyramidData.map((item) => {
               const barWidth = maxPyramidCount > 0 ? (item.value / maxPyramidCount) * 100 : 0;

@@ -179,3 +179,31 @@ textarea:focus-visible {
   word-break: break-word;
   font-size: 0.875rem;
 }
+
+/* Responsive Table for Bird Pyramid */
+@media (max-width: 767px) {
+  .responsive-pyramid-table tbody,
+  .responsive-pyramid-table tr,
+  .responsive-pyramid-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .responsive-pyramid-table td {
+    text-align: left;
+    padding-left: 0;
+    padding-right: 0;
+    border: none;
+  }
+  
+  .responsive-pyramid-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+  }
+
+  .responsive-pyramid-table tr:last-child {
+    border-bottom: none;
+  }
+}
