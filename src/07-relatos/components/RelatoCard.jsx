@@ -18,15 +18,15 @@ const getTreatmentStatus = (relato) => {
     return 'SEM_TRATATIVA';
 }
 
-const RelatoCard = ({ relato }) => {
+const RelatoCard = ({ relato, children }) => {
   const location = useLocation();
 
   const finalStatusKey = relato.status === 'APROVADO' ? getTreatmentStatus(relato) : relato.status;
   const { text: statusText, color: statusColor } = statusConfig[finalStatusKey] || { text: 'Indefinido', color: 'bg-gray-400' };
 
   return (
-    <Link to={`/relatos/detalhes/${relato.id}`} state={{ from: location }} className="block">
-      <Card className="w-full bg-white rounded-lg shadow-md overflow-hidden transition-shadow duration-300 hover:shadow-xl">
+    <Card className="w-full bg-white rounded-lg shadow-md overflow-hidden transition-shadow duration-300 hover:shadow-xl">
+      <Link to={`/relatos/detalhes/${relato.id}`} state={{ from: location }} className="block">
         <CardHeader className="p-4 border-b border-gray-200">
           <div className="flex items-center gap-3">
             <span className={`w-3 h-3 rounded-full ${statusColor}`}></span>
@@ -83,8 +83,9 @@ const RelatoCard = ({ relato }) => {
             </div>
           </div>
         </CardContent>
-      </Card>
-    </Link>
+      </Link>
+      {children}
+    </Card>
   );
 };
 

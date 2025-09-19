@@ -165,7 +165,7 @@ const RelatosListaPage = () => {
             <p>Nenhum relato encontrado para os filtros selecionados.</p>
           </div>
         ) : (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {data.pages.map((page, i) => (
                 <Fragment key={i}>
@@ -174,10 +174,9 @@ const RelatosListaPage = () => {
                       {statusFilter === 'pendente' ? (
                         <RelatoAprovacaoCard relato={relato} onUpdateStatus={handleUpdateStatus} />
                       ) : (
-                        <div className="p-4 border rounded-lg bg-white">
-                          <RelatoCard relato={relato} />
+                        <RelatoCard relato={relato}>
                           {tipoRelatoFilter && (
-                            <div className="flex items-center gap-2 mt-4">
+                            <div className="p-4 border-t flex items-center gap-2">
                               <Select
                                 onValueChange={(value) => setSelectedTypes(prev => ({ ...prev, [relato.id]: value }))}
                                 value={selectedTypes[relato.id]}
@@ -209,7 +208,7 @@ const RelatosListaPage = () => {
                               )}
                             </div>
                           )}
-                        </div>
+                        </RelatoCard>
                       )}
                     </div>
                   ))}
