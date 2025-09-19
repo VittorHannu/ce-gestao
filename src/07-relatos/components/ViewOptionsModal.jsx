@@ -51,9 +51,9 @@ const ViewOptionsModal = ({ viewOptions, onViewOptionsChange, children }) => {
           </div>
         </div>
         <DialogFooter>
-            <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
                 As opções são salvas automaticamente.
-            </p>
+          </p>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -65,7 +65,7 @@ const RelatosListaPage = () => {
     showDamage: false,
     showTipoRelato: false,
     showTreatmentStatus: false,
-    showResponsibles: false,
+    showResponsibles: false
   });
 
   const handleViewOptionsChange = (option) => {

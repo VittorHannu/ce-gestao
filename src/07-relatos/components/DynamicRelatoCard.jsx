@@ -10,14 +10,14 @@ const statusConfig = {
   SEM_TRATATIVA: { text: 'Sem Tratativa', color: 'bg-red-500' },
   PENDENTE: { text: 'Pendente', color: 'bg-yellow-500' },
   APROVADO: { text: 'Aprovado', color: 'bg-blue-500' },
-  REPROVADO: { text: 'Reprovado', color: 'bg-gray-500' },
+  REPROVADO: { text: 'Reprovado', color: 'bg-gray-500' }
 };
 
 const getTreatmentStatus = (relato) => {
-    if (relato.data_conclusao_solucao || relato.concluido_sem_data) return 'CONCLUIDO';
-    if (relato.planejamento_cronologia_solucao) return 'EM_ANDAMENTO';
-    return 'SEM_TRATATIVA';
-}
+  if (relato.data_conclusao_solucao || relato.concluido_sem_data) return 'CONCLUIDO';
+  if (relato.planejamento_cronologia_solucao) return 'EM_ANDAMENTO';
+  return 'SEM_TRATATIVA';
+};
 
 const DynamicRelatoCard = ({ relato, viewOptions, disableLink }) => {
   const location = useLocation();
@@ -51,43 +51,43 @@ const DynamicRelatoCard = ({ relato, viewOptions, disableLink }) => {
         </div>
 
         {(viewOptions.showDescription || viewOptions.showRisks || viewOptions.showSolution || viewOptions.showDamage) && (
-            <div className="border-t border-gray-200 pt-3 mt-3 space-y-3">
-                {viewOptions.showDescription && (
-                    <div>
-                        <h4 className="font-bold text-gray-700">Descrição do Evento</h4>
-                        <p className="text-gray-600 text-sm mt-1">{relato.descricao}</p>
-                    </div>
-                )}
-                {viewOptions.showRisks && (
-                    <div>
-                        <h4 className="font-bold text-gray-700">Riscos Identificados</h4>
-                        <p className="text-gray-600 text-sm mt-1">{relato.riscos_identificados}</p>
-                    </div>
-                )}
-                {viewOptions.showSolution && relato.planejamento_cronologia_solucao && (
-                    <div>
-                        <h4 className="font-bold text-gray-700">Solução Implementada</h4>
-                        <p className="text-gray-600 text-sm mt-1">{relato.planejamento_cronologia_solucao}</p>
-                    </div>
-                )}
-                 {viewOptions.showDamage && relato.danos_ocorridos && (
-                    <div>
-                        <h4 className="font-bold text-gray-700">Danos Ocorridos</h4>
-                        <p className="text-gray-600 text-sm mt-1">{relato.danos_ocorridos}</p>
-                    </div>
-                )}
-            </div>
+          <div className="border-t border-gray-200 pt-3 mt-3 space-y-3">
+            {viewOptions.showDescription && (
+              <div>
+                <h4 className="font-bold text-gray-700">Descrição do Evento</h4>
+                <p className="text-gray-600 text-sm mt-1">{relato.descricao}</p>
+              </div>
+            )}
+            {viewOptions.showRisks && (
+              <div>
+                <h4 className="font-bold text-gray-700">Riscos Identificados</h4>
+                <p className="text-gray-600 text-sm mt-1">{relato.riscos_identificados}</p>
+              </div>
+            )}
+            {viewOptions.showSolution && relato.planejamento_cronologia_solucao && (
+              <div>
+                <h4 className="font-bold text-gray-700">Solução Implementada</h4>
+                <p className="text-gray-600 text-sm mt-1">{relato.planejamento_cronologia_solucao}</p>
+              </div>
+            )}
+            {viewOptions.showDamage && relato.danos_ocorridos && (
+              <div>
+                <h4 className="font-bold text-gray-700">Danos Ocorridos</h4>
+                <p className="text-gray-600 text-sm mt-1">{relato.danos_ocorridos}</p>
+              </div>
+            )}
+          </div>
         )}
 
         <div className="border-t border-gray-200 pt-4 flex items-center justify-start gap-4 text-sm text-gray-500">
-            <div className="flex items-center gap-1">
-                <Image className="h-4 w-4" />
-                <span>{relato.image_count || 0}</span>
-            </div>
-            <div className="flex items-center gap-1">
-                <MessageSquare className="h-4 w-4" />
-                <span>{relato.comment_count || 0}</span>
-            </div>
+          <div className="flex items-center gap-1">
+            <Image className="h-4 w-4" />
+            <span>{relato.image_count || 0}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <MessageSquare className="h-4 w-4" />
+            <span>{relato.comment_count || 0}</span>
+          </div>
         </div>
       </CardContent>
     </Card>

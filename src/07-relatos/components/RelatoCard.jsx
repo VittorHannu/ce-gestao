@@ -9,14 +9,14 @@ const statusConfig = {
   SEM_TRATATIVA: { text: 'Sem Tratativa', color: 'bg-red-500' },
   PENDENTE: { text: 'Pendente', color: 'bg-yellow-500' },
   APROVADO: { text: 'Aprovado', color: 'bg-blue-500' },
-  REPROVADO: { text: 'Reprovado', color: 'bg-gray-500' },
+  REPROVADO: { text: 'Reprovado', color: 'bg-gray-500' }
 };
 
 const getTreatmentStatus = (relato) => {
-    if (relato.data_conclusao_solucao || relato.concluido_sem_data) return 'CONCLUIDO';
-    if (relato.planejamento_cronologia_solucao) return 'EM_ANDAMENTO';
-    return 'SEM_TRATATIVA';
-}
+  if (relato.data_conclusao_solucao || relato.concluido_sem_data) return 'CONCLUIDO';
+  if (relato.planejamento_cronologia_solucao) return 'EM_ANDAMENTO';
+  return 'SEM_TRATATIVA';
+};
 
 const RelatoCard = ({ relato, children, viewOptions }) => {
   const location = useLocation();
