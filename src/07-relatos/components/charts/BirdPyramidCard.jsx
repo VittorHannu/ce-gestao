@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/01-shared/components/ui/button';
 import { AlignLeft, AlignCenter, Filter, FilterX, Layers, Info } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/01-shared/components/ui/popover';
@@ -8,6 +8,7 @@ import LoadingSpinner from '@/01-shared/components/LoadingSpinner';
 import { fetchRelatosCountByType } from '../../services/relatoStatsService';
 
 const BirdPyramidCard = ({ startDate, endDate }) => {
+  const navigate = useNavigate();
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -181,85 +182,90 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
         </div>
       </div>
       {birdPyramidData.length > 0 && maxPyramidCount > 0 ? (
-        <div className="flex flex-col items-center space-y-2">
-          {birdPyramidData.map((item) => {
-            const barWidth = maxPyramidCount > 0 ? (item.value / maxPyramidCount) * 100 : 0;
-            const colorMap = {
-              'Fatal': 'bg-black',
-              'Severo': 'bg-red-600',
-              'Acidente com afastamento': 'bg-red-500',
-              'Acidente sem afastamento': 'bg-orange-500',
-              'Primeiros socorros': 'bg-yellow-500',
-              'Quase acidente': 'bg-yellow-500',
-              'Condição insegura': 'bg-yellow-400',
-              'Comportamento inseguro': 'bg-yellow-400',
-              'Sem Classificação': 'bg-gray-400'
-            };
-            const backgroundColor = colorMap[item.name] || 'bg-green-500';
+        <table className="w-full border-collapse">
+          <tbody>
+            {birdPyramidData.map((item) => {
+              const barWidth = maxPyramidCount > 0 ? (item.value / maxPyramidCount) * 100 : 0;
+              const colorMap = {
+                'Fatal': 'bg-black',
+                'Severo': 'bg-red-600',
+                'Acidente com afastamento': 'bg-red-500',
+                'Acidente sem afastamento': 'bg-orange-500',
+                'Primeiros socorros': 'bg-yellow-500',
+                'Quase acidente': 'bg-yellow-500',
+                'Condição insegura': 'bg-yellow-400',
+                'Comportamento inseguro': 'bg-yellow-400',
+                'Sem Classificação': 'bg-gray-400'
+              };
+              const backgroundColor = colorMap[item.name] || 'bg-green-500';
+              const destinationUrl = `/relatos/lista?tipo_relato=${encodeURIComponent(item.name)}&startDate=${startDate}&endDate=${endDate}`;
 
-            return (
-              <Link
-                key={item.name}
-                to={`/relatos/lista?tipo_relato=${encodeURIComponent(item.name)}&startDate=${startDate}&endDate=${endDate}`}
-                className={`w-full flex flex-col ${barAlignment === 'left' ? 'items-start' : 'items-center'} cursor-pointer`}
-              >
-                <p className="text-gray-700 font-medium mb-1">
-                  {item.name}
-                  {showDetailedView && (
-                    <span className="text-sm text-gray-500 font-normal ml-1">({item.value})</span>
-                  )}
-                </p>
-                <div className={`flex items-center ${barAlignment === 'left' ? 'justify-start' : 'justify-center'} w-full`}>
-                  {item.value === 0 ? (
-                    <span className="ml-2 text-gray-700 font-bold">0</span>
-                  ) : (
-                    showDetailedView ? (
-                      <div className={`flex items-center w-full ${barAlignment === 'center' ? 'justify-center' : ''}`}>
-                        <div
-                          className={'h-8 rounded-sm flex items-center justify-center text-white font-bold overflow-hidden'}
-                          style={{ width: `${barWidth}%`, maxWidth: '600px' }}
-                        >
-                          {item.concluido > 0 && (
-                            <Tooltip.Provider>
-                              <Tooltip.Root delayDuration={300}>
-                                <Tooltip.Trigger asChild>
-                                  <div
-                                    className="bg-green-500 h-full flex items-center justify-center"
-                                    style={{ width: `${(item.concluido / item.value) * 100}%` }}
-                                  >
-                                    {((item.concluido / maxPyramidCount) * 600) > 20 && item.concluido}
-                                  </div>
-                                </Tooltip.Trigger>
-                                <Tooltip.Portal>
-                                  <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
-                                  Concluídos: {item.concluido}
-                                    <Tooltip.Arrow className="fill-current text-gray-800" />
-                                  </Tooltip.Content>
-                                </Tooltip.Portal>
-                              </Tooltip.Root>
-                            </Tooltip.Provider>
-                          )}
-                          {item.emAndamento > 0 && (
-                            <Tooltip.Provider>
-                              <Tooltip.Root delayDuration={300}>
-                                <Tooltip.Trigger asChild>
-                                  <div
-                                    className="bg-amber-500 h-full flex items-center justify-center"
-                                    style={{ width: `${(item.emAndamento / item.value) * 100}%` }}
-                                  >
-                                    {((item.emAndamento / maxPyramidCount) * 600) > 20 && item.emAndamento}
-                                  </div>
-                                </Tooltip.Trigger>
-                                <Tooltip.Portal>
-                                  <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
-                                  Em Andamento: {item.emAndamento}
-                                    <Tooltip.Arrow className="fill-current text-gray-800" />
-                                  </Tooltip.Content>
-                                </Tooltip.Portal>
-                              </Tooltip.Root>
-                            </Tooltip.Provider>
-                          )}
-                          {item.semTratativa > 0 && (
+              return (
+                <tr 
+                  key={item.name} 
+                  onClick={() => navigate(destinationUrl)}
+                  className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                >
+                  <td className="p-2 w-1/3 lg:w-1/4">
+                    <p className="text-gray-700 font-medium">
+                      {item.name}
+                      {showDetailedView && (
+                        <span className="text-sm text-gray-500 font-normal ml-1">({item.value})</span>
+                      )}
+                    </p>
+                  </td>
+                  <td className="p-2">
+                    <div className={`flex items-center ${barAlignment === 'left' ? 'justify-start' : 'justify-center'}`}>
+                      {item.value === 0 ? (
+                        <span className="ml-2 text-gray-700 font-bold">0</span>
+                      ) : (
+                        showDetailedView ? (
+                          <div className={`flex items-center w-full ${barAlignment === 'center' ? 'justify-center' : ''}`}>
+                            <div
+                              className={'h-8 rounded-sm flex items-center justify-center text-white font-bold overflow-hidden'}
+                              style={{ width: `${barWidth}%` }}
+                            >
+                              {item.concluido > 0 && (
+                                <Tooltip.Provider>
+                                  <Tooltip.Root delayDuration={300}>
+                                    <Tooltip.Trigger asChild>
+                                      <div
+                                        className="bg-green-500 h-full flex items-center justify-center"
+                                        style={{ width: `${(item.concluido / item.value) * 100}%` }}
+                                      >
+                                        {((item.concluido / maxPyramidCount) * 600) > 20 && item.concluido}
+                                      </div>
+                                    </Tooltip.Trigger>
+                                    <Tooltip.Portal>
+                                      <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
+                                      Concluídos: {item.concluido}
+                                        <Tooltip.Arrow className="fill-current text-gray-800" />
+                                      </Tooltip.Content>
+                                    </Tooltip.Portal>
+                                  </Tooltip.Root>
+                                </Tooltip.Provider>
+                              )}
+                              {item.emAndamento > 0 && (
+                                <Tooltip.Provider>
+                                  <Tooltip.Root delayDuration={300}>
+                                    <Tooltip.Trigger asChild>
+                                      <div
+                                        className="bg-amber-500 h-full flex items-center justify-center"
+                                        style={{ width: `${(item.emAndamento / item.value) * 100}%` }}
+                                      >
+                                        {((item.emAndamento / maxPyramidCount) * 600) > 20 && item.emAndamento}
+                                      </div>
+                                    </Tooltip.Trigger>
+                                    <Tooltip.Portal>
+                                      <Tooltip.Content className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-50">
+                                      Em Andamento: {item.emAndamento}
+                                        <Tooltip.Arrow className="fill-current text-gray-800" />
+                                      </Tooltip.Content>
+                                    </Tooltip.Portal>
+                                  </Tooltip.Root>
+                                </Tooltip.Provider>
+                              )}
+                              {item.semTratativa > 0 && (
                             <Tooltip.Provider>
                               <Tooltip.Root delayDuration={300}>
                                 <Tooltip.Trigger asChild>
@@ -285,7 +291,7 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
                       <div className={`flex items-center w-full ${barAlignment === 'center' ? 'justify-center' : ''}`}>
                         <div
                           className={`h-8 rounded-sm ${backgroundColor} flex items-center justify-center text-white font-bold`}
-                          style={{ width: `${barWidth}%`, maxWidth: '600px' }}
+                          style={{ width: `${barWidth}%` }}
                         >
                           {((item.value / maxPyramidCount) * 600) > 20 && item.value}
                         </div>
@@ -296,10 +302,12 @@ const BirdPyramidCard = ({ startDate, endDate }) => {
                     )
                   )}
                 </div>
-              </Link>
-            );
-          })}
-        </div>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
       ) : (
         <p className="text-center text-gray-500">Nenhum dado disponível para a Pirâmide de Bird no período selecionado.</p>
       )}
